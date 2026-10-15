@@ -2,7 +2,7 @@ import { Ic } from '../components/Icons.jsx';
 import { L, Status } from '../components/Layout.jsx';
 import { BtnWa, Evento, Foto, InfoContato, LinkSeta, Mapa, Titulo } from '../components/bits.jsx';
 import { useSite } from '../state/content.jsx';
-import { bgOf, eventosFuturos, lista, numerar, postsDe } from '../lib/util.js';
+import { bgOf, eventosFuturos, gradeEquilibrada, lista, numerar, postsDe } from '../lib/util.js';
 
 export default function Inicio({ desktop }) {
   const site = useSite();
@@ -22,7 +22,7 @@ export default function Inicio({ desktop }) {
         <div className="min0">
           <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 22, flexWrap: 'wrap' }}>
             <span className="eyebrow">ótica em {info.cidade}</span>
-            <span style={{ width: 1, height: 12, background: 'rgba(255,255,255,.25)' }} />
+            <span className="hero-sep" style={{ width: 1, height: 12, background: 'rgba(255,255,255,.25)' }} />
             <Status st={status} style={{ font: "500 12px 'DM Sans',sans-serif", color: 'rgba(255,255,255,.75)' }} />
           </div>
           <h1 className="h-display" style={{ marginBottom: 24 }}>
@@ -30,7 +30,7 @@ export default function Inicio({ desktop }) {
             <span style={{ display: 'block' }}><span>{info.heroLinha2}</span> <span className="b">{info.heroDestaque}</span></span>
           </h1>
           <p style={{ font: "400 clamp(16px,1.6vw,18px)/1.55 'DM Sans',sans-serif", color: 'rgba(255,255,255,.72)', maxWidth: 460, marginBottom: 32 }}>{info.heroTexto}</p>
-          <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', marginBottom: 32 }}>
+          <div className="btn-row" style={{ marginBottom: 32 }}>
             <BtnWa href={wa.link} />
             <L to="armacoes" className="btn btn--ghost-inv">ver armações</L>
           </div>
@@ -60,7 +60,7 @@ export default function Inicio({ desktop }) {
 
       <section data-reveal className="px" style={{ paddingTop: 'clamp(48px,6vw,80px)', paddingBottom: 32 }}>
         <div className="sec-head"><Titulo a="o que você" b="procura" /><LinkSeta to="armacoes">ver tudo</LinkSeta></div>
-        <div data-grid className="grid">
+        <div data-grid className="grid grid--3">
           {cats.map(c => (
             <L key={c.nome} to={c.to} className="card-link">
               <Foto img={c.img} rotulo={c.foto} ratio="4/3" radius={0} style={{ color: 'var(--muted-2)' }} />
@@ -108,7 +108,7 @@ export default function Inicio({ desktop }) {
 
       <section data-reveal className="px" style={{ paddingTop: 'clamp(48px,6vw,80px)' }}>
         <div className="sec-head"><Titulo a="como" b="funciona" /><div style={{ font: "400 14px 'DM Sans',sans-serif", color: 'var(--muted-2)' }}>do primeiro contato ao óculos pronto</div></div>
-        <div data-grid className="grid steps" style={{ '--min': '220px' }}>
+        <div data-grid className={`grid steps${gradeEquilibrada(cms.etapas)}`} style={{ '--min': '220px' }}>
           {numerar(cms.etapas).map(s => (
             <div key={s.n}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 16 }}><span style={{ font: "300 28px 'Outfit',sans-serif", color: 'var(--muted-2)' }}>{s.n}</span><span style={{ flex: 1, height: 1, background: 'rgba(0,0,0,.12)' }} /></div>
@@ -122,7 +122,7 @@ export default function Inicio({ desktop }) {
       {cms.depoimentos.length > 0 && (
         <section data-reveal className="px" style={{ paddingTop: 'clamp(48px,6vw,80px)' }}>
           <div className="sec-head"><Titulo a="quem já" b="enxerga melhor" /><LinkSeta href={googleLink}>avaliações no Google</LinkSeta></div>
-          <div data-grid className="grid" style={{ '--gap': '18px' }}>
+          <div data-grid className={`grid grid--longo${gradeEquilibrada(cms.depoimentos)}`} style={{ '--gap': '18px' }}>
             {cms.depoimentos.map((d, i) => (
               <figure key={i} style={{ background: 'var(--sand)', borderRadius: 18, padding: '26px 24px', display: 'flex', flexDirection: 'column', gap: 16 }}>
                 <div style={{ font: "300 44px/0.6 'Outfit',sans-serif", color: '#c9c6c1' }} aria-hidden="true">“</div>
@@ -149,7 +149,7 @@ export default function Inicio({ desktop }) {
 
       <section data-reveal className="px" style={{ paddingBottom: 'clamp(48px,7vw,88px)' }}>
         <div className="sec-head" style={{ marginBottom: 28 }}><Titulo a="dicas para" b="seus olhos" style={{ fontSize: 'clamp(28px,3.2vw,40px)' }} /><LinkSeta to="blog">ver o blog</LinkSeta></div>
-        <div data-grid className="grid">
+        <div data-grid className="grid grid--3">
           {postsDe(cms).slice(0, 3).map(p => (
             <L key={p.slug} to={'blog/' + p.slug} className="lift" style={{ display: 'block', color: 'var(--ink)' }}>
               <div style={{ aspectRatio: '16/10', borderRadius: 16, background: 'var(--ph)', backgroundImage: bgOf(p.img), backgroundSize: 'cover', backgroundPosition: 'center', marginBottom: 14 }} />

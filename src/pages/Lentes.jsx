@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { BtnWa, Foto } from '../components/bits.jsx';
 import { useSite } from '../state/content.jsx';
-import { numerar } from '../lib/util.js';
+import { gradeEquilibrada, numerar } from '../lib/util.js';
 
 export default function Lentes() {
   const { cms, wa } = useSite();
@@ -20,7 +20,7 @@ export default function Lentes() {
 
       <section data-reveal className="px" style={{ paddingTop: 'clamp(40px,6vw,80px)' }}>
         <h2 className="h-sub" style={{ marginBottom: 28 }}>tipos de lente</h2>
-        <div data-grid className="grid" style={{ '--min': '220px', '--gap': '16px' }}>
+        <div data-grid className={`grid${gradeEquilibrada(cms.tiposLente)}`} style={{ '--min': '220px', '--gap': '16px' }}>
           {(cms.tiposLente || []).map((t, i) => (
             <div key={i} className="card-sand">
               <div style={{ font: "500 21px 'Outfit',sans-serif", marginBottom: 10 }}>{t.nome}</div>
@@ -33,7 +33,7 @@ export default function Lentes() {
 
       <section data-reveal className="px" style={{ paddingTop: 'clamp(40px,6vw,80px)', paddingBottom: 'clamp(40px,6vw,80px)' }}>
         <h2 className="h-sub" style={{ marginBottom: 28 }}>como funciona</h2>
-        <div data-grid className="grid steps" style={{ '--min': '240px' }}>
+        <div data-grid className={`grid steps${gradeEquilibrada(cms.passos)}`} style={{ '--min': '240px' }}>
           {numerar(cms.passos).map(s => (
             <div key={s.n}>
               <div style={{ font: "300 30px 'Outfit',sans-serif", color: 'var(--muted-2)', marginBottom: 14 }}>{s.n}</div>
