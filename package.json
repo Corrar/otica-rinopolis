@@ -13,13 +13,13 @@
     "node": ">=18"
   },
   "dependencies": {
-    "@vercel/blob": "^2.0.0",
-    "gsap": "^3.13.0",
-    "react": "^19.2.0",
-    "react-dom": "^19.2.0"
+    "@vercel/blob": "2.0.0",
+    "gsap": "3.13.0",
+    "react": "19.2.0",
+    "react-dom": "19.2.0"
   },
   "devDependencies": {
-    "@vitejs/plugin-react": "^5.0.4",
-    "vite": "^7.1.12"
+    "@vitejs/plugin-react": "5.0.4",
+    "vite": "7.1.12"
   }
 }
