@@ -8,6 +8,7 @@ import { useContent, useSite } from '../state/content.jsx';
 import { api } from '../lib/api.js';
 import { aviso } from '../lib/toast.js';
 import { eventosFuturos, fmtData, lista, num2, promosAtivas } from '../lib/util.js';
+import { ehIlustrativa } from '../content/defaults.js';
 
 const ABAS = [
   ['visao', 'visão geral', 'Resumo do site e o que ainda falta preencher.', 'inicio'],
@@ -252,8 +253,10 @@ function Visao({ irAba, sessao }) {
   const promos = promosAtivas(cms).length, futuros = eventosFuturos(cms).length;
   const fotosFixas = Object.values(cms.fotos), fotosOk = fotosFixas.filter(Boolean).length;
   const fotosTotal = fotosOk + (cms.galeria || []).filter(g => g.img).length + cms.produtos.filter(x => x.img).length;
+  const ilustrativas = [...fotosFixas, ...['galeria', 'produtos', 'equipe', 'promocoes', 'eventos', 'posts'].flatMap(k => (cms[k] || []).map(x => x.img))].filter(ehIlustrativa).length;
   const pend = [
     [fotosOk === fotosFixas.length, fotosOk === fotosFixas.length ? 'Todas as fotos das seções enviadas' : `Enviar fotos das seções (${fotosOk} de ${fotosFixas.length})`, 'fotos'],
+    [!ilustrativas, ilustrativas ? `Trocar fotos de exemplo (banco de imagens) por fotos reais (${ilustrativas})` : 'Sem fotos de exemplo no site', 'fotos'],
     [!cms.equipe.some(e => /nome sobrenome/i.test(e.nome)), 'Preencher nomes reais da equipe', 'sobre'],
     [!/^Marca \d/.test(lista(info.marcas)[0] || ''), 'Informar as marcas que trabalha', 'info'],
     [info.cnpj !== '00.000.000/0001-00', 'Informar o CNPJ', 'info'],

@@ -62,7 +62,7 @@ export default function Sobre() {
           <div data-grid className="grid grid--fill" style={{ '--min': '220px', '--gap': '14px' }}>
             {galeria.map((g, i) => (
               <figure key={i} style={{ borderRadius: 16, overflow: 'hidden', background: 'var(--ph)', position: 'relative', aspectRatio: '1' }}>
-                <img src={g.img} alt={g.legenda || 'foto da loja'} loading="lazy" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
+                <img src={g.img} alt={g.legenda || 'foto da loja'} loading="lazy" onError={e => { e.currentTarget.style.visibility = 'hidden'; }} style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
                 {g.legenda ? <figcaption style={{ position: 'absolute', left: 0, right: 0, bottom: 0, padding: '28px 14px 12px', background: 'linear-gradient(transparent,rgba(0,0,0,.6))', color: '#fff', font: "500 13px 'DM Sans',sans-serif" }}>{g.legenda}</figcaption> : null}
               </figure>
             ))}

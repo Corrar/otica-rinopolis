@@ -43,4 +43,4 @@ Sem `BLOB_READ_WRITE_TOKEN`, tudo é salvo em arquivos em `DATA_DIR` (faça back
 - `project/`, `chats/` — pacote original do Claude Design (referência).
 
 ## Pendências de conteúdo
-Fotos reais, nomes da equipe, marcas, CNPJ e convênios definitivos — o painel lista o que falta em "visão geral".
+O conteúdo padrão já vem com fotos (4 em `public/fotos/` e as demais de exemplo do banco gratuito Pexels — lista em `FOTOS.md`). Faltam as fotos reais, nomes da equipe, marcas, CNPJ e convênios definitivos — o painel lista o que falta em "visão geral", inclusive quantas fotos de exemplo ainda estão no site.
