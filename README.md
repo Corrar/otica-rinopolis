@@ -19,6 +19,10 @@ npm install
 npm run dev          # http://localhost:5173 — API e fotos ficam em ./data
 ```
 
+## Produção
+- Site: https://otica-rinopolis.vercel.app (projeto Vercel `otica-rinopolis`, ligado a este repositório — cada push na `main` publica automaticamente).
+- `SESSION_SECRET` já configurado. **Falta conectar o Blob Store** (abaixo, passo 2) e fazer um novo deploy; até lá o site mostra o conteúdo padrão e o painel avisa que não consegue salvar.
+
 ## Publicar na Vercel (recomendado)
 1. Importe o repositório na Vercel (framework: Vite — já configurado em `vercel.json`).
 2. Em **Storage**, crie um **Blob Store** e conecte ao projeto (isso cria `BLOB_READ_WRITE_TOKEN`).
