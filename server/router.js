@@ -145,6 +145,6 @@ export async function handleApi(req, res) {
   } catch (e) {
     const status = e.status || 500;
     if (status >= 500) console.error('[api]', e);
-    json(res, status, { error: status >= 500 ? 'Erro no servidor. Tente novamente.' : e.message });
+    json(res, status, { error: status >= 500 && status !== 503 ? 'Erro no servidor. Tente novamente.' : e.message });
   }
 }

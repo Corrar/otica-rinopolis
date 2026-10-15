@@ -77,8 +77,19 @@ function fileStorage(dir) {
   };
 }
 
+// Na Vercel sem Blob Store conectado: o site funciona com o conteúdo padrão,
+// mas salvar retorna um aviso claro em vez de erro genérico.
+function semArmazenamento() {
+  const erro = () => { const e = new Error('Armazenamento não configurado: conecte um Blob Store ao projeto na Vercel e faça um novo deploy.'); e.status = 503; throw e; };
+  return { kind: 'nenhum', listVersions: async () => [], readVersion: erro, writeVersion: erro, readAuth: async () => null, writeAuth: erro, saveImage: erro };
+}
+
 let instancia;
 export function getStorage() {
-  if (!instancia) instancia = process.env.BLOB_READ_WRITE_TOKEN ? blobStorage() : fileStorage(path.resolve(process.env.DATA_DIR || 'data'));
+  if (!instancia) {
+    instancia = process.env.BLOB_READ_WRITE_TOKEN ? blobStorage()
+      : process.env.VERCEL ? semArmazenamento()
+      : fileStorage(path.resolve(process.env.DATA_DIR || 'data'));
+  }
   return instancia;
 }

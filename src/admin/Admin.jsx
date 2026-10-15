@@ -118,6 +118,11 @@ function Painel({ wide, sessao, setSessao, sair }) {
           <div><h1 style={{ font: "300 clamp(26px,3vw,36px)/1.1 'Outfit',sans-serif", letterSpacing: '-.02em' }}>{atual[1]}</h1><div style={{ font: "400 14px/1.5 'DM Sans',sans-serif", color: 'var(--muted)', marginTop: 4 }}>{atual[2]}</div></div>
           <IndicadorSalvar />
         </div>
+        {sessao.armazenamento === 'nenhum' && (
+          <div role="alert" style={{ background: '#fdecea', color: '#8c1d18', borderRadius: 14, padding: '12px 16px', font: "400 13px/1.5 'DM Sans',sans-serif" }}>
+            O armazenamento ainda não foi configurado: as alterações <strong>não serão salvas</strong>. Na Vercel, crie um Blob Store, conecte a este projeto e faça um novo deploy.
+          </div>
+        )}
         {sessao.senhaInicial && aba !== 'config' && (
           <button onClick={() => irAba('config')} style={{ textAlign: 'left', border: 0, background: '#fff4e5', color: '#7a4b00', borderRadius: 14, padding: '12px 16px', font: "400 13px/1.5 'DM Sans',sans-serif" }}>
             Você ainda usa a senha inicial. <strong>Troque agora em configurações →</strong>
@@ -287,7 +292,7 @@ function Visao({ irAba, sessao }) {
         <div className="dark" style={{ borderRadius: 20, padding: 'clamp(18px,2.5vw,28px)' }}>
           <div style={{ font: "500 16px 'Outfit',sans-serif", marginBottom: 8 }}>status agora</div>
           <div style={{ marginBottom: 14 }}><Status st={status} style={{ gap: 8, font: "400 14px 'DM Sans',sans-serif", color: 'rgba(255,255,255,.8)' }} /></div>
-          <div style={{ font: "400 13px/1.6 'DM Sans',sans-serif", color: 'rgba(255,255,255,.6)' }}>WhatsApp {wa.fmt}<br />{info.endereco} · {info.bairroCidade}<br />Armazenamento: {sessao.armazenamento === 'blob' ? 'nuvem (Vercel Blob)' : 'arquivos no servidor'}</div>
+          <div style={{ font: "400 13px/1.6 'DM Sans',sans-serif", color: 'rgba(255,255,255,.6)' }}>WhatsApp {wa.fmt}<br />{info.endereco} · {info.bairroCidade}<br />Armazenamento: {sessao.armazenamento === 'blob' ? 'nuvem (Vercel Blob)' : sessao.armazenamento === 'nenhum' ? 'não configurado — conecte um Blob Store' : 'arquivos no servidor'}</div>
         </div>
       </div>
     </div>
