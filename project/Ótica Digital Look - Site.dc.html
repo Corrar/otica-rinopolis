@@ -1,0 +1,871 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet data-dc-atomics><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&family=DM+Sans:opsz,wght@9..40,400;9..40,500&display=swap" rel="stylesheet"><script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script><script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script><style>html{-webkit-text-size-adjust:100%}body{margin:0;background:#fff;color:#1c1a1b;font-family:'DM Sans',system-ui,sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden}*{box-sizing:border-box}img{max-width:100%}a{color:inherit;text-decoration:none;cursor:pointer;transition:opacity .2s,background .2s,color .2s,border-color .2s,transform .25s,box-shadow .25s}a:hover{opacity:.85}button{font:inherit;cursor:pointer;transition:background .2s,color .2s,border-color .2s,transform .2s}input,textarea,select{font:inherit;max-width:100%}:focus-visible{outline:2px solid #1c1a1b;outline-offset:3px}@keyframes wa-pulse{0%{box-shadow:0 0 0 0 rgba(37,211,102,.55)}100%{box-shadow:0 0 0 18px rgba(37,211,102,0)}}@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}</style></helmet>
+
+<svg style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true"><defs>
+<symbol id="ic-wa" viewBox="0 0 24 24"><path fill="currentColor" d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></symbol>
+<symbol id="ic-check" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" d="M20 6 9 17l-5-5"/></symbol>
+<symbol id="ic-pin" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M12 22s7-6.3 7-12a7 7 0 1 0-14 0c0 5.7 7 12 7 12Z"/><circle fill="none" stroke="currentColor" stroke-width="2" cx="12" cy="10" r="2.5"/></symbol>
+<symbol id="ic-ig" viewBox="0 0 24 24"><rect fill="none" stroke="currentColor" stroke-width="2" x="3" y="3" width="18" height="18" rx="5"/><circle fill="none" stroke="currentColor" stroke-width="2" cx="12" cy="12" r="4"/><circle fill="currentColor" cx="17.5" cy="6.5" r="1.2"/></symbol>
+<symbol id="ic-arrow" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M5 12h14M13 6l6 6-6 6"/></symbol>
+<symbol id="ic-cal" viewBox="0 0 24 24"><rect fill="none" stroke="currentColor" stroke-width="2" x="3" y="5" width="18" height="16" rx="3"/><path stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M8 3v4M16 3v4M3 10h18"/></symbol>
+<symbol id="ic-lock" viewBox="0 0 24 24"><rect fill="none" stroke="currentColor" stroke-width="2" x="4" y="10" width="16" height="11" rx="2"/><path fill="none" stroke="currentColor" stroke-width="2" d="M8 10V7a4 4 0 0 1 8 0v3"/></symbol>
+<symbol id="ic-trash" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></symbol>
+<symbol id="ic-img" viewBox="0 0 24 24"><rect fill="none" stroke="currentColor" stroke-width="2" x="3" y="4" width="18" height="16" rx="3"/><circle fill="currentColor" cx="9" cy="10" r="1.6"/><path fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" d="M21 16l-5-5-9 9"/></symbol>
+</defs></svg>
+
+<div style="min-height:100vh;display:flex;flex-direction:column">
+<sc-if value="{{ promo }}" hint-placeholder-val="{{ true }}"><div style="background:#fff;color:#1c1a1b;border-bottom:1px solid rgba(0,0,0,.1);text-align:center;padding:10px 20px;font:500 13px/1.4 'DM Sans',sans-serif">{{ info.faixaPromo }} · <a onClick="{{ goConvenios }}" style="border-bottom:1px solid #1c1a1b">saiba mais</a></div></sc-if>
+
+<header style="background:#1c1a1b;color:#fff;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:0 clamp(16px,5vw,64px);height:72px;position:sticky;top:0;z-index:20;box-shadow:0 1px 0 rgba(255,255,255,.08)">
+  <a onClick="{{ goInicio }}" aria-label="Início" style="display:block;flex:none;min-width:0"><img src="assets/logo.png" alt="ótica digital look" style="height:72px;width:auto;max-width:52vw;object-fit:contain;object-position:left center;display:block;margin-left:-12px"></a>
+  <sc-if value="{{ wide }}" hint-placeholder-val="{{ true }}">
+  <nav aria-label="principal" style="display:flex;gap:clamp(14px,2.4vw,30px);font:500 14px 'DM Sans',sans-serif;justify-content:center">
+    <sc-for list="{{ navItems }}" as="it" hint-placeholder-count="6"><a onClick="{{ it.go }}" style="color:{{ it.color }};padding:6px 0;border-bottom:1px solid {{ it.line }}" style-hover="color:#fff;opacity:1">{{ it.label }}</a></sc-for>
+  </nav>
+  <a href="{{ waLink }}" target="_blank" rel="noopener" style="display:flex;align-items:center;gap:9px;background:#fff;color:#1c1a1b;padding:11px 18px 11px 14px;border-radius:999px;font:500 14px 'DM Sans',sans-serif;flex:none" style-hover="background:#25D366;color:#fff;opacity:1"><svg width="18" height="18" aria-hidden="true"><use href="#ic-wa"></use></svg><span>WhatsApp</span></a>
+  </sc-if>
+  <sc-if value="{{ narrow }}" hint-placeholder-val="{{ false }}">
+  <div style="display:flex;align-items:center;gap:10px;flex:none">
+    <a href="{{ waLink }}" target="_blank" rel="noopener" aria-label="WhatsApp" style="display:flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:50%;background:#25D366;color:#fff"><svg width="20" height="20" aria-hidden="true"><use href="#ic-wa"></use></svg></a>
+    <button onClick="{{ toggleMenu }}" aria-label="Menu" aria-expanded="{{ menuOpen }}" style="width:44px;height:44px;border-radius:50%;border:1px solid rgba(255,255,255,.3);background:transparent;color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px"><span style="width:18px;height:1.5px;background:#fff;display:block"></span><span style="width:18px;height:1.5px;background:#fff;display:block;opacity:{{ menuMidOpacity }}"></span><span style="width:18px;height:1.5px;background:#fff;display:block"></span></button>
+  </div>
+  </sc-if>
+</header>
+
+<sc-if value="{{ menuOpen }}" hint-placeholder-val="{{ false }}">
+<div data-menu style="position:fixed;inset:72px 0 0;z-index:19;background:#1c1a1b;color:#fff;padding:16px clamp(16px,5vw,64px) 32px;display:flex;flex-direction:column;overflow:auto">
+  <nav aria-label="principal" style="display:flex;flex-direction:column;border-top:1px solid rgba(255,255,255,.12)">
+    <sc-for list="{{ navItems }}" as="it" hint-placeholder-count="7"><a onClick="{{ it.go }}" style="display:flex;justify-content:space-between;align-items:center;padding:16px 0;border-bottom:1px solid rgba(255,255,255,.12);font:300 26px 'Outfit',sans-serif;color:{{ it.color }}"><span>{{ it.label }}</span><svg width="22" height="22" style="opacity:.5" aria-hidden="true"><use href="#ic-arrow"></use></svg></a></sc-for>
+  </nav>
+  <div style="margin-top:auto;padding-top:28px;display:flex;flex-direction:column;gap:14px">
+    <a href="{{ waLink }}" target="_blank" rel="noopener" style="display:flex;align-items:center;justify-content:center;gap:10px;background:#25D366;color:#fff;padding:16px 24px;border-radius:999px;font:500 15px 'DM Sans',sans-serif"><svg width="18" height="18" aria-hidden="true"><use href="#ic-wa"></use></svg><span>falar no WhatsApp</span></a>
+    <div style="display:flex;align-items:center;gap:8px;justify-content:center;font:400 13px 'DM Sans',sans-serif;color:rgba(255,255,255,.6)"><span style="width:8px;height:8px;border-radius:50%;background:{{ statusCor }};display:inline-block"></span>{{ statusTexto }}</div>
+  </div>
+</div>
+</sc-if>
+
+<main style="flex:1;min-width:0">
+
+<!-- ================= INÍCIO ================= -->
+<sc-if value="{{ isInicio }}" hint-placeholder-val="{{ true }}">
+<div data-screen-label="Início">
+  <section data-hero style="background:#1c1a1b;color:#fff;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:clamp(28px,4vw,48px);padding:clamp(32px,5vw,56px) clamp(20px,5vw,64px) clamp(48px,7vw,88px);align-items:center">
+    <div style="min-width:0">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:22px;flex-wrap:wrap"><span style="font:500 12px 'DM Sans',sans-serif;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.55)">ótica em {{ info.cidade }}</span><span style="width:1px;height:12px;background:rgba(255,255,255,.25)"></span><span style="display:flex;align-items:center;gap:6px;font:500 12px 'DM Sans',sans-serif;color:rgba(255,255,255,.75)"><span style="width:7px;height:7px;border-radius:50%;background:{{ statusCor }};display:inline-block"></span>{{ statusTexto }}</span></div>
+      <h1 style="font:300 clamp(38px,6vw,72px)/1.02 'Outfit',sans-serif;letter-spacing:-.02em;margin:0 0 24px;text-wrap:pretty"><span style="display:block">{{ info.heroLinha1 }}</span><span style="display:block"><span>{{ info.heroLinha2 }}</span><span style="font-weight:500;margin-left:.22em">{{ info.heroDestaque }}</span></span></h1>
+      <p style="font:400 clamp(16px,1.6vw,18px)/1.55 'DM Sans',sans-serif;color:rgba(255,255,255,.72);max-width:460px;margin:0 0 32px">{{ info.heroTexto }}</p>
+      <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:32px"><a href="{{ waLink }}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:10px;background:#fff;color:#1c1a1b;padding:15px 24px 15px 18px;border-radius:999px;font:500 15px 'DM Sans',sans-serif;white-space:nowrap" style-hover="background:#25D366;color:#fff;opacity:1"><svg width="18" height="18" aria-hidden="true"><use href="#ic-wa"></use></svg><span>falar no WhatsApp</span></a><a onClick="{{ goArmacoes }}" style="border:1px solid rgba(255,255,255,.35);color:#fff;padding:15px 24px;border-radius:999px;font:500 15px 'DM Sans',sans-serif;white-space:nowrap" style-hover="background:rgba(255,255,255,.1);border-color:#fff;opacity:1">ver armações</a></div>
+      <div style="display:flex;gap:18px 22px;flex-wrap:wrap;font:400 13px 'DM Sans',sans-serif">
+        <sc-for list="{{ selos }}" as="s" hint-placeholder-count="3"><span style="display:flex;align-items:center;gap:7px;color:rgba(255,255,255,.75);white-space:nowrap"><svg width="14" height="14" style="color:#25D366" aria-hidden="true"><use href="#ic-check"></use></svg>{{ s }}</span></sc-for>
+      </div>
+    </div>
+    <div style="position:relative;min-width:0">
+      <div style="aspect-ratio:5/4;border-radius:20px;background:linear-gradient(145deg,#3a3637,#242122);background-image:{{ fotos.hero.bg }};background-size:cover;background-position:center;display:flex;align-items:center;justify-content:center;font:400 13px 'DM Sans',sans-serif;color:rgba(255,255,255,.5)"><sc-if value="{{ fotos.hero.vazio }}" hint-placeholder-val="{{ true }}"><span style="outline:1px dashed rgba(255,255,255,.25);outline-offset:10px">foto: cliente experimentando armação</span></sc-if></div>
+      <sc-if value="{{ desktop }}" hint-placeholder-val="{{ true }}">
+      <div data-float style="position:absolute;left:-16px;bottom:28px;background:#fff;color:#1c1a1b;border-radius:16px;padding:14px 18px;display:flex;align-items:center;gap:12px;box-shadow:0 18px 40px rgba(0,0,0,.35)"><span style="width:36px;height:36px;border-radius:50%;background:#1c1a1b;color:#fff;display:flex;align-items:center;justify-content:center"><svg width="16" height="16" aria-hidden="true"><use href="#ic-check"></use></svg></span><span><span style="display:block;font:500 14px 'Outfit',sans-serif">medição digital</span><span style="display:block;font:400 12px 'DM Sans',sans-serif;color:#6b6866">precisão de 0,1 mm na centragem</span></span></div>
+      <div data-float style="position:absolute;right:-12px;top:24px;background:#25D366;color:#fff;border-radius:999px;padding:10px 16px;display:flex;align-items:center;gap:8px;font:500 13px 'DM Sans',sans-serif;box-shadow:0 12px 30px rgba(37,211,102,.35)"><svg width="16" height="16" aria-hidden="true"><use href="#ic-wa"></use></svg>resposta em minutos</div>
+      </sc-if>
+    </div>
+  </section>
+
+  <div data-marquee style="background:#fff;border-bottom:1px solid rgba(0,0,0,.08);overflow:hidden;padding:16px 0;white-space:nowrap">
+    <div data-marquee-track style="display:inline-flex;will-change:transform">
+      <sc-for list="{{ marqueeItens }}" as="m" hint-placeholder-count="12"><span style="display:inline-flex;align-items:center;gap:18px;padding:0 18px;font:500 12px 'DM Sans',sans-serif;letter-spacing:.12em;text-transform:uppercase;color:#4a4745">{{ m }}<span style="width:5px;height:5px;border-radius:50%;background:#1c1a1b;display:inline-block;opacity:.4"></span></span></sc-for>
+    </div>
+  </div>
+
+  <section data-reveal style="padding:clamp(48px,6vw,80px) clamp(20px,5vw,64px) 32px">
+    <div style="display:flex;justify-content:space-between;align-items:end;gap:16px;flex-wrap:wrap;margin-bottom:32px"><h2 style="font:300 clamp(30px,3.5vw,44px)/1.05 'Outfit',sans-serif;letter-spacing:-.02em;margin:0">o que você <span style="font-weight:500">procura</span></h2><a onClick="{{ goArmacoes }}" style="display:inline-flex;align-items:center;gap:6px;font:500 14px 'DM Sans',sans-serif;border-bottom:1px solid #1c1a1b;padding-bottom:2px">ver tudo<svg width="14" height="14" aria-hidden="true"><use href="#ic-arrow"></use></svg></a></div>
+    <div data-grid style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:20px">
+      <sc-for list="{{ cats }}" as="c" hint-placeholder-count="3">
+      <a onClick="{{ c.go }}" style="display:block;border-radius:18px;overflow:hidden;background:#f4f3f1;color:#1c1a1b;border:1px solid transparent" style-hover="border-color:rgba(0,0,0,.12);opacity:1;box-shadow:0 14px 36px rgba(0,0,0,.09);transform:translateY(-4px)">
+        <div style="aspect-ratio:4/3;background:#e6e4e0;background-image:{{ c.bg }};background-size:cover;background-position:center;display:flex;align-items:center;justify-content:center;font:400 13px 'DM Sans',sans-serif;color:#8a8785"><sc-if value="{{ c.vazio }}" hint-placeholder-val="{{ true }}">foto: {{ c.foto }}</sc-if></div>
+        <div style="padding:20px 22px 24px;display:flex;justify-content:space-between;align-items:center;gap:12px"><div style="min-width:0"><div style="font:500 21px 'Outfit',sans-serif;margin-bottom:4px">{{ c.nome }}</div><div style="font:400 14px 'DM Sans',sans-serif;color:#6b6866">{{ c.desc }}</div></div><span style="width:40px;height:40px;border-radius:50%;border:1px solid rgba(0,0,0,.15);display:flex;align-items:center;justify-content:center;flex:none"><svg width="18" height="18" aria-hidden="true"><use href="#ic-arrow"></use></svg></span></div>
+      </a>
+      </sc-for>
+    </div>
+  </section>
+
+  <sc-if value="{{ temEventos }}" hint-placeholder-val="{{ false }}">
+  <section data-reveal style="padding:clamp(32px,4vw,48px) clamp(20px,5vw,64px) 0">
+    <div style="display:flex;justify-content:space-between;align-items:end;gap:16px;flex-wrap:wrap;margin-bottom:28px"><h2 style="font:300 clamp(30px,3.5vw,44px)/1.05 'Outfit',sans-serif;letter-spacing:-.02em;margin:0">próximos <span style="font-weight:500">eventos</span></h2><a onClick="{{ goConvenios }}" style="display:inline-flex;align-items:center;gap:6px;font:500 14px 'DM Sans',sans-serif;border-bottom:1px solid #1c1a1b;padding-bottom:2px">ver todos<svg width="14" height="14" aria-hidden="true"><use href="#ic-arrow"></use></svg></a></div>
+    <div data-grid style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr));gap:20px"><sc-for list="{{ eventosHome }}" as="ev" hint-placeholder-count="2"><div style="display:grid;grid-template-columns:72px 1fr;gap:18px;background:#f4f3f1;border-radius:18px;padding:22px"><div style="text-align:center;border-right:1px solid rgba(0,0,0,.1);padding-right:16px"><div style="font:300 34px/1 'Outfit',sans-serif">{{ ev.dia }}</div><div style="font:500 12px 'DM Sans',sans-serif;letter-spacing:.08em;text-transform:uppercase;color:#8a8785;margin-top:4px">{{ ev.mes }}</div></div><div style="min-width:0"><div style="font:500 19px/1.25 'Outfit',sans-serif;margin-bottom:6px">{{ ev.titulo }}</div><div style="font:400 14px/1.5 'DM Sans',sans-serif;color:#6b6866;margin-bottom:8px">{{ ev.texto }}</div><div style="font:400 12px 'DM Sans',sans-serif;color:#8a8785;display:flex;align-items:center;gap:6px"><svg width="13" height="13" aria-hidden="true"><use href="#ic-pin"></use></svg>{{ ev.local }}</div></div></div></sc-for></div>
+  </section>
+  </sc-if>
+
+  <section data-reveal style="padding:clamp(48px,6vw,72px) clamp(20px,5vw,64px);display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,380px),1fr));gap:clamp(28px,5vw,64px);align-items:center">
+    <div style="aspect-ratio:1;border-radius:20px;background:#e6e4e0;background-image:{{ fotos.loja.bg }};background-size:cover;background-position:center;display:flex;align-items:center;justify-content:center;font:400 13px 'DM Sans',sans-serif;color:#8a8785"><sc-if value="{{ fotos.loja.vazio }}" hint-placeholder-val="{{ true }}">foto: fachada ou interior da loja</sc-if></div>
+    <div style="min-width:0">
+      <div style="font:500 12px 'DM Sans',sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#8a8785;margin-bottom:16px">sobre a ótica</div>
+      <h2 style="font:300 clamp(30px,3.5vw,44px)/1.08 'Outfit',sans-serif;letter-spacing:-.02em;margin:0 0 18px;text-wrap:pretty">{{ info.sobreTitulo }}</h2>
+      <p style="font:400 clamp(15px,1.5vw,17px)/1.6 'DM Sans',sans-serif;color:#4a4745;margin:0 0 26px">{{ info.sobreResumo }}</p>
+      <div style="display:flex;gap:32px;margin-bottom:28px;flex-wrap:wrap"><div><div data-count="{{ info.anos }}" data-prefix="+" style="font:300 38px 'Outfit',sans-serif">+{{ info.anos }}</div><div style="font:400 13px 'DM Sans',sans-serif;color:#6b6866">anos de história</div></div><div><div data-count="100" data-suffix="%" style="font:300 38px 'Outfit',sans-serif">100%</div><div style="font:400 13px 'DM Sans',sans-serif;color:#6b6866">medição digital</div></div></div>
+      <a onClick="{{ goSobre }}" style="display:inline-flex;align-items:center;gap:6px;font:500 14px 'DM Sans',sans-serif;border-bottom:1px solid #1c1a1b;padding-bottom:2px">conheça nossa história<svg width="14" height="14" aria-hidden="true"><use href="#ic-arrow"></use></svg></a>
+    </div>
+  </section>
+
+  <section data-reveal style="margin:0 clamp(16px,5vw,64px);background:#1c1a1b;color:#fff;border-radius:24px;padding:clamp(28px,4vw,56px);display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr));gap:clamp(28px,4vw,48px);align-items:center">
+    <div style="min-width:0"><div style="font:500 12px 'DM Sans',sans-serif;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.55);margin-bottom:14px">convênios e promoções</div><h2 style="font:300 clamp(28px,3vw,38px)/1.1 'Outfit',sans-serif;letter-spacing:-.02em;margin:0 0 14px">parcele em até <span style="font-weight:500">{{ info.parcelas }}x sem juros</span></h2><p style="font:400 16px/1.55 'DM Sans',sans-serif;color:rgba(255,255,255,.7);margin:0 0 22px">Aceitamos os principais convênios e cartões. Traga sua receita e monte seu óculos completo hoje.</p><a onClick="{{ goConvenios }}" style="display:inline-block;background:#fff;color:#1c1a1b;padding:14px 22px;border-radius:999px;font:500 14px 'DM Sans',sans-serif" style-hover="background:#e8e6e2;opacity:1">ver convênios</a></div>
+    <div data-grid style="display:grid;grid-template-columns:repeat(auto-fit,minmax(100px,1fr));gap:10px"><sc-for list="{{ conveniosHome }}" as="v" hint-placeholder-count="8"><div style="height:60px;border:1px solid rgba(255,255,255,.18);border-radius:12px;display:flex;align-items:center;justify-content:center;font:500 12px 'DM Sans',sans-serif;color:rgba(255,255,255,.65);text-align:center;padding:0 6px">{{ v }}</div></sc-for></div>
+  </section>
+
+  <section data-reveal style="padding:clamp(48px,6vw,80px) clamp(20px,5vw,64px) 0">
+    <div style="display:flex;justify-content:space-between;align-items:end;gap:16px;flex-wrap:wrap;margin-bottom:32px"><h2 style="font:300 clamp(30px,3.5vw,44px)/1.05 'Outfit',sans-serif;letter-spacing:-.02em;margin:0">como <span style="font-weight:500">funciona</span></h2><div style="font:400 14px 'DM Sans',sans-serif;color:#8a8785">do primeiro contato ao óculos pronto</div></div>
+    <div data-grid style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));gap:0 24px;border-top:1px solid rgba(0,0,0,.1)"><sc-for list="{{ etapas }}" as="s" hint-placeholder-count="4"><div style="padding:26px 0;border-bottom:1px solid rgba(0,0,0,.1)"><div style="display:flex;align-items:center;gap:12px;margin-bottom:16px"><span style="font:300 28px 'Outfit',sans-serif;color:#8a8785">{{ s.n }}</span><span style="flex:1;height:1px;background:rgba(0,0,0,.12)"></span></div><div style="font:500 19px 'Outfit',sans-serif;margin-bottom:8px">{{ s.titulo }}</div><div style="font:400 15px/1.55 'DM Sans',sans-serif;color:#6b6866">{{ s.texto }}</div></div></sc-for></div>
+  </section>
+
+  <section data-reveal style="padding:clamp(48px,6vw,80px) clamp(20px,5vw,64px) 0">
+    <div style="display:flex;justify-content:space-between;align-items:end;gap:16px;flex-wrap:wrap;margin-bottom:32px"><h2 style="font:300 clamp(30px,3.5vw,44px)/1.05 'Outfit',sans-serif;letter-spacing:-.02em;margin:0">quem já <span style="font-weight:500">enxerga melhor</span></h2><a href="{{ googleLink }}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:6px;font:500 14px 'DM Sans',sans-serif;border-bottom:1px solid #1c1a1b;padding-bottom:2px">avaliações no Google<svg width="14" height="14" aria-hidden="true"><use href="#ic-arrow"></use></svg></a></div>
+    <div data-grid style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:18px"><sc-for list="{{ depoimentos }}" as="d" hint-placeholder-count="3"><figure style="margin:0;background:#f4f3f1;border-radius:18px;padding:26px 24px;display:flex;flex-direction:column;gap:16px"><div style="font:300 44px/0.6 'Outfit',sans-serif;color:#c9c6c1">“</div><blockquote style="margin:0;font:400 16px/1.6 'DM Sans',sans-serif;color:#3a3837;flex:1;text-wrap:pretty">{{ d.texto }}</blockquote><figcaption style="display:flex;align-items:center;gap:12px"><span style="width:40px;height:40px;border-radius:50%;background:#1c1a1b;color:#fff;display:flex;align-items:center;justify-content:center;font:500 14px 'Outfit',sans-serif;flex:none">{{ d.inicial }}</span><span style="min-width:0"><span style="display:block;font:500 14px 'DM Sans',sans-serif">{{ d.nome }}</span><span style="display:block;font:400 12px 'DM Sans',sans-serif;color:#8a8785">{{ d.item }}</span></span></figcaption></figure></sc-for></div>
+  </section>
+
+  <section data-reveal style="padding:clamp(48px,6vw,80px) clamp(20px,5vw,64px);display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,360px),1fr));gap:clamp(28px,4vw,48px)">
+    <div style="border-radius:20px;overflow:hidden;background:#e6e4e0;min-height:280px;position:relative"><iframe title="Mapa da ótica" src="{{ mapaEmbed }}" style="position:absolute;inset:0;width:100%;height:100%;border:0" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe></div>
+    <div style="display:flex;flex-direction:column;justify-content:center;min-width:0">
+      <div style="font:500 12px 'DM Sans',sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#8a8785;margin-bottom:16px">onde estamos</div>
+      <h2 style="font:300 clamp(28px,3.2vw,40px)/1.1 'Outfit',sans-serif;letter-spacing:-.02em;margin:0 0 22px">no coração de {{ info.cidadeNome }}</h2>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:24px;font:400 15px/1.55 'DM Sans',sans-serif;color:#4a4745;margin-bottom:26px">
+        <div><div style="font:500 13px 'DM Sans',sans-serif;color:#1c1a1b;margin-bottom:6px">endereço</div>{{ info.endereco }}<br>{{ info.bairroCidade }}<br>{{ info.cep }}</div>
+        <div><div style="font:500 13px 'DM Sans',sans-serif;color:#1c1a1b;margin-bottom:6px">horário</div>seg–sex · {{ horarioSemana }}<br>sábado · {{ horarioSabado }}<br><span style="display:inline-flex;align-items:center;gap:6px;margin-top:6px;font:500 12px 'DM Sans',sans-serif;color:#1c1a1b"><span style="width:7px;height:7px;border-radius:50%;background:{{ statusCor }};display:inline-block"></span>{{ statusTexto }}</span></div>
+        <div><div style="font:500 13px 'DM Sans',sans-serif;color:#1c1a1b;margin-bottom:6px">WhatsApp</div><a href="{{ waLink }}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:6px;border-bottom:1px solid rgba(0,0,0,.2)"><svg width="14" height="14" style="color:#25D366" aria-hidden="true"><use href="#ic-wa"></use></svg><span>{{ whatsappFmt }}</span></a></div>
+        <div><div style="font:500 13px 'DM Sans',sans-serif;color:#1c1a1b;margin-bottom:6px">instagram</div><a href="{{ igLink }}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:6px;border-bottom:1px solid rgba(0,0,0,.2)"><svg width="14" height="14" aria-hidden="true"><use href="#ic-ig"></use></svg><span>@{{ info.instagram }}</span></a></div>
+      </div>
+      <div style="display:flex;gap:12px;flex-wrap:wrap"><a href="{{ mapaLink }}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:8px;border:1px solid #1c1a1b;padding:12px 20px;border-radius:999px;font:500 14px 'DM Sans',sans-serif" style-hover="background:#1c1a1b;color:#fff;opacity:1"><svg width="16" height="16" aria-hidden="true"><use href="#ic-pin"></use></svg>como chegar</a></div>
+    </div>
+  </section>
+
+  <section data-reveal style="padding:0 clamp(20px,5vw,64px) clamp(48px,7vw,88px)">
+    <div style="display:flex;justify-content:space-between;align-items:end;gap:16px;flex-wrap:wrap;margin-bottom:28px"><h2 style="font:300 clamp(28px,3.2vw,40px)/1.05 'Outfit',sans-serif;letter-spacing:-.02em;margin:0">dicas para <span style="font-weight:500">seus olhos</span></h2><a onClick="{{ goBlog }}" style="display:inline-flex;align-items:center;gap:6px;font:500 14px 'DM Sans',sans-serif;border-bottom:1px solid #1c1a1b;padding-bottom:2px">ver o blog<svg width="14" height="14" aria-hidden="true"><use href="#ic-arrow"></use></svg></a></div>
+    <div data-grid style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:20px"><sc-for list="{{ postsHome }}" as="p" hint-placeholder-count="3"><a onClick="{{ p.abrir }}" style="display:block;color:#1c1a1b" style-hover="opacity:1;transform:translateY(-4px)"><div style="aspect-ratio:16/10;border-radius:16px;background:#e6e4e0;background-image:{{ p.bg }};background-size:cover;background-position:center;margin-bottom:14px"></div><div style="font:400 12px 'DM Sans',sans-serif;color:#8a8785;margin-bottom:6px">{{ p.tag }} · {{ p.leitura }}</div><div style="font:500 19px/1.3 'Outfit',sans-serif;text-wrap:pretty">{{ p.titulo }}</div></a></sc-for></div>
+  </section>
+</div>
+</sc-if>
+
+<!-- ================= SOBRE ================= -->
+<sc-if value="{{ isSobre }}" hint-placeholder-val="{{ false }}">
+<div data-screen-label="Sobre">
+  <section data-hero style="background:#1c1a1b;color:#fff;padding:clamp(48px,7vw,96px) clamp(20px,5vw,64px)"><div>
+    <div style="font:500 12px 'DM Sans',sans-serif;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.55);margin-bottom:20px">sobre a ótica</div>
+    <h1 style="font:300 clamp(36px,5vw,64px)/1.05 'Outfit',sans-serif;letter-spacing:-.02em;margin:0;max-width:820px;text-wrap:pretty">{{ info.sobreTitulo }}</h1>
+  </div></section>
+  <section data-reveal style="padding:clamp(40px,6vw,80px) clamp(20px,5vw,64px);display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr));gap:clamp(28px,5vw,64px);align-items:start">
+    <div style="aspect-ratio:4/5;border-radius:20px;background:#e6e4e0;background-image:{{ fotos.equipe.bg }};background-size:cover;background-position:center;display:flex;align-items:center;justify-content:center;font:400 13px 'DM Sans',sans-serif;color:#8a8785"><sc-if value="{{ fotos.equipe.vazio }}" hint-placeholder-val="{{ true }}">foto: fundadores / equipe na loja</sc-if></div>
+    <div style="min-width:0">
+      <h2 style="font:300 clamp(28px,3.2vw,40px)/1.1 'Outfit',sans-serif;letter-spacing:-.02em;margin:0 0 18px">nossa história</h2>
+      <p style="font:400 clamp(15px,1.5vw,17px)/1.65 'DM Sans',sans-serif;color:#4a4745;margin:0 0 32px;white-space:pre-line">{{ info.sobreTexto }}</p>
+      <div style="display:grid;gap:0;border-top:1px solid rgba(0,0,0,.1)"><sc-for list="{{ marcos }}" as="m" hint-placeholder-count="3"><div style="display:grid;grid-template-columns:64px 1fr;gap:16px;padding:16px 0;border-bottom:1px solid rgba(0,0,0,.1)"><div style="font:400 19px 'Outfit',sans-serif">{{ m.ano }}</div><div style="font:400 15px/1.5 'DM Sans',sans-serif;color:#4a4745">{{ m.texto }}</div></div></sc-for></div>
+    </div>
+  </section>
+  <section data-reveal style="padding:0 clamp(20px,5vw,64px) clamp(40px,6vw,80px)">
+    <h2 style="font:300 clamp(28px,3.2vw,40px)/1.1 'Outfit',sans-serif;letter-spacing:-.02em;margin:0 0 28px">por que a <span style="font-weight:500">digital look</span></h2>
+    <div data-grid style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));gap:16px"><sc-for list="{{ diferenciais }}" as="d" hint-placeholder-count="4"><div style="background:#f4f3f1;border-radius:18px;padding:26px 24px"><div style="font:300 34px 'Outfit',sans-serif;color:#8a8785;margin-bottom:24px">{{ d.n }}</div><div style="font:500 19px 'Outfit',sans-serif;margin-bottom:8px">{{ d.titulo }}</div><div style="font:400 14px/1.55 'DM Sans',sans-serif;color:#6b6866">{{ d.texto }}</div></div></sc-for></div>
+  </section>
+  <section data-reveal style="padding:0 clamp(20px,5vw,64px) clamp(40px,6vw,80px)">
+    <h2 style="font:300 clamp(28px,3.2vw,40px)/1.1 'Outfit',sans-serif;letter-spacing:-.02em;margin:0 0 28px">quem atende você</h2>
+    <div data-grid style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr));gap:20px"><sc-for list="{{ equipe }}" as="e" hint-placeholder-count="3"><div><div style="aspect-ratio:1;border-radius:18px;background:#e6e4e0;background-image:{{ e.bg }};background-size:cover;background-position:center;margin-bottom:12px;display:flex;align-items:center;justify-content:center;font:400 13px 'DM Sans',sans-serif;color:#8a8785"><sc-if value="{{ e.vazio }}" hint-placeholder-val="{{ true }}">foto</sc-if></div><div style="font:500 18px 'Outfit',sans-serif">{{ e.nome }}</div><div style="font:400 14px 'DM Sans',sans-serif;color:#6b6866">{{ e.cargo }}</div></div></sc-for></div>
+  </section>
+  <sc-if value="{{ temGaleria }}" hint-placeholder-val="{{ false }}">
+  <section data-reveal style="padding:0 clamp(20px,5vw,64px) clamp(40px,6vw,80px)">
+    <h2 style="font:300 clamp(28px,3.2vw,40px)/1.1 'Outfit',sans-serif;letter-spacing:-.02em;margin:0 0 28px">a <span style="font-weight:500">loja</span></h2>
+    <div data-grid style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,220px),1fr));gap:14px"><sc-for list="{{ galeria }}" as="g" hint-placeholder-count="4"><figure style="margin:0;border-radius:16px;overflow:hidden;background:#e6e4e0;position:relative;aspect-ratio:1"><img src="{{ g.img }}" alt="{{ g.legenda }}" loading="lazy" style="width:100%;height:100%;object-fit:cover;display:block"><sc-if value="{{ g.legenda }}" hint-placeholder-val="{{ false }}"><figcaption style="position:absolute;left:0;right:0;bottom:0;padding:28px 14px 12px;background:linear-gradient(transparent,rgba(0,0,0,.6));color:#fff;font:500 13px 'DM Sans',sans-serif">{{ g.legenda }}</figcaption></sc-if></figure></sc-for></div>
+  </section>
+  </sc-if>
+  <section data-reveal style="margin:0 clamp(16px,5vw,64px) clamp(48px,7vw,88px);background:#f4f3f1;border-radius:24px;padding:clamp(24px,4vw,48px);display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap">
+    <div style="min-width:0"><div style="font:300 clamp(24px,3vw,34px)/1.1 'Outfit',sans-serif;letter-spacing:-.02em;margin-bottom:8px">passe na loja ou chame a gente.</div><div style="font:400 15px 'DM Sans',sans-serif;color:#6b6866">{{ info.endereco }} · {{ info.bairroCidade }}</div></div>
+    <a href="{{ waLink }}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:10px;background:#1c1a1b;color:#fff;padding:14px 22px 14px 18px;border-radius:999px;font:500 14px 'DM Sans',sans-serif;white-space:nowrap" style-hover="background:#25D366;opacity:1"><svg width="18" height="18" aria-hidden="true"><use href="#ic-wa"></use></svg><span>falar no WhatsApp</span></a>
+  </section>
+</div>
+</sc-if>
+
+<!-- ================= ARMAÇÕES ================= -->
+<sc-if value="{{ isArmacoes }}" hint-placeholder-val="{{ false }}">
+<div data-screen-label="Armações">
+  <section data-hero style="background:#1c1a1b;color:#fff;padding:clamp(48px,7vw,96px) clamp(20px,5vw,64px)"><div>
+    <div style="font:500 12px 'DM Sans',sans-serif;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.55);margin-bottom:20px">armações e óculos de sol</div>
+    <h1 style="font:300 clamp(36px,5vw,64px)/1.05 'Outfit',sans-serif;letter-spacing:-.02em;margin:0 0 18px;max-width:820px;text-wrap:pretty">um modelo para cada <span style="font-weight:500">rosto e rotina.</span></h1>
+    <p style="font:400 clamp(15px,1.5vw,17px)/1.55 'DM Sans',sans-serif;color:rgba(255,255,255,.7);max-width:560px;margin:0">Uma seleção do que temos na loja. Os preços variam conforme as lentes — fale com a gente para montar o seu óculos completo.</p>
+  </div></section>
+  <section data-reveal style="padding:clamp(28px,4vw,48px) clamp(20px,5vw,64px) clamp(48px,7vw,88px)">
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:28px">
+      <div role="group" aria-label="Filtrar" style="display:flex;gap:8px;flex-wrap:wrap"><sc-for list="{{ filtros }}" as="f" hint-placeholder-count="5"><button onClick="{{ f.set }}" aria-pressed="{{ f.ativo }}" style="border:1px solid #1c1a1b;background:{{ f.bg }};color:{{ f.fg }};padding:10px 16px;border-radius:999px;font:500 13px 'DM Sans',sans-serif;min-height:40px" style-hover="background:#1c1a1b;color:#fff">{{ f.label }}</button></sc-for></div>
+      <div style="font:400 13px 'DM Sans',sans-serif;color:#8a8785">{{ totalProdutos }}</div>
+    </div>
+    <div data-grid-produtos style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,230px),1fr));gap:20px">
+      <sc-for list="{{ produtos }}" as="p" hint-placeholder-count="8">
+      <div style="display:flex;flex-direction:column;min-width:0">
+        <div style="aspect-ratio:4/3;border-radius:16px;background:#f0efec;background-image:{{ p.bg }};background-size:cover;background-position:center;display:flex;align-items:center;justify-content:center;font:400 12px 'DM Sans',sans-serif;color:#8a8785;margin-bottom:12px;position:relative"><sc-if value="{{ p.vazio }}" hint-placeholder-val="{{ true }}">foto: {{ p.nome }}</sc-if><span style="position:absolute;top:12px;left:12px;background:#fff;border-radius:999px;padding:4px 10px;font:500 11px 'DM Sans',sans-serif;color:#1c1a1b">{{ p.catLabel }}</span><sc-if value="{{ p.destaque }}" hint-placeholder-val="{{ false }}"><span style="position:absolute;top:12px;right:12px;background:#1c1a1b;color:#fff;border-radius:999px;padding:4px 10px;font:500 11px 'DM Sans',sans-serif">{{ p.selo }}</span></sc-if></div>
+        <div style="display:flex;justify-content:space-between;gap:10px;font:400 12px 'DM Sans',sans-serif;color:#8a8785;margin-bottom:4px"><span>{{ p.marca }}</span><sc-if value="{{ p.preco }}" hint-placeholder-val="{{ false }}"><span style="color:#1c1a1b;font-weight:500">{{ p.preco }}</span></sc-if></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap"><div style="font:500 18px 'Outfit',sans-serif">{{ p.nome }}</div><a href="{{ p.wa }}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:6px;font:500 13px 'DM Sans',sans-serif;border:1px solid rgba(0,0,0,.15);padding:7px 12px;border-radius:999px;white-space:nowrap" style-hover="background:#25D366;border-color:#25D366;color:#fff;opacity:1"><svg width="14" height="14" aria-hidden="true"><use href="#ic-wa"></use></svg><span>consultar</span></a></div>
+      </div>
+      </sc-for>
+    </div>
+  </section>
+  <section data-reveal style="margin:0 clamp(20px,5vw,64px) clamp(48px,7vw,88px);border-top:1px solid rgba(0,0,0,.1);padding-top:36px">
+    <div style="font:500 12px 'DM Sans',sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#8a8785;margin-bottom:18px">marcas que trabalhamos</div>
+    <div data-grid style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px"><sc-for list="{{ marcas }}" as="m" hint-placeholder-count="6"><div style="height:60px;border:1px solid rgba(0,0,0,.12);border-radius:12px;display:flex;align-items:center;justify-content:center;font:500 13px 'DM Sans',sans-serif;color:#6b6866;text-align:center;padding:0 8px">{{ m }}</div></sc-for></div>
+  </section>
+</div>
+</sc-if>
+
+<!-- ================= LENTES DE CONTATO ================= -->
+<sc-if value="{{ isLentes }}" hint-placeholder-val="{{ false }}">
+<div data-screen-label="Lentes de contato">
+  <section data-hero style="background:#1c1a1b;color:#fff;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,380px),1fr));gap:clamp(28px,4vw,48px);padding:clamp(48px,7vw,96px) clamp(20px,5vw,64px);align-items:center">
+    <div style="min-width:0"><div style="font:500 12px 'DM Sans',sans-serif;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.55);margin-bottom:20px">lentes de contato</div><h1 style="font:300 clamp(36px,5vw,64px)/1.05 'Outfit',sans-serif;letter-spacing:-.02em;margin:0 0 18px;text-wrap:pretty">liberdade para ver <span style="font-weight:500">sem armação.</span></h1><p style="font:400 clamp(15px,1.5vw,17px)/1.55 'DM Sans',sans-serif;color:rgba(255,255,255,.7);max-width:520px;margin:0 0 28px">Diárias, mensais, tóricas e multifocais das principais marcas. Ensinamos a colocar, tirar e cuidar — na primeira compra, sem pressa.</p><a href="{{ waReceita }}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:10px;background:#fff;color:#1c1a1b;padding:15px 24px 15px 18px;border-radius:999px;font:500 15px 'DM Sans',sans-serif;white-space:nowrap" style-hover="background:#25D366;color:#fff;opacity:1"><svg width="18" height="18" aria-hidden="true"><use href="#ic-wa"></use></svg><span>enviar minha receita</span></a></div>
+    <div style="aspect-ratio:5/4;border-radius:20px;background:linear-gradient(145deg,#3a3637,#242122);background-image:{{ fotos.lentes.bg }};background-size:cover;background-position:center;display:flex;align-items:center;justify-content:center;font:400 13px 'DM Sans',sans-serif;color:rgba(255,255,255,.5)"><sc-if value="{{ fotos.lentes.vazio }}" hint-placeholder-val="{{ true }}"><span style="outline:1px dashed rgba(255,255,255,.25);outline-offset:10px">foto: lente de contato / estojo</span></sc-if></div>
+  </section>
+  <section data-reveal style="padding:clamp(40px,6vw,80px) clamp(20px,5vw,64px) 0">
+    <h2 style="font:300 clamp(28px,3.2vw,40px)/1.1 'Outfit',sans-serif;letter-spacing:-.02em;margin:0 0 28px">tipos de lente</h2>
+    <div data-grid style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));gap:16px"><sc-for list="{{ tiposLente }}" as="t" hint-placeholder-count="4"><div style="background:#f4f3f1;border-radius:18px;padding:26px 24px"><div style="font:500 21px 'Outfit',sans-serif;margin-bottom:10px">{{ t.nome }}</div><div style="font:400 15px/1.55 'DM Sans',sans-serif;color:#6b6866;margin-bottom:20px">{{ t.texto }}</div><div style="font:500 12px 'DM Sans',sans-serif;letter-spacing:.08em;text-transform:uppercase;color:#8a8785">{{ t.ideal }}</div></div></sc-for></div>
+  </section>
+  <section data-reveal style="padding:clamp(40px,6vw,80px) clamp(20px,5vw,64px)">
+    <h2 style="font:300 clamp(28px,3.2vw,40px)/1.1 'Outfit',sans-serif;letter-spacing:-.02em;margin:0 0 28px">como funciona</h2>
+    <div data-grid style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:0 24px;border-top:1px solid rgba(0,0,0,.1)"><sc-for list="{{ passos }}" as="s" hint-placeholder-count="3"><div style="padding:26px 0;border-bottom:1px solid rgba(0,0,0,.1)"><div style="font:300 30px 'Outfit',sans-serif;color:#8a8785;margin-bottom:14px">{{ s.n }}</div><div style="font:500 19px 'Outfit',sans-serif;margin-bottom:8px">{{ s.titulo }}</div><div style="font:400 15px/1.55 'DM Sans',sans-serif;color:#6b6866">{{ s.texto }}</div></div></sc-for></div>
+  </section>
+  <section data-reveal style="padding:0 clamp(20px,5vw,64px) clamp(48px,7vw,88px);display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:clamp(24px,4vw,48px);align-items:start">
+    <h2 style="font:300 clamp(28px,3.2vw,40px)/1.1 'Outfit',sans-serif;letter-spacing:-.02em;margin:0">dúvidas <span style="font-weight:500">frequentes</span></h2>
+    <div style="border-top:1px solid rgba(0,0,0,.1)"><sc-for list="{{ faq }}" as="q" hint-placeholder-count="3"><div style="border-bottom:1px solid rgba(0,0,0,.1)"><button onClick="{{ q.toggle }}" aria-expanded="{{ q.aberta }}" style="width:100%;display:flex;justify-content:space-between;align-items:center;gap:16px;text-align:left;background:none;border:0;padding:18px 0;font:500 17px/1.3 'Outfit',sans-serif;color:#1c1a1b"><span>{{ q.p }}</span><span style="width:32px;height:32px;border-radius:50%;border:1px solid rgba(0,0,0,.15);display:flex;align-items:center;justify-content:center;flex:none;font:300 20px 'Outfit',sans-serif;transform:rotate({{ q.rot }});transition:transform .3s">+</span></button><sc-if value="{{ q.aberta }}" hint-placeholder-val="{{ false }}"><div style="font:400 15px/1.6 'DM Sans',sans-serif;color:#6b6866;padding:0 48px 20px 0">{{ q.r }}</div></sc-if></div></sc-for></div>
+  </section>
+</div>
+</sc-if>
+
+<!-- ================= CONVÊNIOS / PROMOÇÕES / EVENTOS ================= -->
+<sc-if value="{{ isConvenios }}" hint-placeholder-val="{{ false }}">
+<div data-screen-label="Convênios">
+  <section data-hero style="background:#1c1a1b;color:#fff;padding:clamp(48px,7vw,96px) clamp(20px,5vw,64px)"><div>
+    <div style="font:500 12px 'DM Sans',sans-serif;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.55);margin-bottom:20px">convênios, promoções e eventos</div>
+    <h1 style="font:300 clamp(36px,5vw,64px)/1.05 'Outfit',sans-serif;letter-spacing:-.02em;margin:0;max-width:820px;text-wrap:pretty">seu óculos completo, <span style="font-weight:500">do jeito que cabe no bolso.</span></h1>
+  </div></section>
+  <section data-reveal style="padding:clamp(40px,6vw,80px) clamp(20px,5vw,64px) 0">
+    <h2 style="font:300 clamp(28px,3.2vw,40px)/1.1 'Outfit',sans-serif;letter-spacing:-.02em;margin:0 0 24px">promoções <span style="font-weight:500">ativas</span></h2>
+    <div data-grid style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:20px">
+      <sc-for list="{{ promosAtivas }}" as="pr" hint-placeholder-count="2"><div style="background:#1c1a1b;color:#fff;border-radius:24px;overflow:hidden;display:flex;flex-direction:column;min-height:240px"><sc-if value="{{ pr.temImg }}" hint-placeholder-val="{{ false }}"><div style="aspect-ratio:16/8;background-image:{{ pr.bg }};background-size:cover;background-position:center"></div></sc-if><div style="padding:clamp(24px,3vw,36px);display:flex;flex-direction:column;justify-content:space-between;flex:1;gap:20px"><div style="font:500 12px 'DM Sans',sans-serif;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.5)">{{ pr.tag }}</div><div><div style="font:300 clamp(26px,3vw,36px)/1.1 'Outfit',sans-serif;letter-spacing:-.02em;margin:0 0 10px;text-wrap:pretty">{{ pr.titulo }}</div><div style="font:400 15px/1.55 'DM Sans',sans-serif;color:rgba(255,255,255,.65)">{{ pr.texto }}</div></div></div></div></sc-for>
+    </div>
+    <sc-if value="{{ semPromos }}" hint-placeholder-val="{{ false }}"><div style="font:400 15px 'DM Sans',sans-serif;color:#8a8785;padding:12px 0">Nenhuma promoção ativa no momento. Siga nosso Instagram para ficar por dentro.</div></sc-if>
+  </section>
+  <section data-reveal style="padding:clamp(40px,6vw,80px) clamp(20px,5vw,64px) 0">
+    <h2 style="font:300 clamp(28px,3.2vw,40px)/1.1 'Outfit',sans-serif;letter-spacing:-.02em;margin:0 0 24px">eventos</h2>
+    <sc-if value="{{ temEventos }}" hint-placeholder-val="{{ false }}">
+    <div data-grid style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:20px"><sc-for list="{{ eventos }}" as="ev" hint-placeholder-count="2"><div style="background:#f4f3f1;border-radius:18px;overflow:hidden;display:flex;flex-direction:column"><sc-if value="{{ ev.temImg }}" hint-placeholder-val="{{ false }}"><div style="aspect-ratio:16/9;background-image:{{ ev.bg }};background-size:cover;background-position:center"></div></sc-if><div style="padding:22px;display:grid;grid-template-columns:64px 1fr;gap:16px"><div style="text-align:center;border-right:1px solid rgba(0,0,0,.1);padding-right:14px"><div style="font:300 32px/1 'Outfit',sans-serif">{{ ev.dia }}</div><div style="font:500 12px 'DM Sans',sans-serif;letter-spacing:.08em;text-transform:uppercase;color:#8a8785;margin-top:4px">{{ ev.mes }}</div></div><div style="min-width:0"><div style="font:500 19px/1.25 'Outfit',sans-serif;margin-bottom:6px">{{ ev.titulo }}</div><div style="font:400 14px/1.5 'DM Sans',sans-serif;color:#6b6866;margin-bottom:8px">{{ ev.texto }}</div><div style="font:400 12px 'DM Sans',sans-serif;color:#8a8785;display:flex;align-items:center;gap:6px;flex-wrap:wrap"><svg width="13" height="13" aria-hidden="true"><use href="#ic-pin"></use></svg>{{ ev.local }} · {{ ev.hora }}</div></div></div></div></sc-for></div>
+    </sc-if>
+    <sc-if value="{{ semEventos }}" hint-placeholder-val="{{ true }}"><div style="font:400 15px 'DM Sans',sans-serif;color:#8a8785;padding:12px 0">Nenhum evento agendado no momento.</div></sc-if>
+  </section>
+  <section data-reveal style="padding:clamp(40px,6vw,80px) clamp(20px,5vw,64px)">
+    <h2 style="font:300 clamp(28px,3.2vw,40px)/1.1 'Outfit',sans-serif;letter-spacing:-.02em;margin:0 0 12px">convênios aceitos</h2>
+    <p style="font:400 16px/1.55 'DM Sans',sans-serif;color:#6b6866;margin:0 0 28px;max-width:560px">Não achou o seu? Chame no WhatsApp — a lista cresce com frequência e podemos consultar para você.</p>
+    <div data-grid style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px"><sc-for list="{{ convenios }}" as="v" hint-placeholder-count="10"><div style="height:68px;border:1px solid rgba(0,0,0,.12);border-radius:12px;display:flex;align-items:center;justify-content:center;font:500 13px 'DM Sans',sans-serif;color:#4a4745;text-align:center;padding:0 10px">{{ v }}</div></sc-for></div>
+  </section>
+  <section data-reveal style="padding:0 clamp(20px,5vw,64px) clamp(48px,7vw,88px);display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:clamp(24px,4vw,48px);align-items:start">
+    <div style="min-width:0"><h2 style="font:300 clamp(28px,3.2vw,40px)/1.1 'Outfit',sans-serif;letter-spacing:-.02em;margin:0 0 18px">formas de pagamento</h2><div style="display:flex;flex-direction:column;gap:12px;font:400 16px/1.5 'DM Sans',sans-serif;color:#4a4745"><sc-for list="{{ pagamentos }}" as="pg" hint-placeholder-count="4"><div style="display:flex;align-items:center;gap:12px"><svg width="16" height="16" style="color:#1c1a1b;flex:none" aria-hidden="true"><use href="#ic-check"></use></svg>{{ pg }}</div></sc-for></div></div>
+    <div style="background:#f4f3f1;border-radius:20px;padding:clamp(24px,3vw,32px)"><div style="font:500 20px 'Outfit',sans-serif;margin-bottom:10px">precisa de orçamento?</div><div style="font:400 15px/1.55 'DM Sans',sans-serif;color:#6b6866;margin-bottom:20px">Envie a foto da sua receita e a gente responde com opções de lente e valores no mesmo dia.</div><a href="{{ waReceita }}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:10px;background:#1c1a1b;color:#fff;padding:14px 22px 14px 18px;border-radius:999px;font:500 14px 'DM Sans',sans-serif" style-hover="background:#25D366;opacity:1"><svg width="18" height="18" aria-hidden="true"><use href="#ic-wa"></use></svg><span>enviar receita no WhatsApp</span></a></div>
+  </section>
+</div>
+</sc-if>
+
+<!-- ================= BLOG ================= -->
+<sc-if value="{{ isBlog }}" hint-placeholder-val="{{ false }}">
+<div data-screen-label="Blog">
+  <section data-hero style="padding:clamp(40px,6vw,80px) clamp(20px,5vw,64px) 32px"><div>
+    <div style="font:500 12px 'DM Sans',sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#8a8785;margin-bottom:20px">blog · dicas</div>
+    <h1 style="font:300 clamp(36px,5vw,64px)/1.05 'Outfit',sans-serif;letter-spacing:-.02em;margin:0;text-wrap:pretty">cuidar dos olhos <span style="font-weight:500">todo dia.</span></h1>
+  </div></section>
+  <sc-if value="{{ temDestaque }}" hint-placeholder-val="{{ true }}">
+  <section data-reveal style="padding:0 clamp(20px,5vw,64px) clamp(32px,5vw,64px)">
+    <a onClick="{{ destaque.abrir }}" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,360px),1fr));gap:clamp(24px,4vw,40px);align-items:center;color:#1c1a1b"><div style="aspect-ratio:16/10;border-radius:20px;background:#e6e4e0;background-image:{{ destaque.bg }};background-size:cover;background-position:center;display:flex;align-items:center;justify-content:center;font:400 13px 'DM Sans',sans-serif;color:#8a8785"><sc-if value="{{ destaque.vazio }}" hint-placeholder-val="{{ true }}">foto do artigo</sc-if></div><div style="min-width:0"><div style="font:400 13px 'DM Sans',sans-serif;color:#8a8785;margin-bottom:12px">{{ destaque.tag }} · {{ destaque.data }} · {{ destaque.leitura }}</div><h2 style="font:300 clamp(26px,3.2vw,40px)/1.15 'Outfit',sans-serif;letter-spacing:-.02em;margin:0 0 14px;text-wrap:pretty">{{ destaque.titulo }}</h2><p style="font:400 16px/1.6 'DM Sans',sans-serif;color:#4a4745;margin:0 0 18px;white-space:pre-line">{{ destaque.resumo }}</p><span style="display:inline-flex;align-items:center;gap:6px;font:500 14px 'DM Sans',sans-serif;border-bottom:1px solid #1c1a1b;padding-bottom:2px">ler artigo<svg width="14" height="14" aria-hidden="true"><use href="#ic-arrow"></use></svg></span></div></a>
+  </section>
+  </sc-if>
+  <section data-reveal style="padding:0 clamp(20px,5vw,64px) clamp(48px,7vw,88px)">
+    <div style="border-top:1px solid rgba(0,0,0,.1)"><sc-for list="{{ posts }}" as="p" hint-placeholder-count="4"><a onClick="{{ p.abrir }}" style="display:flex;flex-wrap:wrap;gap:8px 24px;align-items:center;padding:20px 0;border-bottom:1px solid rgba(0,0,0,.1);color:#1c1a1b" style-hover="opacity:1;padding-left:8px"><div style="font:400 13px/1.5 'DM Sans',sans-serif;color:#8a8785;flex:0 0 130px">{{ p.tag }}<br>{{ p.data }}</div><div style="flex:1 1 240px;min-width:0"><div style="font:400 clamp(18px,2vw,24px)/1.3 'Outfit',sans-serif;text-wrap:pretty">{{ p.titulo }}</div><sc-if value="{{ p.temResumo }}" hint-placeholder-val="{{ false }}"><div style="font:400 14px/1.55 'DM Sans',sans-serif;color:#6b6866;margin-top:6px;white-space:pre-line">{{ p.resumo }}</div></sc-if></div><svg width="22" height="22" style="flex:none" aria-hidden="true"><use href="#ic-arrow"></use></svg></a></sc-for></div>
+  </section>
+</div>
+</sc-if>
+
+<!-- ================= ARTIGO ================= -->
+<sc-if value="{{ isPost }}" hint-placeholder-val="{{ false }}">
+<div data-screen-label="Artigo">
+  <section data-hero style="padding:clamp(32px,5vw,64px) clamp(20px,5vw,64px) 0"><div style="max-width:820px">
+    <a onClick="{{ goBlog }}" style="display:inline-flex;align-items:center;gap:6px;font:500 13px 'DM Sans',sans-serif;color:#6b6866;margin-bottom:24px"><svg width="14" height="14" style="transform:rotate(180deg)" aria-hidden="true"><use href="#ic-arrow"></use></svg>voltar ao blog</a>
+    <div style="font:400 13px 'DM Sans',sans-serif;color:#8a8785;margin-bottom:14px">{{ artigo.tag }} · {{ artigo.data }} · {{ artigo.leitura }}</div>
+    <h1 style="font:300 clamp(32px,4.5vw,56px)/1.08 'Outfit',sans-serif;letter-spacing:-.02em;margin:0 0 20px;text-wrap:pretty">{{ artigo.titulo }}</h1>
+    <p style="font:400 clamp(16px,1.6vw,19px)/1.6 'DM Sans',sans-serif;color:#4a4745;margin:0 0 28px;white-space:pre-line">{{ artigo.resumo }}</p>
+  </div></section>
+  <section data-reveal style="padding:0 clamp(20px,5vw,64px) clamp(48px,7vw,88px)">
+    <div style="max-width:820px">
+      <sc-if value="{{ artigo.temImg }}" hint-placeholder-val="{{ false }}"><div style="aspect-ratio:16/9;border-radius:20px;background:#e6e4e0;background-image:{{ artigo.bg }};background-size:cover;background-position:center;margin-bottom:32px"></div></sc-if>
+      <div style="font:400 clamp(16px,1.5vw,18px)/1.75 'DM Sans',sans-serif;color:#3a3837;white-space:pre-line;text-wrap:pretty">{{ artigo.conteudo }}</div>
+      <div style="margin-top:40px;background:#f4f3f1;border-radius:20px;padding:clamp(22px,3vw,32px);display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap"><div style="min-width:0"><div style="font:500 20px 'Outfit',sans-serif;margin-bottom:4px">ficou com dúvida?</div><div style="font:400 14px 'DM Sans',sans-serif;color:#6b6866">Fale com a gente — respondemos em horário comercial.</div></div><a href="{{ waLink }}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:10px;background:#1c1a1b;color:#fff;padding:14px 22px 14px 18px;border-radius:999px;font:500 14px 'DM Sans',sans-serif;white-space:nowrap" style-hover="background:#25D366;opacity:1"><svg width="18" height="18" aria-hidden="true"><use href="#ic-wa"></use></svg><span>falar no WhatsApp</span></a></div>
+    </div>
+  </section>
+</div>
+</sc-if>
+
+<!-- ================= CONTATO ================= -->
+<sc-if value="{{ isContato }}" hint-placeholder-val="{{ false }}">
+<div data-screen-label="Contato">
+  <section data-hero style="padding:clamp(40px,6vw,80px) clamp(20px,5vw,64px) clamp(48px,7vw,88px);display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr));gap:clamp(32px,5vw,72px);align-items:start">
+    <div style="min-width:0">
+      <div style="font:500 12px 'DM Sans',sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#8a8785;margin-bottom:20px">contato</div>
+      <h1 style="font:300 clamp(36px,5vw,60px)/1.05 'Outfit',sans-serif;letter-spacing:-.02em;margin:0 0 18px;text-wrap:pretty">vamos <span style="font-weight:500">conversar.</span></h1>
+      <p style="font:400 clamp(15px,1.5vw,17px)/1.6 'DM Sans',sans-serif;color:#4a4745;margin:0 0 24px;max-width:460px">Respondemos no WhatsApp em horário comercial. Se preferir, preencha o formulário e abrimos a conversa com sua mensagem pronta.</p>
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:28px;font:500 13px 'DM Sans',sans-serif;color:#1c1a1b"><span style="width:8px;height:8px;border-radius:50%;background:{{ statusCor }};display:inline-block"></span>{{ statusTexto }}</div>
+      <sc-if value="{{ temFechamentos }}" hint-placeholder-val="{{ false }}"><div style="background:#f4f3f1;border-radius:14px;padding:14px 16px;margin:-12px 0 28px;font:400 13px/1.6 'DM Sans',sans-serif;color:#4a4745"><div style="font:500 12px 'DM Sans',sans-serif;letter-spacing:.1em;text-transform:uppercase;color:#8a8785;margin-bottom:6px">próximos fechamentos</div><sc-for list="{{ fechamentosProx }}" as="fc" hint-placeholder-count="1"><div style="display:flex;gap:10px"><span style="font-weight:500;color:#1c1a1b;flex:none">{{ fc.dataFmt }}</span><span>{{ fc.motivo }}</span></div></sc-for></div></sc-if>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:24px;font:400 15px/1.55 'DM Sans',sans-serif;color:#4a4745;margin-bottom:32px">
+        <div><div style="font:500 13px 'DM Sans',sans-serif;color:#1c1a1b;margin-bottom:6px">endereço</div>{{ info.endereco }}<br>{{ info.bairroCidade }}<br>{{ info.cep }}</div>
+        <div><div style="font:500 13px 'DM Sans',sans-serif;color:#1c1a1b;margin-bottom:6px">horário</div>seg–sex · {{ horarioSemana }}<br>sábado · {{ horarioSabado }}</div>
+        <div><div style="font:500 13px 'DM Sans',sans-serif;color:#1c1a1b;margin-bottom:6px">WhatsApp</div><a href="{{ waLink }}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:6px;border-bottom:1px solid rgba(0,0,0,.2)"><svg width="14" height="14" style="color:#25D366" aria-hidden="true"><use href="#ic-wa"></use></svg><span>{{ whatsappFmt }}</span></a></div>
+        <div><div style="font:500 13px 'DM Sans',sans-serif;color:#1c1a1b;margin-bottom:6px">instagram</div><a href="{{ igLink }}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:6px;border-bottom:1px solid rgba(0,0,0,.2)"><svg width="14" height="14" aria-hidden="true"><use href="#ic-ig"></use></svg><span>@{{ info.instagram }}</span></a></div>
+      </div>
+      <div style="border-radius:20px;overflow:hidden;background:#e6e4e0;aspect-ratio:16/9;position:relative"><iframe title="Mapa da ótica" src="{{ mapaEmbed }}" style="position:absolute;inset:0;width:100%;height:100%;border:0" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe></div>
+    </div>
+    <form onSubmit="{{ enviar }}" style="background:#f4f3f1;border-radius:24px;padding:clamp(20px,3vw,40px);display:flex;flex-direction:column;gap:14px;min-width:0">
+      <label style="display:flex;flex-direction:column;gap:6px;font:500 13px 'DM Sans',sans-serif">seu nome<input value="{{ form.nome }}" onChange="{{ setNome }}" placeholder="Maria Silva" required="{{ true }}" style="border:1px solid rgba(0,0,0,.14);border-radius:12px;padding:14px 16px;font:400 16px 'DM Sans',sans-serif;background:#fff;outline:none;min-height:48px;width:100%" style-focus="border-color:#1c1a1b"></label>
+      <label style="display:flex;flex-direction:column;gap:6px;font:500 13px 'DM Sans',sans-serif">o que você procura<select value="{{ form.assunto }}" onChange="{{ setAssunto }}" style="border:1px solid rgba(0,0,0,.14);border-radius:12px;padding:14px 16px;font:400 16px 'DM Sans',sans-serif;background:#fff;outline:none;min-height:48px;width:100%" style-focus="border-color:#1c1a1b"><option>Óculos de grau</option><option>Óculos de sol</option><option>Lentes de contato</option><option>Orçamento com receita</option><option>Outro assunto</option></select></label>
+      <label style="display:flex;flex-direction:column;gap:6px;font:500 13px 'DM Sans',sans-serif">mensagem<textarea value="{{ form.msg }}" onChange="{{ setMsg }}" rows="5" placeholder="Conte o que precisa. Se tiver receita, pode enviar a foto depois no WhatsApp." style="border:1px solid rgba(0,0,0,.14);border-radius:12px;padding:14px 16px;font:400 16px/1.5 'DM Sans',sans-serif;background:#fff;outline:none;resize:vertical;width:100%" style-focus="border-color:#1c1a1b"></textarea></label>
+      <button type="submit" style="margin-top:6px;display:flex;align-items:center;justify-content:center;gap:10px;background:#1c1a1b;color:#fff;border:0;padding:16px 24px;border-radius:999px;font:500 15px 'DM Sans',sans-serif;min-height:52px" style-hover="background:#25D366"><svg width="18" height="18" aria-hidden="true"><use href="#ic-wa"></use></svg><span>abrir conversa no WhatsApp</span></button>
+      <div style="font:400 12px/1.5 'DM Sans',sans-serif;color:#8a8785;text-align:center">Você será redirecionado para o WhatsApp com a mensagem preenchida.</div>
+    </form>
+  </section>
+</div>
+</sc-if>
+
+<!-- ================= ÁREA DO PROPRIETÁRIO ================= -->
+<sc-if value="{{ isAdmin }}" hint-placeholder-val="{{ false }}">
+<div data-screen-label="Admin" data-admin style="background:#f4f3f1;min-height:70vh">
+  <sc-if value="{{ adminDeslogado }}" hint-placeholder-val="{{ true }}">
+  <section style="padding:clamp(48px,8vw,120px) clamp(20px,5vw,64px);display:flex;justify-content:center">
+    <form onSubmit="{{ adminEntrar }}" style="background:#fff;border-radius:24px;padding:clamp(28px,4vw,44px);width:100%;max-width:420px;display:flex;flex-direction:column;gap:16px;box-shadow:0 10px 40px rgba(0,0,0,.06)">
+      <div style="width:48px;height:48px;border-radius:50%;background:#1c1a1b;color:#fff;display:flex;align-items:center;justify-content:center"><svg width="20" height="20" aria-hidden="true"><use href="#ic-lock"></use></svg></div>
+      <div><div style="font:300 30px/1.1 'Outfit',sans-serif;letter-spacing:-.02em;margin-bottom:6px">área do <span style="font-weight:500">proprietário</span></div><div style="font:400 14px/1.5 'DM Sans',sans-serif;color:#6b6866">Atualize textos, fotos, promoções e eventos do site.</div></div>
+      <label style="display:flex;flex-direction:column;gap:6px;font:500 13px 'DM Sans',sans-serif">senha<input type="password" value="{{ adminSenhaInput }}" onChange="{{ setSenhaInput }}" placeholder="••••••••" autoFocus="{{ true }}" style="border:1px solid rgba(0,0,0,.14);border-radius:12px;padding:14px 16px;font:400 16px 'DM Sans',sans-serif;background:#fff;outline:none;min-height:48px;width:100%" style-focus="border-color:#1c1a1b"></label>
+      <sc-if value="{{ adminErro }}" hint-placeholder-val="{{ false }}"><div style="font:400 13px 'DM Sans',sans-serif;color:#b3261e">Senha incorreta. Tente novamente.</div></sc-if>
+      <button type="button" onClick="{{ toggleLembrar }}" aria-pressed="{{ adminLembrar }}" style="display:inline-flex;align-items:center;gap:10px;border:0;background:none;padding:0;font:500 13px 'DM Sans',sans-serif;color:#4a4745;width:max-content"><span style="width:34px;height:20px;border-radius:999px;background:{{ lembrarBg }};position:relative;display:inline-block;transition:background .2s"><span style="position:absolute;top:2px;left:{{ lembrarLeft }};width:16px;height:16px;border-radius:50%;background:#fff;transition:left .2s"></span></span>manter conectado neste aparelho</button>
+      <button type="submit" style="background:#1c1a1b;color:#fff;border:0;padding:15px 24px;border-radius:999px;font:500 15px 'DM Sans',sans-serif;min-height:50px" style-hover="background:#333">entrar</button>
+      <div style="font:400 12px/1.5 'DM Sans',sans-serif;color:#8a8785;text-align:center">Senha inicial: <strong>digitallook</strong> — troque em "Configurações" após entrar.</div>
+    </form>
+  </section>
+  </sc-if>
+
+  <sc-if value="{{ adminLogado }}" hint-placeholder-val="{{ false }}">
+  <section style="padding:clamp(20px,3vw,32px) clamp(16px,5vw,64px) clamp(48px,6vw,80px);display:grid;grid-template-columns:{{ adminGridCols }};gap:clamp(16px,3vw,32px);align-items:start">
+    <aside style="display:flex;flex-direction:column;gap:4px;position:{{ adminAsidePos }};top:88px;min-width:0">
+      <div style="font:500 11px 'DM Sans',sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#8a8785;padding:8px 12px 10px">painel</div>
+      <div style="display:flex;flex-direction:{{ adminTabsDir }};gap:4px;overflow-x:auto;padding-bottom:4px"><sc-for list="{{ adminTabs }}" as="t" hint-placeholder-count="8"><button onClick="{{ t.set }}" style="text-align:left;border:0;background:{{ t.bg }};color:{{ t.fg }};padding:11px 14px;border-radius:12px;font:500 14px 'DM Sans',sans-serif;white-space:nowrap;display:flex;justify-content:space-between;gap:10px;align-items:center" style-hover="background:#e8e6e2"><span>{{ t.label }}</span><span style="font:400 12px 'DM Sans',sans-serif;opacity:.6">{{ t.count }}</span></button></sc-for></div>
+      <div style="height:1px;background:rgba(0,0,0,.1);margin:8px 0"></div>
+      <a onClick="{{ adminVerNoSite }}" style="padding:10px 14px;font:500 14px 'DM Sans',sans-serif;display:flex;align-items:center;gap:8px;color:#4a4745">ver no site<svg width="14" height="14" aria-hidden="true"><use href="#ic-arrow"></use></svg></a>
+      <button onClick="{{ adminSair }}" style="text-align:left;border:0;background:transparent;padding:10px 14px;font:500 14px 'DM Sans',sans-serif;color:#8a8785" style-hover="color:#1c1a1b">sair</button>
+    </aside>
+    <div style="min-width:0;display:flex;flex-direction:column;gap:16px">
+      <div style="display:flex;justify-content:space-between;align-items:end;gap:12px;flex-wrap:wrap"><div><div style="font:300 clamp(26px,3vw,36px)/1.1 'Outfit',sans-serif;letter-spacing:-.02em">{{ adminTabTitulo }}</div><div style="font:400 14px/1.5 'DM Sans',sans-serif;color:#6b6866;margin-top:4px">{{ adminTabDesc }}</div></div><div style="display:flex;align-items:center;gap:12px;font:500 12px 'DM Sans',sans-serif;flex-wrap:wrap"><sc-if value="{{ salvoAgora }}" hint-placeholder-val="{{ false }}"><span style="display:inline-flex;align-items:center;gap:6px;color:#25a05a"><svg width="14" height="14" aria-hidden="true"><use href="#ic-check"></use></svg>salvo</span></sc-if><sc-if value="{{ podeDesfazer }}" hint-placeholder-val="{{ false }}"><button onClick="{{ desfazer }}" style="border:1px solid rgba(0,0,0,.14);background:#fff;padding:8px 14px;border-radius:999px;font:500 12px 'DM Sans',sans-serif;color:#1c1a1b" style-hover="background:#1c1a1b;color:#fff">↶ desfazer</button></sc-if><span style="color:#8a8785">{{ ultimaAlteracao }}</span></div></div>
+
+      <sc-if value="{{ adminIsVisao }}" hint-placeholder-val="{{ false }}">
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,150px),1fr));gap:12px"><sc-for list="{{ dashStats }}" as="s" hint-placeholder-count="5"><button onClick="{{ s.ir }}" style="text-align:left;background:#fff;border:0;border-radius:18px;padding:18px 20px;box-shadow:0 2px 12px rgba(0,0,0,.04);display:flex;flex-direction:column;gap:6px" style-hover="box-shadow:0 8px 24px rgba(0,0,0,.08)"><span style="font:300 34px/1 'Outfit',sans-serif">{{ s.valor }}</span><span style="font:500 12px 'DM Sans',sans-serif;color:#6b6866">{{ s.label }}</span></button></sc-for></div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:16px;align-items:start">
+        <div style="background:#fff;border-radius:20px;padding:clamp(18px,2.5vw,28px);box-shadow:0 2px 12px rgba(0,0,0,.04)"><div style="font:500 16px 'Outfit',sans-serif;margin-bottom:4px">pendências</div><div style="font:400 13px/1.5 'DM Sans',sans-serif;color:#6b6866;margin-bottom:14px">O que ainda falta para o site ficar 100%.</div><div style="display:flex;flex-direction:column"><sc-for list="{{ dashPendencias }}" as="pd" hint-placeholder-count="4"><button onClick="{{ pd.ir }}" style="display:flex;align-items:center;gap:12px;text-align:left;background:none;border:0;border-top:1px solid rgba(0,0,0,.08);padding:12px 0;font:400 14px/1.4 'DM Sans',sans-serif;color:#1c1a1b" style-hover="color:#4a4745"><span style="width:22px;height:22px;border-radius:50%;background:{{ pd.bg }};color:#fff;display:flex;align-items:center;justify-content:center;flex:none"><svg width="12" height="12" aria-hidden="true"><use href="#ic-check"></use></svg></span><span style="flex:1;min-width:0">{{ pd.texto }}</span><svg width="14" height="14" style="opacity:.4;flex:none" aria-hidden="true"><use href="#ic-arrow"></use></svg></button></sc-for></div></div>
+        <div style="display:flex;flex-direction:column;gap:16px">
+          <div style="background:#fff;border-radius:20px;padding:clamp(18px,2.5vw,28px);box-shadow:0 2px 12px rgba(0,0,0,.04)"><div style="font:500 16px 'Outfit',sans-serif;margin-bottom:12px">atalhos</div><div style="display:flex;flex-wrap:wrap;gap:8px"><sc-for list="{{ dashAtalhos }}" as="at" hint-placeholder-count="4"><button onClick="{{ at.ir }}" style="border:1px solid rgba(0,0,0,.14);background:#fff;padding:9px 14px;border-radius:999px;font:500 13px 'DM Sans',sans-serif;color:#1c1a1b" style-hover="background:#1c1a1b;color:#fff">{{ at.label }}</button></sc-for></div></div>
+          <div style="background:#1c1a1b;color:#fff;border-radius:20px;padding:clamp(18px,2.5vw,28px)"><div style="font:500 16px 'Outfit',sans-serif;margin-bottom:8px">status agora</div><div style="display:flex;align-items:center;gap:8px;font:400 14px 'DM Sans',sans-serif;color:rgba(255,255,255,.8);margin-bottom:14px"><span style="width:8px;height:8px;border-radius:50%;background:{{ statusCor }};display:inline-block"></span>{{ statusTexto }}</div><div style="font:400 13px/1.6 'DM Sans',sans-serif;color:rgba(255,255,255,.6)">WhatsApp {{ whatsappFmt }}<br>{{ info.endereco }} · {{ info.bairroCidade }}<br>Espaço usado: {{ usoArmazenamento }}</div></div>
+        </div>
+      </div>
+      </sc-if>
+
+      <sc-for list="{{ adminBlocos }}" as="b" hint-placeholder-count="2">
+      <div style="display:flex;flex-direction:column;gap:12px">
+      <sc-if value="{{ b.temTitulo }}" hint-placeholder-val="{{ true }}"><div style="padding:8px 4px 0"><div style="font:500 12px 'DM Sans',sans-serif;letter-spacing:.12em;text-transform:uppercase;color:#8a8785">{{ b.titulo }}</div><sc-if value="{{ b.desc }}" hint-placeholder-val="{{ false }}"><div style="font:400 13px/1.5 'DM Sans',sans-serif;color:#6b6866;margin-top:4px">{{ b.desc }}</div></sc-if></div></sc-if>
+      <sc-if value="{{ b.vazio }}" hint-placeholder-val="{{ false }}"><div style="font:400 14px 'DM Sans',sans-serif;color:#8a8785;padding:4px">Nenhum item ainda.</div></sc-if>
+      <sc-for list="{{ b.itens }}" as="it" hint-placeholder-count="2">
+      <div style="background:#fff;border-radius:20px;padding:clamp(18px,2.5vw,28px);display:flex;flex-direction:column;gap:14px;box-shadow:0 2px 12px rgba(0,0,0,.04)">
+        <sc-if value="{{ it.temCabecalho }}" hint-placeholder-val="{{ true }}"><div style="display:flex;justify-content:space-between;align-items:center;gap:12px"><div style="font:500 16px 'Outfit',sans-serif;color:#1c1a1b;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ it.titulo }}</div><div style="display:flex;gap:6px;flex:none"><button onClick="{{ it.duplicar }}" aria-label="Duplicar" title="Duplicar" style="height:34px;padding:0 12px;border-radius:999px;border:1px solid rgba(0,0,0,.12);background:#fff;color:#4a4745;font:500 12px 'DM Sans',sans-serif" style-hover="background:#f4f3f1">duplicar</button><button onClick="{{ it.subir }}" aria-label="Mover para cima" style="width:34px;height:34px;border-radius:50%;border:1px solid rgba(0,0,0,.12);background:#fff;color:#4a4745;font:400 16px 'Outfit',sans-serif" style-hover="background:#f4f3f1">↑</button><button onClick="{{ it.descer }}" aria-label="Mover para baixo" style="width:34px;height:34px;border-radius:50%;border:1px solid rgba(0,0,0,.12);background:#fff;color:#4a4745;font:400 16px 'Outfit',sans-serif" style-hover="background:#f4f3f1">↓</button><button onClick="{{ it.remover }}" aria-label="Remover" style="width:34px;height:34px;border-radius:50%;border:1px solid rgba(0,0,0,.12);background:#fff;color:#b3261e;display:flex;align-items:center;justify-content:center" style-hover="background:#fdecea"><svg width="15" height="15" aria-hidden="true"><use href="#ic-trash"></use></svg></button></div></div></sc-if>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:14px">
+          <sc-for list="{{ it.campos }}" as="c" hint-placeholder-count="3">
+          <label style="display:flex;flex-direction:column;gap:6px;font:500 12px 'DM Sans',sans-serif;color:#4a4745;grid-column:{{ c.col }};min-width:0">
+            <span>{{ c.label }}</span>
+            <sc-if value="{{ c.isText }}" hint-placeholder-val="{{ true }}"><input value="{{ c.valor }}" onChange="{{ c.onChange }}" placeholder="{{ c.placeholder }}" style="border:1px solid rgba(0,0,0,.14);border-radius:10px;padding:11px 13px;font:400 15px 'DM Sans',sans-serif;background:#fff;outline:none;width:100%;color:#1c1a1b" style-focus="border-color:#1c1a1b"></sc-if>
+            <sc-if value="{{ c.isArea }}" hint-placeholder-val="{{ false }}"><textarea value="{{ c.valor }}" onChange="{{ c.onChange }}" rows="{{ c.rows }}" placeholder="{{ c.placeholder }}" style="border:1px solid rgba(0,0,0,.14);border-radius:10px;padding:11px 13px;font:400 15px/1.5 'DM Sans',sans-serif;background:#fff;outline:none;width:100%;resize:vertical;color:#1c1a1b" style-focus="border-color:#1c1a1b"></textarea></sc-if>
+            <sc-if value="{{ c.isSelect }}" hint-placeholder-val="{{ false }}"><select value="{{ c.valor }}" onChange="{{ c.onChange }}" style="border:1px solid rgba(0,0,0,.14);border-radius:10px;padding:11px 13px;font:400 15px 'DM Sans',sans-serif;background:#fff;outline:none;width:100%;color:#1c1a1b"><sc-for list="{{ c.opcoes }}" as="o" hint-placeholder-count="3"><option value="{{ o.v }}">{{ o.l }}</option></sc-for></select></sc-if>
+            <sc-if value="{{ c.isBool }}" hint-placeholder-val="{{ false }}"><button type="button" onClick="{{ c.toggle }}" aria-pressed="{{ c.valor }}" style="display:inline-flex;align-items:center;gap:10px;border:1px solid rgba(0,0,0,.14);background:#fff;padding:9px 12px;border-radius:999px;font:500 13px 'DM Sans',sans-serif;color:#1c1a1b;width:max-content"><span style="width:34px;height:20px;border-radius:999px;background:{{ c.swBg }};position:relative;display:inline-block;transition:background .2s"><span style="position:absolute;top:2px;left:{{ c.swLeft }};width:16px;height:16px;border-radius:50%;background:#fff;transition:left .2s"></span></span>{{ c.boolLabel }}</button></sc-if>
+            <sc-if value="{{ c.isImg }}" hint-placeholder-val="{{ false }}"><div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap"><div style="width:120px;height:84px;border-radius:12px;background:#e6e4e0;background-image:{{ c.bg }};background-size:cover;background-position:center;display:flex;align-items:center;justify-content:center;color:#8a8785;flex:none"><sc-if value="{{ c.vazio }}" hint-placeholder-val="{{ true }}"><svg width="22" height="22" aria-hidden="true"><use href="#ic-img"></use></svg></sc-if></div><div style="display:flex;flex-direction:column;gap:8px;min-width:0"><label style="display:inline-flex;align-items:center;gap:8px;border:1px solid #1c1a1b;padding:9px 14px;border-radius:999px;font:500 13px 'DM Sans',sans-serif;color:#1c1a1b;cursor:pointer;width:max-content" style-hover="background:#1c1a1b;color:#fff"><svg width="14" height="14" aria-hidden="true"><use href="#ic-img"></use></svg>{{ c.btnLabel }}<input type="file" accept="image/*" onChange="{{ c.onFile }}" style="display:none"></label><sc-if value="{{ c.temImg }}" hint-placeholder-val="{{ false }}"><button type="button" onClick="{{ c.limpar }}" style="border:0;background:none;padding:0;font:500 12px 'DM Sans',sans-serif;color:#b3261e;text-align:left;width:max-content">remover foto</button></sc-if><div style="font:400 11px/1.4 'DM Sans',sans-serif;color:#8a8785">JPG ou PNG. Redimensionamos automaticamente.</div></div></div></sc-if>
+          </label>
+          </sc-for>
+        </div>
+      </div>
+      </sc-for>
+      <sc-if value="{{ b.podeAdd }}" hint-placeholder-val="{{ false }}"><button onClick="{{ b.adicionar }}" style="border:1px dashed rgba(0,0,0,.25);background:transparent;padding:16px;border-radius:20px;font:500 14px 'DM Sans',sans-serif;color:#4a4745;width:100%" style-hover="border-color:#1c1a1b;color:#1c1a1b;background:#fff">+ {{ b.addLabel }}</button></sc-if>
+      </div>
+      </sc-for>
+
+      <sc-if value="{{ adminIsConfig }}" hint-placeholder-val="{{ false }}">
+      <div style="background:#fff;border-radius:20px;padding:clamp(18px,2.5vw,28px);display:flex;flex-direction:column;gap:14px;box-shadow:0 2px 12px rgba(0,0,0,.04)">
+        <div style="font:500 16px 'Outfit',sans-serif">trocar senha</div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr));gap:12px;align-items:end"><label style="display:flex;flex-direction:column;gap:6px;font:500 12px 'DM Sans',sans-serif;color:#4a4745">nova senha<input type="password" value="{{ novaSenha }}" onChange="{{ setNovaSenha }}" style="border:1px solid rgba(0,0,0,.14);border-radius:10px;padding:11px 13px;font:400 15px 'DM Sans',sans-serif;outline:none;width:100%" style-focus="border-color:#1c1a1b"></label><button onClick="{{ salvarSenha }}" style="background:#1c1a1b;color:#fff;border:0;padding:12px 20px;border-radius:999px;font:500 14px 'DM Sans',sans-serif;min-height:44px;width:max-content" style-hover="background:#333">salvar senha</button></div>
+      </div>
+      <div style="background:#fff;border-radius:20px;padding:clamp(18px,2.5vw,28px);display:flex;flex-direction:column;gap:14px;box-shadow:0 2px 12px rgba(0,0,0,.04)">
+        <div style="font:500 16px 'Outfit',sans-serif">backup dos dados</div>
+        <div style="font:400 14px/1.5 'DM Sans',sans-serif;color:#6b6866">As alterações ficam salvas neste navegador. Exporte um arquivo de backup para restaurar em outro computador ou após limpar o navegador.</div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap"><button onClick="{{ exportar }}" style="border:1px solid #1c1a1b;background:#fff;padding:11px 18px;border-radius:999px;font:500 14px 'DM Sans',sans-serif" style-hover="background:#1c1a1b;color:#fff">exportar backup</button><label style="border:1px solid #1c1a1b;background:#fff;padding:11px 18px;border-radius:999px;font:500 14px 'DM Sans',sans-serif;cursor:pointer" style-hover="background:#1c1a1b;color:#fff">importar backup<input type="file" accept="application/json" onChange="{{ importar }}" style="display:none"></label><button onClick="{{ restaurarPadrao }}" style="border:0;background:none;padding:11px 12px;font:500 14px 'DM Sans',sans-serif;color:#b3261e" style-hover="text-decoration:underline">restaurar padrão</button></div>
+        <div style="font:400 12px 'DM Sans',sans-serif;color:#8a8785">Espaço usado: {{ usoArmazenamento }}</div>
+      </div>
+      <div style="background:#fff;border-radius:20px;padding:clamp(18px,2.5vw,28px);display:flex;flex-direction:column;gap:10px;box-shadow:0 2px 12px rgba(0,0,0,.04)">
+        <div style="font:500 16px 'Outfit',sans-serif">como acessar</div>
+        <div style="font:400 14px/1.6 'DM Sans',sans-serif;color:#6b6866">Entre pelo link "área do proprietário" no rodapé do site ou acrescente <strong style="color:#1c1a1b">#admin</strong> ao endereço. Dica: salve <strong style="color:#1c1a1b">{{ adminUrl }}</strong> nos favoritos do celular.</div>
+      </div>
+      </sc-if>
+    </div>
+  </section>
+  </sc-if>
+</div>
+</sc-if>
+
+</main>
+
+<footer style="background:#1c1a1b;color:#fff;padding:48px clamp(20px,5vw,64px) 28px">
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,180px),1fr));gap:32px;margin-bottom:40px">
+    <div style="min-width:0"><img src="assets/logo.png" alt="" style="height:88px;margin:-16px 0 6px -12px;display:block"><p style="font:400 14px/1.55 'DM Sans',sans-serif;color:rgba(255,255,255,.6);max-width:280px;margin:0 0 16px">Ótica em {{ info.cidade }} com medição digital e atendimento personalizado.</p><div style="display:flex;gap:10px"><a href="{{ waLink }}" target="_blank" rel="noopener" aria-label="WhatsApp" style="width:40px;height:40px;border-radius:50%;border:1px solid rgba(255,255,255,.25);display:flex;align-items:center;justify-content:center" style-hover="background:#25D366;border-color:#25D366;opacity:1"><svg width="18" height="18" aria-hidden="true"><use href="#ic-wa"></use></svg></a><a href="{{ igLink }}" target="_blank" rel="noopener" aria-label="Instagram" style="width:40px;height:40px;border-radius:50%;border:1px solid rgba(255,255,255,.25);display:flex;align-items:center;justify-content:center" style-hover="background:#fff;color:#1c1a1b;opacity:1"><svg width="18" height="18" aria-hidden="true"><use href="#ic-ig"></use></svg></a><a href="{{ mapaLink }}" target="_blank" rel="noopener" aria-label="Como chegar" style="width:40px;height:40px;border-radius:50%;border:1px solid rgba(255,255,255,.25);display:flex;align-items:center;justify-content:center" style-hover="background:#fff;color:#1c1a1b;opacity:1"><svg width="18" height="18" aria-hidden="true"><use href="#ic-pin"></use></svg></a><sc-if value="{{ fbLink }}" hint-placeholder-val="{{ false }}"><a href="{{ fbLink }}" target="_blank" rel="noopener" aria-label="Facebook" style="width:40px;height:40px;border-radius:50%;border:1px solid rgba(255,255,255,.25);display:flex;align-items:center;justify-content:center;font:600 15px 'DM Sans',sans-serif" style-hover="background:#fff;color:#1c1a1b;opacity:1">f</a></sc-if></div></div>
+    <div style="font:400 14px/2 'DM Sans',sans-serif;color:rgba(255,255,255,.7);display:flex;flex-direction:column"><div style="color:#fff;font-weight:500;margin-bottom:4px">produtos</div><a onClick="{{ goArmacoes }}">armações</a><a onClick="{{ goArmacoes }}">óculos de sol</a><a onClick="{{ goLentes }}">lentes de contato</a></div>
+    <div style="font:400 14px/2 'DM Sans',sans-serif;color:rgba(255,255,255,.7);display:flex;flex-direction:column"><div style="color:#fff;font-weight:500;margin-bottom:4px">a ótica</div><a onClick="{{ goSobre }}">sobre</a><a onClick="{{ goConvenios }}">convênios e eventos</a><a onClick="{{ goBlog }}">blog</a><a onClick="{{ goContato }}">contato</a></div>
+    <div style="font:400 14px/1.7 'DM Sans',sans-serif;color:rgba(255,255,255,.7);min-width:0"><div style="color:#fff;font-weight:500;margin-bottom:4px">contato</div><a href="{{ waLink }}" target="_blank" rel="noopener">{{ whatsappFmt }}</a><br>{{ info.endereco }}<br>{{ info.bairroCidade }}<br><span style="display:inline-flex;align-items:center;gap:6px;margin-top:8px;font:500 12px 'DM Sans',sans-serif;color:rgba(255,255,255,.8)"><span style="width:7px;height:7px;border-radius:50%;background:{{ statusCor }};display:inline-block"></span>{{ statusTexto }}</span></div>
+  </div>
+  <div style="border-top:1px solid rgba(255,255,255,.14);padding-top:18px;font:400 12px 'DM Sans',sans-serif;color:rgba(255,255,255,.45);display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap"><span>© 2026 ótica digital look</span><span style="display:flex;gap:16px;flex-wrap:wrap"><span>CNPJ {{ info.cnpj }}</span><a onClick="{{ goAdmin }}" style="display:inline-flex;align-items:center;gap:6px;color:rgba(255,255,255,.55)"><svg width="12" height="12" aria-hidden="true"><use href="#ic-lock"></use></svg>área do proprietário</a></span></div>
+</footer>
+
+<div data-progress style="position:fixed;top:0;left:0;height:2px;width:100%;background:#25D366;transform-origin:0 50%;transform:scaleX(0);z-index:40;pointer-events:none"></div>
+<sc-if value="{{ toast }}" hint-placeholder-val="{{ false }}"><div style="position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:50;background:#1c1a1b;color:#fff;padding:12px 18px;border-radius:999px;font:500 13px 'DM Sans',sans-serif;box-shadow:0 10px 30px rgba(0,0,0,.25);max-width:calc(100vw - 32px);text-align:center">{{ toast }}</div></sc-if>
+<sc-if value="{{ mostrarTopo }}" hint-placeholder-val="{{ false }}"><button onClick="{{ irTopo }}" aria-label="Voltar ao topo" style="position:fixed;right:16px;bottom:84px;z-index:30;width:44px;height:44px;border-radius:50%;border:1px solid rgba(0,0,0,.15);background:#fff;color:#1c1a1b;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 18px rgba(0,0,0,.12)" style-hover="background:#1c1a1b;color:#fff"><svg width="18" height="18" style="transform:rotate(-90deg)" aria-hidden="true"><use href="#ic-arrow"></use></svg></button></sc-if>
+<sc-if value="{{ flutuante }}" hint-placeholder-val="{{ true }}"><a data-fab href="{{ waLink }}" target="_blank" rel="noopener" aria-label="Falar no WhatsApp" style="position:fixed;right:16px;bottom:16px;z-index:30;display:flex;align-items:center;gap:10px;background:#25D366;color:#fff;padding:14px 18px 14px 15px;border-radius:999px;font:500 14px 'DM Sans',sans-serif;box-shadow:0 8px 24px rgba(0,0,0,.22);animation:wa-pulse 2.4s ease-out infinite;min-height:52px" style-hover="opacity:1;transform:translateY(-2px);background:#1ebe5a"><svg width="22" height="22" aria-hidden="true"><use href="#ic-wa"></use></svg><sc-if value="{{ wide }}" hint-placeholder-val="{{ true }}"><span>fale conosco</span></sc-if></a></sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;promocaoAtiva&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Conteúdo&quot;},&quot;botaoFlutuante&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Conteúdo&quot;},&quot;animacoes&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Comportamento&quot;}}">
+const CMS_KEY = 'odl-cms-v1', SENHA_KEY = 'odl-admin-senha', SESSAO_KEY = 'odl-admin-sessao';
+const PADRAO = () => ({
+  info: {
+    whatsapp: '18997637896', instagram: 'oticadigitallook', endereco: 'R. Prof. Sud Menucci, 228', bairroCidade: 'Centro, Rinópolis – SP', cep: '17740-000', cidade: 'rinópolis · sp', cidadeNome: 'rinópolis', cnpj: '00.000.000/0001-00',
+    abreSemana: '08:30', fechaSemana: '18:00', abreSabado: '08:30', fechaSabado: '12:30', parcelas: '10', anos: '10',
+    heroLinha1: 'um novo olhar', heroLinha2: 'para o seu', heroDestaque: 'dia a dia.', heroTexto: 'Armações, óculos de sol e lentes de contato com atendimento próximo e tecnologia de ponta na medição.',
+    selos: 'medição digital, até 10x sem juros, ajuste e limpeza grátis',
+    sobreTitulo: 'uma ótica de bairro com olhar digital.', sobreResumo: 'No centro de Rinópolis, a Digital Look une a atenção de uma ótica de bairro a equipamentos digitais que garantem lentes precisas para cada rosto.',
+    sobreTexto: 'A Digital Look nasceu no centro de Rinópolis com uma ideia simples: tratar cada cliente pelo nome e cada receita com precisão. Começamos pequenos, com um balcão e muita conversa.\n\nHoje usamos medição digital para que suas lentes fiquem exatamente onde seus olhos precisam — sem perder o atendimento que nos trouxe até aqui.',
+    faixaAtiva: true, faixaPromo: 'Outubro: 2ª armação com 30% de desconto na compra de óculos completo',
+    convenios: 'Unimed, Sindicato Rural, Prefeitura de Rinópolis, Sind. Comerciários, Assoc. Funcionários Públicos, Cartão Visa, Cartão Mastercard, Cartão Elo, Pix, Crediário próprio',
+    marcas: 'Marca 1, Marca 2, Marca 3, Marca 4, Marca 5, Marca 6',
+    pagamentos: 'Cartões em até 10x sem juros, Pix e dinheiro com desconto, Crediário próprio com aprovação na hora, Boleto para empresas conveniadas',
+    siteTitulo: 'Ótica Digital Look — Rinópolis/SP', siteDescricao: 'Armações, óculos de sol e lentes de contato com medição digital em Rinópolis/SP.', facebook: '',
+    msgWhats: 'Olá! Vim pelo site da Ótica Digital Look e gostaria de atendimento.', msgReceita: 'Olá! Gostaria de um orçamento. Vou enviar a foto da minha receita.',
+  },
+  meta: { atualizadoEm: '' },
+  fotos: { hero: '', loja: '', lentes: '', equipe: '', cat_armacoes: '', cat_sol: '', cat_lentes: '' },
+  galeria: [],
+  fechamentos: [{ data: '2026-12-25', motivo: 'Natal' }, { data: '2027-01-01', motivo: 'Ano Novo' }],
+  etapas: [{ titulo: 'conversa', texto: 'Pelo WhatsApp ou na loja: entendemos sua rotina e sua receita.' }, { titulo: 'medição digital', texto: 'Centragem e altura medidas por câmera, com a armação escolhida.' }, { titulo: 'lentes no laboratório', texto: 'Prazo médio de 48h para lentes comuns; avisamos quando chegar.' }, { titulo: 'ajuste final', texto: 'Ajustamos hastes e plaquetas no rosto e explicamos os cuidados.' }],
+  marcos: [{ ano: '2014', texto: 'Abrimos a primeira loja na R. Prof. Sud Menucci, com duas pessoas e um balcão.' }, { ano: '2019', texto: 'Chegada do equipamento de medição digital e da linha de lentes de contato.' }, { ano: '2024', texto: 'Reforma da loja e ampliação do mostruário de armações e óculos de sol.' }],
+  diferenciais: [{ titulo: 'medição digital', texto: 'Centragem e altura medidas por câmera, não a olho — a lente fica onde deve.' }, { titulo: 'ajuste gratuito', texto: 'Passou na porta? Ajustamos e limpamos seu óculos, comprado aqui ou não.' }, { titulo: 'prazo honesto', texto: 'Laboratório parceiro com prazo médio de 48h para lentes comuns.' }, { titulo: 'garantia real', texto: 'Adaptação garantida: se a lente não ficou boa, refazemos.' }],
+  tiposLente: [{ nome: 'diárias', texto: 'Uma lente nova por dia, sem solução nem estojo.', ideal: 'ideal para uso ocasional' }, { nome: 'mensais', texto: 'Mais econômicas, com limpeza diária em solução.', ideal: 'ideal para uso diário' }, { nome: 'tóricas', texto: 'Corrigem astigmatismo com estabilidade no olho.', ideal: 'ideal para astigmatismo' }, { nome: 'multifocais', texto: 'Perto e longe na mesma lente, sem óculos de leitura.', ideal: 'ideal para presbiopia' }],
+  passos: [{ titulo: 'envie sua receita', texto: 'Pelo WhatsApp ou na loja. Receita de contato é diferente da de óculos — a gente explica.' }, { titulo: 'escolha e teste', texto: 'Indicamos a lente para o seu caso e você experimenta antes de levar.' }, { titulo: 'aprenda a cuidar', texto: 'Treinamos colocação, retirada e higiene até você se sentir seguro.' }],
+  faq: [{ p: 'Preciso de receita específica para lentes de contato?', r: 'Sim. O oftalmologista adiciona curvatura e diâmetro à receita. Se tiver só a de óculos, orientamos como conseguir.' }, { p: 'Posso dormir com as lentes?', r: 'Só modelos indicados para uso contínuo. Na dúvida, retire sempre antes de dormir.' }, { p: 'Lentes de contato ressecam os olhos?', r: 'Materiais atuais de silicone-hidrogel deixam o oxigênio passar. Colírio lubrificante ajuda em ambientes com ar-condicionado.' }],
+  promocoes: [
+    { tag: 'outubro', titulo: '2ª armação com 30% off', texto: 'Na compra de óculos completo (armação + lentes), a segunda armação sai com 30% de desconto. Vale para sol também.', ativa: true, img: '' },
+    { tag: 'sempre', titulo: 'ajuste e limpeza grátis', texto: 'Traga seu óculos para ajuste de hastes e plaquetas e limpeza ultrassônica, sem custo — comprado aqui ou não.', ativa: true, img: '' },
+  ],
+  eventos: [
+    { titulo: 'Dia da saúde ocular na loja', data: '2026-11-08', hora: '9h às 13h', local: 'na loja', texto: 'Aferição gratuita de pressão ocular e orientação sobre lentes. Sem agendamento.', img: '' },
+  ],
+  produtos: [
+    { nome: 'Lumen round', marca: 'Linha própria', cat: 'grau', img: '', destaque: true, selo: 'novo', preco: '' }, { nome: 'Vértice acetato', marca: 'Linha própria', cat: 'grau', img: '' },
+    { nome: 'Costa aviador', marca: 'Marca parceira', cat: 'sol', img: '' }, { nome: 'Dune quadrado', marca: 'Marca parceira', cat: 'sol', img: '' },
+    { nome: 'Mini flex', marca: 'Infantil', cat: 'infantil', img: '' }, { nome: 'Play color', marca: 'Infantil', cat: 'infantil', img: '' },
+    { nome: 'Trail wrap', marca: 'Esportivo', cat: 'esportivo', img: '' }, { nome: 'Titan leve', marca: 'Linha própria', cat: 'grau', img: '' },
+  ],
+  equipe: [{ nome: 'Nome Sobrenome', cargo: 'Proprietária · óptica', img: '' }, { nome: 'Nome Sobrenome', cargo: 'Consultor de armações', img: '' }, { nome: 'Nome Sobrenome', cargo: 'Atendimento e laboratório', img: '' }],
+  depoimentos: [
+    { nome: 'Ana Paula', item: 'óculos multifocal', texto: 'Já tinha desistido de multifocal depois de duas tentativas em outro lugar. Aqui mediram com a câmera e adaptei em dois dias.' },
+    { nome: 'Carlos Eduardo', item: 'lentes de contato', texto: 'Primeira vez com lente de contato. Sentaram comigo até eu conseguir colocar sozinho. Atendimento de verdade.' },
+    { nome: 'Juliana', item: 'óculos de sol com grau', texto: 'Mandei a receita pelo WhatsApp de manhã e à tarde já tinha o orçamento com três opções. Rápido e sem enrolação.' },
+  ],
+  posts: [
+    { tag: 'lentes', data: '08 out 2026', leitura: '4 min', titulo: 'Lente antirreflexo vale a pena? Entenda quando faz diferença.', resumo: 'O tratamento antirreflexo reduz brilhos de telas e faróis e deixa a lente quase invisível. Explicamos quando ele é indispensável e quando dá para economizar.', img: '', conteudo: 'O antirreflexo (AR) é uma camada aplicada à lente que elimina os reflexos da própria superfície. Na prática, você enxerga com mais contraste à noite, as pessoas enxergam seus olhos (e não o reflexo da janela) e as fotos saem sem aquele brilho branco.\n\nQuando é indispensável: quem dirige à noite, trabalha muitas horas em tela ou usa grau alto (as lentes ficam mais espessas e refletem mais).\n\nQuando dá para economizar: óculos de uso esporádico, como um par reserva para leitura.\n\nNa loja, mostramos a diferença lado a lado antes de você decidir.' },
+    { tag: 'saúde ocular', data: '24 set 2026', leitura: '3 min', titulo: 'Quanto tempo de tela por dia cansa seus olhos — e como aliviar.', resumo: '', img: '' },
+    { tag: 'armações', data: '10 set 2026', leitura: '5 min', titulo: 'Como escolher a armação certa para o formato do seu rosto.', resumo: '', img: '' },
+    { tag: 'lentes de contato', data: '28 ago 2026', leitura: '4 min', titulo: 'Primeira vez com lentes de contato: o que esperar nas duas primeiras semanas.', resumo: '', img: '' },
+    { tag: 'crianças', data: '12 ago 2026', leitura: '3 min', titulo: 'Sinais de que seu filho pode precisar de óculos.', resumo: '', img: '' },
+  ],
+});
+const MESES = ['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez'];
+const LISTAS = ['promocoes', 'eventos', 'produtos', 'equipe', 'depoimentos', 'posts', 'galeria', 'fechamentos', 'etapas', 'marcos', 'diferenciais', 'tiposLente', 'passos', 'faq'];
+const lista = (s) => String(s || '').split(',').map(x => x.trim()).filter(Boolean);
+const bgOf = (img) => img ? `url("${img}")` : 'none';
+const num2 = (n) => String(n).padStart(2, '0');
+const fmtData = (iso) => { const d = iso ? new Date(iso + 'T12:00:00') : null; return d && !isNaN(d) ? `${num2(d.getDate())} ${MESES[d.getMonth()]} ${d.getFullYear()}` : iso || ''; };
+const mesclar = (s) => { const base = PADRAO(); if (s) { base.info = { ...base.info, ...(s.info || {}) }; base.meta = { ...base.meta, ...(s.meta || {}) }; base.fotos = { ...base.fotos, ...(s.fotos || {}) }; LISTAS.forEach(k => { if (Array.isArray(s[k])) base[k] = s[k]; }); } return base; };
+
+class Component extends DCLogic {
+  state = {
+    page: (typeof location !== 'undefined' && location.hash.replace('#', '')) || 'inicio', filtro: 'todos', form: { nome: '', assunto: 'Óculos de grau', msg: '' }, menuOpen: false, faqOpen: 0,
+    w: typeof window !== 'undefined' ? window.innerWidth : 1280, now: Date.now(), cms: this.carregarCms(), admin: { logado: false, senha: '', erro: false, tab: 'visao', novaSenha: '', lembrar: false }, toast: '', salvoAgora: false, mostrarTopo: false, postIdx: 0, undoN: 0,
+  };
+  carregarCms() {
+    let s = null; try { s = JSON.parse(localStorage.getItem(CMS_KEY) || 'null'); } catch (e) {}
+    const base = mesclar(s); this._lastSaved = JSON.stringify(base); this._undo = []; return base;
+  }
+  salvarCms(cms) {
+    cms.meta = { ...(cms.meta || {}), atualizadoEm: new Date().toISOString() };
+    const json = JSON.stringify(cms);
+    if (this._lastSaved && this._lastSaved !== json) { this._undo = [...(this._undo || []), this._lastSaved].slice(-25); }
+    this._lastSaved = json;
+    try { localStorage.setItem(CMS_KEY, json); this.setState({ cms: { ...cms }, salvoAgora: true, undoN: this._undo.length }); clearTimeout(this._salvoT); this._salvoT = setTimeout(() => this.setState({ salvoAgora: false }), 1800); }
+    catch (e) { this.setState({ cms: { ...cms }, undoN: this._undo.length }); this.aviso('Sem espaço para salvar — remova fotos grandes ou exporte um backup.'); }
+  }
+  desfazer() {
+    const prev = (this._undo || []).pop(); if (!prev) return;
+    const cms = mesclar(JSON.parse(prev)); this._lastSaved = JSON.stringify(cms);
+    try { localStorage.setItem(CMS_KEY, this._lastSaved); } catch (e) {}
+    this.setState({ cms, undoN: this._undo.length }); this.aviso('Alteração desfeita.');
+  }
+  aviso(t) { this.setState({ toast: t }); clearTimeout(this._toastT); this._toastT = setTimeout(() => this.setState({ toast: '' }), 3200); }
+  lerImagem(file) {
+    return new Promise((res, rej) => {
+      const img = new Image(); const url = URL.createObjectURL(file);
+      img.onload = () => { const max = 1400, r = Math.min(1, max / Math.max(img.width, img.height)); const c = document.createElement('canvas'); c.width = Math.round(img.width * r); c.height = Math.round(img.height * r); c.getContext('2d').drawImage(img, 0, 0, c.width, c.height); URL.revokeObjectURL(url); res(c.toDataURL('image/jpeg', .82)); };
+      img.onerror = rej; img.src = url;
+    });
+  }
+  componentDidMount() {
+    try { if (sessionStorage.getItem(SESSAO_KEY) === '1' || localStorage.getItem(SESSAO_KEY) === '1') this.setState({ admin: { ...this.state.admin, logado: true } }); } catch (e) {}
+    this.aplicarSeo();
+    this._onHash = () => { const p = location.hash.replace('#', ''); if (p && p !== this.state.page) this.setState({ page: p, menuOpen: false }); };
+    this._onResize = () => this.setState({ w: window.innerWidth });
+    window.addEventListener('hashchange', this._onHash);
+    window.addEventListener('resize', this._onResize);
+    this._tick = setInterval(() => this.setState({ now: Date.now() }), 60000);
+    this._onScroll = () => {
+      const y = window.scrollY, h = document.documentElement.scrollHeight - window.innerHeight;
+      const bar = document.querySelector('[data-progress]'); if (bar) bar.style.transform = `scaleX(${h > 0 ? Math.min(1, y / h) : 0})`;
+      const show = y > 600; if (show !== this.state.mostrarTopo) this.setState({ mostrarTopo: show });
+    };
+    window.addEventListener('scroll', this._onScroll, { passive: true });
+    this.initGsap();
+  }
+  componentWillUnmount() { window.removeEventListener('hashchange', this._onHash); window.removeEventListener('resize', this._onResize); window.removeEventListener('scroll', this._onScroll); window.removeEventListener('scroll', this._stUpdate); clearInterval(this._tick); clearInterval(this._fallback); clearInterval(this._safety); clearInterval(this._rewire); clearTimeout(this._gsapTimer); clearTimeout(this._waitTimer); this.killCtx(); }
+  componentDidUpdate() {
+    const anim = this.props.animacoes ?? true;
+    const prev = this._prev || { page: this.state.page, filtro: this.state.filtro, menuOpen: false, anim };
+    const { page, filtro, menuOpen } = this.state;
+    this._prev = { page, filtro, menuOpen, anim };
+    if (prev.page !== page) { document.body.style.overflow = ''; this.schedulePage(true); }
+    else if (prev.filtro !== filtro && anim) this.runGrid();
+    if (prev.menuOpen !== menuOpen) {
+      document.body.style.overflow = menuOpen ? 'hidden' : '';
+      if (menuOpen && anim && window.gsap) gsap.from('[data-menu] nav > a', { x: -24, opacity: 0, duration: .5, stagger: .06, ease: 'power3.out' });
+    }
+    if (prev.anim !== anim) { this._wired = false; this.schedulePage(false); }
+    this.aplicarSeo();
+  }
+  aplicarSeo() {
+    const info = this.state.cms.info; const t = info.siteTitulo || 'Ótica Digital Look';
+    if (document.title !== t) document.title = t;
+    let m = document.querySelector('meta[name="description"]'); if (!m) { m = document.createElement('meta'); m.name = 'description'; document.head.appendChild(m); }
+    if (m.content !== (info.siteDescricao || '')) m.content = info.siteDescricao || '';
+  }
+  go(page) { return () => { this.setState({ page, menuOpen: false }); try { history.replaceState(null, '', '#' + page); } catch (e) {} window.scrollTo(0, 0); }; }
+  abrirPost(i) { return () => { this.setState({ page: 'post', postIdx: i, menuOpen: false }); try { history.replaceState(null, '', '#post'); } catch (e) {} window.scrollTo(0, 0); }; }
+  initGsap() {
+    const tryInit = () => {
+      if (!window.gsap || !window.ScrollTrigger) { this._gsapTimer = setTimeout(tryInit, 80); return; }
+      gsap.registerPlugin(ScrollTrigger);
+      gsap.ticker.lagSmoothing(0);
+      let lastFrame = -1;
+      this._fallback = setInterval(() => { if (gsap.ticker.frame === lastFrame) { gsap.ticker.lagSmoothing(0); gsap.ticker.tick(); ScrollTrigger.update(true); } lastFrame = gsap.ticker.frame; }, 50);
+      this._stUpdate = () => ScrollTrigger.update();
+      window.addEventListener('scroll', this._stUpdate, { passive: true });
+      // safety net: clear GSAP from-state on anything still hidden with no tween, or whose tween hasn't progressed (frozen clock)
+      let lastSafetyFrame = -1, frozenTicks = 0;
+      this._safety = setInterval(() => {
+        frozenTicks = gsap.ticker.frame === lastSafetyFrame ? frozenTicks + 1 : 0; lastSafetyFrame = gsap.ticker.frame;
+        document.querySelectorAll('header, main *, footer *, [data-float], [data-fab]').forEach(el => {
+          if (el.style.opacity === '' || +getComputedStyle(el).opacity >= 1) return;
+          const tw = gsap.getTweensOf(el);
+          if (!tw.length || (frozenTicks >= 2 && tw.every(t => t.progress() === 0))) { tw.forEach(t => t.kill()); gsap.set(el, { clearProps: 'opacity,transform' }); }
+        });
+      }, 1200);
+      this._gsapReady = true;
+      this._rewire = setInterval(() => {
+        if (!(this.props.animacoes ?? true) || !this.screenReady() || this.isAdminScreen()) return;
+        const stale = !this._ctx || ScrollTrigger.getAll().length === 0 || (this._wiredRoot && !document.contains(this._wiredRoot));
+        if (stale) { this._wired = false; this.schedulePage(false); }
+      }, 700);
+      if (this.props.animacoes ?? true) { const hd = document.querySelector('header'); if (hd) gsap.fromTo(hd, { y: -72, opacity: 0 }, { y: 0, opacity: 1, duration: .8, ease: 'power3.out', clearProps: 'opacity,transform', onInterrupt: () => gsap.set(hd, { clearProps: 'opacity,transform' }) }); }
+      this.schedulePage(false);
+    };
+    tryInit();
+  }
+  isAdminScreen() { return !!document.querySelector('main [data-admin]'); }
+  screenReady() { const s = document.querySelector('main [data-screen-label]'); return !!(s && (s.querySelector('[data-hero],[data-reveal]') || s.hasAttribute('data-admin'))); }
+  schedulePage(transition) {
+    if (!this._gsapReady) return;
+    if (!transition && this._wired && this._ctx) return;
+    if (!this.screenReady()) { clearTimeout(this._waitTimer); this._waitTimer = setTimeout(() => this.schedulePage(transition), 40); return; }
+    clearTimeout(this._waitTimer);
+    this._wired = true; this._wiredRoot = document.querySelector('main [data-screen-label]');
+    this.runPage(transition);
+  }
+  killCtx() {
+    if (this._ctx) { this._ctx.revert(); this._ctx = null; }
+    if (!window.gsap) return;
+    const main = document.querySelector('main'), foot = document.querySelector('footer');
+    const els = [main, ...(main ? main.querySelectorAll('[data-hero] *, [data-reveal] *, [data-float], [data-marquee-track]') : []), ...(foot ? foot.querySelectorAll('*') : [])].filter(Boolean);
+    if (els.length) gsap.set(els, { clearProps: 'opacity,transform' });
+  }
+  runPage(transition) {
+    if (!this._gsapReady) return;
+    this.killCtx();
+    const main = document.querySelector('main');
+    if (!this.screenReady()) return;
+    if (!(this.props.animacoes ?? true) || this.isAdminScreen()) { ScrollTrigger.refresh(); return; }
+    const cp = 'opacity,transform';
+    const pageKey = this.state.page; const intro = transition || this._introPage !== pageKey; this._introPage = pageKey;
+    this._ctx = gsap.context(() => {
+      if (main && intro) gsap.fromTo(main, { opacity: transition ? 0 : 1 }, { opacity: 1, duration: .45, ease: 'power1.out', clearProps: 'opacity' });
+      document.querySelectorAll('[data-hero]').forEach(hero => {
+        const multi = hero.children.length > 1;
+        const text = Array.from(hero.children[0].children);
+        const media = Array.from(hero.children).slice(1);
+        const floats = hero.querySelectorAll('[data-float]');
+        if (intro) {
+          const tl = gsap.timeline({ delay: transition ? .1 : .25 });
+          tl.fromTo(text, { y: 48, opacity: 0 }, { y: 0, opacity: 1, duration: 1, stagger: .12, ease: 'power3.out', clearProps: cp });
+          if (multi) tl.fromTo(media, { y: 40, opacity: 0, scale: .96 }, { y: 0, opacity: 1, scale: 1, duration: 1.1, ease: 'power3.out', clearProps: 'opacity' }, '-=.75');
+          if (floats.length) tl.fromTo(floats, { y: 20, opacity: 0, scale: .9 }, { y: 0, opacity: 1, scale: 1, duration: .7, stagger: .15, ease: 'back.out(1.6)', clearProps: 'opacity' }, '-=.5');
+        }
+        if (multi) gsap.to(media, { y: -40, ease: 'none', scrollTrigger: { trigger: hero, start: 'top top', end: 'bottom top', scrub: true } });
+        if (floats.length) gsap.to(floats, { y: -10, duration: 2.4, ease: 'sine.inOut', yoyo: true, repeat: -1, stagger: .4, delay: intro ? 2 : 0 });
+      });
+      const track = document.querySelector('[data-marquee-track]');
+      if (track) { const half = track.scrollWidth / 2; if (half > 0) gsap.fromTo(track, { x: 0 }, { x: -half, duration: 28, ease: 'none', repeat: -1 }); }
+      document.querySelectorAll('[data-reveal] figure').forEach(fig => gsap.to(fig, { y: -12, ease: 'none', scrollTrigger: { trigger: fig, start: 'top bottom', end: 'bottom top', scrub: 1 } }));
+      document.querySelectorAll('[data-reveal]').forEach(s => {
+        const targets = [];
+        Array.from(s.children).forEach(c => { targets.push(c); });
+        s.querySelectorAll('[data-grid],[data-grid-produtos]').forEach(g => { const i = targets.indexOf(g); if (i > -1) targets.splice(i, 1, ...g.children); });
+        if (intro) gsap.fromTo(targets, { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: .9, stagger: .07, ease: 'power3.out', clearProps: cp, scrollTrigger: { trigger: s, start: 'top 82%', once: true } });
+        else ScrollTrigger.create({ trigger: s, start: 'top 82%' });
+      });
+      const foot = document.querySelector('footer');
+      if (foot && intro) gsap.fromTo(foot.children[0].children, { y: 30, opacity: 0 }, { y: 0, opacity: 1, duration: .8, stagger: .08, ease: 'power3.out', clearProps: cp, scrollTrigger: { trigger: foot, start: 'top 90%', once: true } });
+      document.querySelectorAll('[data-count]').forEach(el => {
+        const end = +el.dataset.count || 0, pre = el.dataset.prefix || '', suf = el.dataset.suffix || '', o = { v: 0 };
+        gsap.to(o, { v: end, duration: 1.8, ease: 'power2.out', onUpdate: () => { el.textContent = pre + Math.round(o.v) + suf; }, scrollTrigger: { trigger: el, start: 'top 88%', once: true } });
+      });
+      const fab = document.querySelector('[data-fab]');
+      if (fab && !transition && intro) gsap.from(fab, { scale: 0, opacity: 0, duration: .7, ease: 'back.out(1.8)', delay: 1.2 });
+    });
+    ScrollTrigger.refresh();
+  }
+  runGrid() {
+    if (!this._gsapReady) return;
+    const items = document.querySelectorAll('[data-grid-produtos] > *');
+    if (items.length) gsap.fromTo(items, { y: 24, opacity: 0 }, { y: 0, opacity: 1, duration: .55, stagger: .05, ease: 'power3.out', overwrite: 'auto', clearProps: 'opacity,transform' });
+  }
+
+  // ---------- admin helpers ----------
+  campo(obj, key, label, tipo = 'text', extra = {}) {
+    const cms = this.state.cms; const save = () => this.salvarCms(cms);
+    const v = obj[key] ?? (tipo === 'bool' ? false : '');
+    const c = { label, col: extra.col || 'auto', placeholder: extra.placeholder || '', rows: extra.rows || 3, isText: tipo === 'text', isArea: tipo === 'area', isSelect: tipo === 'select', isBool: tipo === 'bool', isImg: tipo === 'img', valor: v, opcoes: extra.opcoes || [] };
+    if (tipo === 'bool') { c.toggle = () => { obj[key] = !obj[key]; save(); }; c.swBg = v ? '#25D366' : '#c9c6c1'; c.swLeft = v ? '16px' : '2px'; c.boolLabel = v ? (extra.on || 'ativo') : (extra.off || 'inativo'); }
+    else if (tipo === 'img') { c.bg = bgOf(v); c.vazio = !v; c.temImg = !!v; c.btnLabel = v ? 'trocar foto' : 'enviar foto'; c.onFile = (e) => { const f = e.target.files && e.target.files[0]; if (!f) return; this.lerImagem(f).then(d => { obj[key] = d; save(); }).catch(() => this.aviso('Não foi possível ler a imagem.')); e.target.value = ''; }; c.limpar = () => { obj[key] = ''; save(); }; }
+    else c.onChange = (e) => { obj[key] = e.target.value; save(); };
+    return c;
+  }
+  itensLista(key, campos, tituloDe) {
+    const cms = this.state.cms, arr = cms[key] || (cms[key] = []);
+    return arr.map((it, i) => ({
+      temCabecalho: true, titulo: tituloDe(it) || `item ${i + 1}`, campos: campos(it),
+      remover: () => { if (confirm('Remover este item?')) { arr.splice(i, 1); this.salvarCms(cms); } },
+      duplicar: () => { arr.splice(i + 1, 0, JSON.parse(JSON.stringify(it))); this.salvarCms(cms); },
+      subir: () => { if (i > 0) { [arr[i - 1], arr[i]] = [arr[i], arr[i - 1]]; this.salvarCms(cms); } },
+      descer: () => { if (i < arr.length - 1) { [arr[i + 1], arr[i]] = [arr[i], arr[i + 1]]; this.salvarCms(cms); } },
+    }));
+  }
+  bloco(key, titulo, desc, campos, tituloDe, novo, addLabel) {
+    const cms = this.state.cms; const itens = this.itensLista(key, campos, tituloDe);
+    return { titulo, desc, temTitulo: !!titulo, itens, vazio: itens.length === 0, podeAdd: !!novo, addLabel, adicionar: () => { (cms[key] || (cms[key] = [])).unshift(novo()); this.salvarCms(cms); } };
+  }
+  blocoInfo(titulo, campos, desc = '') { return { titulo, desc, temTitulo: true, itens: [{ temCabecalho: false, campos }], vazio: false, podeAdd: false }; }
+
+  renderVals() {
+    const { page: p, filtro: f, form, menuOpen, faqOpen, w, cms, admin } = this.state;
+    const info = cms.info;
+    const wa = String(info.whatsapp || '').replace(/\D/g, '');
+    const waBase = 'https://wa.me/55' + wa;
+    const waMsg = (t) => waBase + '?text=' + encodeURIComponent(t);
+    const waLink = waMsg(info.msgWhats || 'Olá! Vim pelo site da Ótica Digital Look e gostaria de atendimento.');
+    const waReceita = waMsg(info.msgReceita || 'Olá! Gostaria de um orçamento. Vou enviar a foto da minha receita.');
+    const whatsappFmt = wa.length === 11 ? `(${wa.slice(0, 2)}) ${wa.slice(2, 7)}-${wa.slice(7)}` : wa.length === 10 ? `(${wa.slice(0, 2)}) ${wa.slice(2, 6)}-${wa.slice(6)}` : wa;
+    const end = `${info.endereco}, ${info.bairroCidade}, ${info.cep}`;
+    const mapaLink = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(end);
+    const mapaEmbed = 'https://www.google.com/maps?q=' + encodeURIComponent(end) + '&output=embed';
+    const googleLink = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent('Ótica Digital Look ' + info.bairroCidade);
+    const igLink = 'https://instagram.com/' + info.instagram;
+    // horário / status
+    const toMin = (s) => { const m = /^(\d{1,2}):(\d{2})$/.exec(String(s || '').trim()); return m ? +m[1] * 60 + +m[2] : null; };
+    const fmtH = (s) => { const m = toMin(s); if (m == null) return s; const h = Math.floor(m / 60), mi = m % 60; return mi ? `${h}h${String(mi).padStart(2, '0')}` : `${h}h`; };
+    const d = new Date(new Date(this.state.now).toLocaleString('en-US', { timeZone: 'America/Sao_Paulo' }));
+    const dia = d.getDay(), min = d.getHours() * 60 + d.getMinutes();
+    const aS = toMin(info.abreSemana) ?? 510, fS = toMin(info.fechaSemana) ?? 1080, aB = toMin(info.abreSabado) ?? 510, fB = toMin(info.fechaSabado) ?? 750;
+    const hojeIso = `${d.getFullYear()}-${num2(d.getMonth() + 1)}-${num2(d.getDate())}`;
+    const fechHoje = (cms.fechamentos || []).find(x => x.data === hojeIso);
+    const aberto = !fechHoje && ((dia >= 1 && dia <= 5 && min >= aS && min < fS) || (dia === 6 && min >= aB && min < fB));
+    const abreTxt = fmtH(info.abreSemana);
+    const statusTexto = fechHoje ? `fechado hoje · ${fechHoje.motivo || 'feriado'}` : aberto ? 'aberto agora' : (dia === 0 || (dia === 6 && min >= fB)) ? `fechado · abre segunda ${abreTxt}` : (dia === 6 ? (min < aB ? `fechado · abre às ${fmtH(info.abreSabado)}` : `fechado · abre segunda ${abreTxt}`) : min < aS ? `fechado · abre às ${abreTxt}` : (dia === 5 ? `fechado · abre sábado ${fmtH(info.abreSabado)}` : `fechado · abre amanhã ${abreTxt}`));
+    const horarioSemana = `${fmtH(info.abreSemana)} às ${fmtH(info.fechaSemana)}`, horarioSabado = `${fmtH(info.abreSabado)} às ${fmtH(info.fechaSabado)}`;
+    // nav
+    const pages = [['inicio', 'início'], ['sobre', 'sobre'], ['armacoes', 'armações'], ['lentes', 'lentes de contato'], ['convenios', 'convênios'], ['blog', 'blog'], ['contato', 'contato']];
+    const pAtiva = p === 'post' ? 'blog' : p;
+    const navItems = pages.map(([id, label]) => ({ label, go: this.go(id), color: pAtiva === id ? '#fff' : 'rgba(255,255,255,.72)', line: pAtiva === id ? '#fff' : 'transparent' }));
+    // produtos
+    const filtrosDef = [['todos', 'todos'], ['grau', 'grau'], ['sol', 'sol'], ['infantil', 'infantil'], ['esportivo', 'esportivo']];
+    const catLabel = Object.fromEntries(filtrosDef);
+    const produtosF = (f === 'todos' ? cms.produtos : cms.produtos.filter(x => x.cat === f)).map(x => ({ ...x, catLabel: catLabel[x.cat] || x.cat, bg: bgOf(x.img), vazio: !x.img, destaque: !!x.destaque, selo: x.selo || 'destaque', preco: x.preco || '', wa: waMsg(`Olá! Tenho interesse na armação "${x.nome}" (${x.marca}). Pode me passar mais informações?`) }));
+    const fechamentosProx = (cms.fechamentos || []).map(x => ({ ...x, dataFmt: fmtData(x.data), _t: new Date((x.data || '') + 'T12:00:00').getTime() })).filter(x => !isNaN(x._t) && x._t >= hojeIsoTs(hojeIso)).sort((a, b) => a._t - b._t).slice(0, 4);
+    function hojeIsoTs(iso) { return new Date(iso + 'T00:00:00').getTime(); }
+    // eventos (futuros primeiro, ordenados)
+    const hoje = new Date(); hoje.setHours(0, 0, 0, 0);
+    const eventos = cms.eventos.map(e => { const dt = e.data ? new Date(e.data + 'T12:00:00') : null; const ok = dt && !isNaN(dt); return { ...e, _t: ok ? dt.getTime() : Infinity, dia: ok ? String(dt.getDate()).padStart(2, '0') : '—', mes: ok ? MESES[dt.getMonth()] : '', bg: bgOf(e.img), temImg: !!e.img, passado: ok && dt < hoje }; }).filter(e => !e.passado).sort((a, b) => a._t - b._t);
+    const promosAtivas = cms.promocoes.filter(x => x.ativa !== false).map(x => ({ ...x, bg: bgOf(x.img), temImg: !!x.img }));
+    const posts = cms.posts.map((x, i) => ({ ...x, bg: bgOf(x.img), vazio: !x.img, temImg: !!x.img, temResumo: !!x.resumo, abrir: this.abrirPost(i), conteudo: x.conteudo || x.resumo || '' }));
+    const artigo = posts[Math.min(this.state.postIdx, posts.length - 1)] || { titulo: '', conteudo: '' };
+    const faqDef = cms.faq || [];
+    const numerar = (arr) => (arr || []).map((x, i) => ({ ...x, n: num2(i + 1) }));
+    const galeria = (cms.galeria || []).filter(g => g.img);
+    const setF = (k) => (e) => this.setState({ form: { ...this.state.form, [k]: e.target.value } });
+    const wide = w >= 980, mobile = w < 640;
+    const selos = lista(info.selos);
+    const fotos = Object.fromEntries(Object.entries(cms.fotos).map(([k, v]) => [k, { bg: bgOf(v), vazio: !v }]));
+
+    // ---------- admin ----------
+    const senhaAtual = (() => { try { return localStorage.getItem(SENHA_KEY) || 'digitallook'; } catch (e) { return 'digitallook'; } })();
+    const setAdmin = (patch) => this.setState({ admin: { ...this.state.admin, ...patch } });
+    const tabsDef = [
+      ['visao', 'visão geral', 'Resumo do site e o que ainda falta preencher.', 'inicio'],
+      ['info', 'informações', 'Dados da loja, horários, redes e textos gerais.', 'contato'], ['home', 'página inicial', 'Capa, selos, faixa de aviso e "como funciona".', 'inicio'],
+      ['fotos', 'fotos e galeria', 'Imagens das seções fixas e a galeria da loja.', 'sobre'],
+      ['promocoes', 'promoções', 'Aparecem na página de convênios. Desative sem apagar.', 'convenios'], ['eventos', 'eventos', 'Futuros aparecem na home e em convênios; passados somem sozinhos.', 'convenios'],
+      ['produtos', 'armações', 'Vitrine com filtro por categoria, selo de destaque e preço opcional.', 'armacoes'], ['lentes', 'lentes de contato', 'Tipos de lente, passo a passo e perguntas frequentes.', 'lentes'],
+      ['sobre', 'sobre e equipe', 'História, linha do tempo, diferenciais e equipe.', 'sobre'], ['depoimentos', 'depoimentos', 'Avaliações exibidas na home.', 'inicio'],
+      ['posts', 'blog', 'Artigos completos. O primeiro é o destaque.', 'blog'], ['config', 'configurações', 'Senha, backup e acesso.', 'admin'],
+    ];
+    const eventosFuturos = eventos.length;
+    const counts = { promocoes: promosAtivas.length, eventos: eventosFuturos, produtos: cms.produtos.length, depoimentos: cms.depoimentos.length, posts: cms.posts.length, fotos: (cms.galeria || []).length + Object.values(cms.fotos).filter(Boolean).length };
+    const adminTabs = tabsDef.map(([id, label]) => ({ label, count: counts[id] != null ? String(counts[id]) : '', set: () => setAdmin({ tab: id }), bg: admin.tab === id ? '#1c1a1b' : 'transparent', fg: admin.tab === id ? '#fff' : '#1c1a1b' }));
+    const tabAtual = tabsDef.find(t => t[0] === admin.tab) || tabsDef[0];
+    const catOpcoes = filtrosDef.slice(1).map(([v, l]) => ({ v, l }));
+    const C = (o, k, l, t, x) => this.campo(o, k, l, t, x), full = { col: '1 / -1' };
+    let adminBlocos = [];
+    if (admin.tab === 'info') adminBlocos = [
+      this.blocoInfo('contato e endereço', [C(info, 'whatsapp', 'WhatsApp (só números, com DDD)', 'text', { placeholder: '18997637896' }), C(info, 'instagram', 'Instagram (sem @)'), C(info, 'facebook', 'Facebook (link completo, opcional)'), C(info, 'endereco', 'Endereço'), C(info, 'bairroCidade', 'Bairro, cidade – UF'), C(info, 'cep', 'CEP'), C(info, 'cnpj', 'CNPJ'), C(info, 'cidade', 'Cidade (rodapé/capa, minúsculas)', 'text', { placeholder: 'rinópolis · sp' }), C(info, 'cidadeNome', 'Nome da cidade (seção mapa)')]),
+      this.blocoInfo('horário de funcionamento', [C(info, 'abreSemana', 'Seg–sex abre (HH:MM)'), C(info, 'fechaSemana', 'Seg–sex fecha (HH:MM)'), C(info, 'abreSabado', 'Sábado abre (HH:MM)'), C(info, 'fechaSabado', 'Sábado fecha (HH:MM)')], 'O site mostra "aberto agora" automaticamente com base nestes horários.'),
+      this.bloco('fechamentos', 'feriados e fechamentos', 'Nesses dias o site mostra "fechado" e avisa na página de contato.', it => [C(it, 'data', 'Data (AAAA-MM-DD)', 'text', { placeholder: '2026-12-25' }), C(it, 'motivo', 'Motivo', 'text', { placeholder: 'Natal' })], it => fmtData(it.data) + (it.motivo ? ' · ' + it.motivo : ''), () => ({ data: '', motivo: '' }), 'adicionar fechamento'),
+      this.blocoInfo('mensagens do WhatsApp', [C(info, 'msgWhats', 'Mensagem padrão ao clicar em "falar no WhatsApp"', 'area', { ...full, rows: 2 }), C(info, 'msgReceita', 'Mensagem ao clicar em "enviar receita"', 'area', { ...full, rows: 2 })]),
+      this.blocoInfo('listas', [C(info, 'convenios', 'Convênios aceitos (separados por vírgula)', 'area', { ...full, rows: 2 }), C(info, 'marcas', 'Marcas (vírgula)', 'area', { ...full, rows: 2 }), C(info, 'pagamentos', 'Formas de pagamento (vírgula)', 'area', { ...full, rows: 2 }), C(info, 'parcelas', 'Parcelas sem juros (número)')]),
+      this.blocoInfo('busca e redes (SEO)', [C(info, 'siteTitulo', 'Título do site (aba do navegador / Google)', 'text', full), C(info, 'siteDescricao', 'Descrição curta para o Google', 'area', { ...full, rows: 2 })]),
+    ];
+    if (admin.tab === 'home') adminBlocos = [
+      this.blocoInfo('capa', [C(info, 'heroLinha1', 'Título – linha 1'), C(info, 'heroLinha2', 'Título – linha 2'), C(info, 'heroDestaque', 'Título – destaque (negrito)'), C(info, 'heroTexto', 'Subtítulo', 'area', { ...full, rows: 2 }), C(info, 'selos', 'Selos abaixo dos botões (vírgula)', 'text', full)]),
+      this.blocoInfo('faixa de aviso no topo', [C(info, 'faixaAtiva', 'Exibir faixa', 'bool', { on: 'exibindo', off: 'oculta' }), C(info, 'faixaPromo', 'Texto da faixa', 'text', full)]),
+      this.blocoInfo('resumo "sobre" na home', [C(info, 'sobreTitulo', 'Título', 'text', full), C(info, 'sobreResumo', 'Resumo', 'area', { ...full, rows: 2 }), C(info, 'anos', 'Anos de história (número)')]),
+      this.bloco('etapas', 'como funciona', 'Passo a passo exibido na home.', it => [C(it, 'titulo', 'Título'), C(it, 'texto', 'Texto', 'area', { ...full, rows: 2 })], it => it.titulo, () => ({ titulo: 'nova etapa', texto: '' }), 'adicionar etapa'),
+    ];
+    if (admin.tab === 'fotos') adminBlocos = [
+      this.blocoInfo('fotos das seções', [C(cms.fotos, 'hero', 'Capa da home (cliente / loja)', 'img'), C(cms.fotos, 'loja', 'Fachada ou interior (home)', 'img'), C(cms.fotos, 'lentes', 'Capa de lentes de contato', 'img'), C(cms.fotos, 'equipe', 'Equipe / fundadores (página sobre)', 'img'), C(cms.fotos, 'cat_armacoes', 'Card "armações" (home)', 'img'), C(cms.fotos, 'cat_sol', 'Card "óculos de sol" (home)', 'img'), C(cms.fotos, 'cat_lentes', 'Card "lentes de contato" (home)', 'img')]),
+      this.bloco('galeria', 'galeria da loja', 'Aparece na página "sobre". Fotos do espaço, vitrines e bastidores.', it => [C(it, 'img', 'Foto', 'img'), C(it, 'legenda', 'Legenda (opcional)')], it => it.legenda || 'foto', () => ({ img: '', legenda: '' }), 'adicionar foto'),
+    ];
+    if (admin.tab === 'promocoes') adminBlocos = [this.bloco('promocoes', '', '', it => [C(it, 'ativa', 'Status', 'bool', { on: 'ativa no site', off: 'oculta' }), C(it, 'tag', 'Etiqueta (ex.: outubro)'), C(it, 'titulo', 'Título', 'text', full), C(it, 'texto', 'Descrição', 'area', { ...full, rows: 3 }), C(it, 'img', 'Imagem (opcional)', 'img', full)], it => it.titulo, () => ({ tag: 'novo', titulo: 'Nova promoção', texto: '', ativa: true, img: '' }), 'adicionar promoção')];
+    if (admin.tab === 'eventos') adminBlocos = [this.bloco('eventos', '', '', it => [C(it, 'titulo', 'Título', 'text', full), C(it, 'data', 'Data (AAAA-MM-DD)', 'text', { placeholder: '2026-11-08' }), C(it, 'hora', 'Horário', 'text', { placeholder: '9h às 13h' }), C(it, 'local', 'Local', 'text', { placeholder: 'na loja' }), C(it, 'texto', 'Descrição', 'area', { ...full, rows: 3 }), C(it, 'img', 'Imagem (opcional)', 'img', full)], it => (it.data ? fmtData(it.data) + ' · ' : '') + it.titulo, () => ({ titulo: 'Novo evento', data: '', hora: '', local: 'na loja', texto: '', img: '' }), 'adicionar evento')];
+    if (admin.tab === 'produtos') adminBlocos = [this.bloco('produtos', '', '', it => [C(it, 'nome', 'Nome do modelo'), C(it, 'marca', 'Marca / linha'), C(it, 'cat', 'Categoria', 'select', { opcoes: catOpcoes }), C(it, 'preco', 'Preço (opcional)', 'text', { placeholder: 'a partir de R$ 299' }), C(it, 'destaque', 'Selo de destaque', 'bool', { on: 'com selo', off: 'sem selo' }), C(it, 'selo', 'Texto do selo', 'text', { placeholder: 'novo' }), C(it, 'img', 'Foto', 'img', full)], it => it.nome, () => ({ nome: 'Novo modelo', marca: '', cat: 'grau', img: '', preco: '', destaque: false, selo: 'novo' }), 'adicionar armação')];
+    if (admin.tab === 'lentes') adminBlocos = [
+      this.bloco('tiposLente', 'tipos de lente', '', it => [C(it, 'nome', 'Nome'), C(it, 'ideal', 'Indicação (ex.: ideal para uso diário)'), C(it, 'texto', 'Descrição', 'area', { ...full, rows: 2 })], it => it.nome, () => ({ nome: 'novo tipo', texto: '', ideal: '' }), 'adicionar tipo'),
+      this.bloco('passos', 'como funciona (lentes)', '', it => [C(it, 'titulo', 'Título'), C(it, 'texto', 'Texto', 'area', { ...full, rows: 2 })], it => it.titulo, () => ({ titulo: 'novo passo', texto: '' }), 'adicionar passo'),
+      this.bloco('faq', 'perguntas frequentes', '', it => [C(it, 'p', 'Pergunta', 'text', full), C(it, 'r', 'Resposta', 'area', { ...full, rows: 3 })], it => it.p, () => ({ p: 'Nova pergunta?', r: '' }), 'adicionar pergunta'),
+    ];
+    if (admin.tab === 'sobre') adminBlocos = [
+      this.blocoInfo('história', [C(info, 'sobreTitulo', 'Título da página', 'text', full), C(info, 'sobreTexto', 'História completa (parágrafos separados por linha em branco)', 'area', { ...full, rows: 7 })]),
+      this.bloco('marcos', 'linha do tempo', '', it => [C(it, 'ano', 'Ano'), C(it, 'texto', 'O que aconteceu', 'area', { ...full, rows: 2 })], it => it.ano, () => ({ ano: String(new Date().getFullYear()), texto: '' }), 'adicionar marco'),
+      this.bloco('diferenciais', 'por que a digital look', '', it => [C(it, 'titulo', 'Título'), C(it, 'texto', 'Texto', 'area', { ...full, rows: 2 })], it => it.titulo, () => ({ titulo: 'novo diferencial', texto: '' }), 'adicionar diferencial'),
+      this.bloco('equipe', 'equipe', '', it => [C(it, 'nome', 'Nome'), C(it, 'cargo', 'Cargo'), C(it, 'img', 'Foto', 'img', full)], it => it.nome, () => ({ nome: 'Nome', cargo: 'Cargo', img: '' }), 'adicionar pessoa'),
+    ];
+    if (admin.tab === 'depoimentos') adminBlocos = [this.bloco('depoimentos', '', '', it => [C(it, 'nome', 'Nome do cliente'), C(it, 'item', 'O que comprou'), C(it, 'texto', 'Depoimento', 'area', { ...full, rows: 3 })], it => it.nome, () => ({ nome: 'Cliente', item: '', texto: '' }), 'adicionar depoimento')];
+    if (admin.tab === 'posts') adminBlocos = [this.bloco('posts', '', '', it => [C(it, 'titulo', 'Título', 'text', full), C(it, 'tag', 'Categoria'), C(it, 'data', 'Data (texto)', 'text', { placeholder: '08 out 2026' }), C(it, 'leitura', 'Tempo de leitura', 'text', { placeholder: '4 min' }), C(it, 'resumo', 'Resumo (aparece na lista)', 'area', { ...full, rows: 2 }), C(it, 'conteudo', 'Texto completo do artigo', 'area', { ...full, rows: 10 }), C(it, 'img', 'Imagem', 'img', full)], it => it.titulo, () => ({ tag: 'dicas', data: fmtData(hojeIso), leitura: '3 min', titulo: 'Novo artigo', resumo: '', conteudo: '', img: '' }), 'adicionar artigo')];
+    let uso = ''; try { uso = (new Blob([localStorage.getItem(CMS_KEY) || '']).size / 1024 / 1024).toFixed(2) + ' MB de ~5 MB'; } catch (e) {}
+    // dashboard
+    const irTab = (id) => () => setAdmin({ tab: id });
+    const fotosFixas = Object.values(cms.fotos), fotosOk = fotosFixas.filter(Boolean).length;
+    const pend = [
+      [fotosOk === fotosFixas.length, fotosOk === fotosFixas.length ? 'Todas as fotos das seções enviadas' : `Enviar fotos das seções (${fotosOk} de ${fotosFixas.length})`, 'fotos'],
+      [!cms.equipe.some(e => /nome sobrenome/i.test(e.nome)), 'Preencher nomes reais da equipe', 'sobre'],
+      [!/^Marca \d/.test(lista(info.marcas)[0] || ''), 'Informar as marcas que trabalha', 'info'],
+      [info.cnpj !== '00.000.000/0001-00', 'Informar o CNPJ', 'info'],
+      [cms.produtos.some(x => x.img), 'Adicionar fotos das armações', 'produtos'],
+      [eventosFuturos > 0, eventosFuturos > 0 ? 'Há eventos futuros publicados' : 'Nenhum evento futuro cadastrado', 'eventos'],
+      [promosAtivas.length > 0, promosAtivas.length > 0 ? 'Há promoções ativas' : 'Nenhuma promoção ativa', 'promocoes'],
+      [senhaAtual !== 'digitallook', 'Trocar a senha inicial', 'config'],
+    ].map(([ok, texto, tab]) => ({ ok, texto, bg: ok ? '#25D366' : '#c9c6c1', ir: irTab(tab) })).sort((a, b) => a.ok - b.ok);
+    const dashStats = [['promoções ativas', promosAtivas.length, 'promocoes'], ['eventos futuros', eventosFuturos, 'eventos'], ['armações', cms.produtos.length, 'produtos'], ['artigos', cms.posts.length, 'posts'], ['fotos enviadas', counts.fotos + cms.produtos.filter(x => x.img).length, 'fotos']].map(([label, valor, tab]) => ({ label, valor: String(valor), ir: irTab(tab) }));
+    const dashAtalhos = [['nova promoção', 'promocoes'], ['novo evento', 'eventos'], ['nova armação', 'produtos'], ['novo artigo', 'posts'], ['trocar foto da capa', 'fotos'], ['alterar horário', 'info']].map(([label, tab]) => ({ label, ir: irTab(tab) }));
+    const ultima = cms.meta && cms.meta.atualizadoEm ? new Date(cms.meta.atualizadoEm) : null;
+    const ultimaAlteracao = ultima && !isNaN(ultima) ? `última alteração: ${num2(ultima.getDate())}/${num2(ultima.getMonth() + 1)} às ${num2(ultima.getHours())}:${num2(ultima.getMinutes())}` : '';
+
+    return {
+      info, fotos, selos, promo: (this.props.promocaoAtiva ?? true) && info.faixaAtiva !== false && !!info.faixaPromo, flutuante: (this.props.botaoFlutuante ?? true) && p !== 'admin',
+      wide, narrow: !wide, mobile, desktop: !mobile, menuOpen, menuMidOpacity: menuOpen ? 0 : 1, toggleMenu: () => this.setState({ menuOpen: !menuOpen }),
+      statusCor: aberto ? '#25D366' : '#c9c6c1', statusTexto, horarioSemana, horarioSabado,
+      mostrarTopo: !!this.state.mostrarTopo, irTopo: () => window.scrollTo({ top: 0, behavior: 'smooth' }), toast: this.state.toast, salvoAgora: this.state.salvoAgora,
+      waLink, waReceita, whatsappFmt, mapaLink, mapaEmbed, googleLink, igLink, navItems,
+      isInicio: p === 'inicio', isSobre: p === 'sobre', isArmacoes: p === 'armacoes', isLentes: p === 'lentes', isConvenios: p === 'convenios', isBlog: p === 'blog', isContato: p === 'contato', isAdmin: p === 'admin',
+      goInicio: this.go('inicio'), goSobre: this.go('sobre'), goArmacoes: this.go('armacoes'), goLentes: this.go('lentes'), goConvenios: this.go('convenios'), goBlog: this.go('blog'), goContato: this.go('contato'), goAdmin: this.go('admin'),
+      cats: [
+        { nome: 'armações', desc: 'Grau e design para todo rosto', foto: 'armações em expositor', go: this.go('armacoes'), bg: bgOf(cms.fotos.cat_armacoes), vazio: !cms.fotos.cat_armacoes },
+        { nome: 'óculos de sol', desc: 'Proteção UV com estilo', foto: 'óculos de sol', go: this.go('armacoes'), bg: bgOf(cms.fotos.cat_sol), vazio: !cms.fotos.cat_sol },
+        { nome: 'lentes de contato', desc: 'Conforto diário e descartáveis', foto: 'lentes de contato', go: this.go('lentes'), bg: bgOf(cms.fotos.cat_lentes), vazio: !cms.fotos.cat_lentes },
+      ],
+      marqueeItens: (() => { const b = [...selos, `lentes em até 48h`, 'óculos de sol com proteção UV', 'lentes de contato']; return [...b, ...b]; })(),
+      convenios: lista(info.convenios), conveniosHome: lista(info.convenios).slice(0, 8), marcas: lista(info.marcas), pagamentos: lista(info.pagamentos),
+      etapas: numerar(cms.etapas), galeria, temGaleria: galeria.length > 0, artigo, isPost: p === 'post', fechamentosProx, temFechamentos: fechamentosProx.length > 0, fbLink: info.facebook || '',
+      depoimentos: cms.depoimentos.map(x => ({ ...x, inicial: (x.nome || '?').trim().charAt(0).toUpperCase() })),
+      eventos, eventosHome: eventos.slice(0, 2), temEventos: eventos.length > 0, semEventos: eventos.length === 0,
+      promosAtivas, semPromos: promosAtivas.length === 0,
+      postsHome: posts.slice(0, 3), posts: posts.slice(1), destaque: posts[0] || {}, temDestaque: posts.length > 0,
+      marcos: cms.marcos || [], diferenciais: numerar(cms.diferenciais),
+      equipe: cms.equipe.map(x => ({ ...x, bg: bgOf(x.img), vazio: !x.img })),
+      filtros: filtrosDef.map(([id, label]) => ({ label, ativo: f === id, set: () => this.setState({ filtro: id }), bg: f === id ? '#1c1a1b' : '#fff', fg: f === id ? '#fff' : '#1c1a1b' })),
+      produtos: produtosF, totalProdutos: produtosF.length + (produtosF.length === 1 ? ' modelo' : ' modelos'),
+      tiposLente: cms.tiposLente || [], passos: numerar(cms.passos),
+      faq: faqDef.map((q, i) => ({ ...q, aberta: faqOpen === i, rot: faqOpen === i ? '45deg' : '0deg', toggle: () => this.setState({ faqOpen: faqOpen === i ? -1 : i }) })),
+      form, setNome: setF('nome'), setAssunto: setF('assunto'), setMsg: setF('msg'),
+      enviar: (e) => { e.preventDefault(); const t = `Olá! Sou ${form.nome || '...'} e tenho interesse em: ${form.assunto}.${form.msg ? '\n' + form.msg : ''}`; window.open(waMsg(t), '_blank'); },
+      // admin
+      adminDeslogado: !admin.logado, adminLogado: admin.logado, adminSenhaInput: admin.senha, adminErro: admin.erro,
+      setSenhaInput: (e) => setAdmin({ senha: e.target.value, erro: false }),
+      adminEntrar: (e) => { e.preventDefault(); if (admin.senha === senhaAtual) { try { (admin.lembrar ? localStorage : sessionStorage).setItem(SESSAO_KEY, '1'); } catch (x) {} setAdmin({ logado: true, senha: '', erro: false }); this.aviso('Bem-vindo! Alterações são salvas automaticamente.'); } else setAdmin({ erro: true }); },
+      adminSair: () => { try { sessionStorage.removeItem(SESSAO_KEY); localStorage.removeItem(SESSAO_KEY); } catch (x) {} setAdmin({ logado: false }); },
+      adminLembrar: !!admin.lembrar, toggleLembrar: () => setAdmin({ lembrar: !admin.lembrar }), lembrarBg: admin.lembrar ? '#25D366' : '#c9c6c1', lembrarLeft: admin.lembrar ? '16px' : '2px',
+      adminTabs, adminTabTitulo: tabAtual[1], adminTabDesc: tabAtual[2], adminBlocos, adminIsConfig: admin.tab === 'config', adminIsVisao: admin.tab === 'visao',
+      adminVerNoSite: this.go(tabAtual[3] === 'admin' ? 'inicio' : tabAtual[3]), adminUrl: (typeof location !== 'undefined' ? location.origin + location.pathname : '') + '#admin',
+      podeDesfazer: this.state.undoN > 0, desfazer: () => this.desfazer(), ultimaAlteracao, dashStats, dashPendencias: pend, dashAtalhos,
+      adminGridCols: wide ? 'minmax(0,220px) minmax(0,1fr)' : 'minmax(0,1fr)', adminAsidePos: wide ? 'sticky' : 'static', adminTabsDir: wide ? 'column' : 'row',
+      novaSenha: admin.novaSenha, setNovaSenha: (e) => setAdmin({ novaSenha: e.target.value }),
+      salvarSenha: () => { const s = (admin.novaSenha || '').trim(); if (s.length < 4) return this.aviso('Use ao menos 4 caracteres.'); try { localStorage.setItem(SENHA_KEY, s); } catch (x) {} setAdmin({ novaSenha: '' }); this.aviso('Senha atualizada.'); },
+      exportar: () => { const blob = new Blob([JSON.stringify(cms, null, 2)], { type: 'application/json' }); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'digital-look-backup.json'; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 2000); },
+      importar: (e) => { const f = e.target.files && e.target.files[0]; if (!f) return; const r = new FileReader(); r.onload = () => { try { this.salvarCms(mesclar(JSON.parse(r.result))); this.aviso('Backup importado.'); } catch (x) { this.aviso('Arquivo inválido.'); } }; r.readAsText(f); e.target.value = ''; },
+      restaurarPadrao: () => { if (confirm('Isso apaga todas as alterações e fotos enviadas. Continuar?')) { this.salvarCms(PADRAO()); this.aviso('Conteúdo padrão restaurado.'); } },
+      usoArmazenamento: uso,
+    };
+  }
+}
+</script>
+</body>
+</html>

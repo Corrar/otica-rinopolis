@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet data-dc-atomics><meta name="design_doc_mode" content="canvas"><link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&family=DM+Sans:opsz,wght@9..40,400;9..40,500&display=swap" rel="stylesheet"><style>body{margin:0;background:#edebe7;font-family:'DM Sans',system-ui,sans-serif}a{color:inherit;text-decoration:none}a:hover{opacity:.75}.dv-turn{padding:40px 44px 32px;border-bottom:1px solid rgba(0,0,0,.08);scroll-margin-top:16px}.dv-thd{display:flex;align-items:baseline;gap:10px;margin:0 0 20px}.dv-tid{font:600 10px ui-monospace,Menlo,monospace;padding:3px 7px;background:#1a1a1a;color:#fff;border-radius:4px;text-decoration:none}.dv-tname{font:600 13px/1.2 system-ui,sans-serif;color:#1a1a1a}.dv-opts{display:flex;flex-wrap:wrap;gap:28px;align-items:flex-start}.dv-opt{flex:none;display:flex;flex-direction:column;gap:9px;scroll-margin-top:16px}.dv-oid{font:600 10.5px ui-monospace,Menlo,monospace;padding:3px 7px;background:rgba(0,0,0,.08);color:#1a1a1a;border-radius:5px;text-decoration:none}.dv-olabel{display:flex;align-items:baseline;gap:8px;font:400 11px/1.3 system-ui,sans-serif;color:rgba(0,0,0,.55)}.dv-card{max-width:100%;background:#fff;border:1px solid rgba(0,0,0,.08);border-radius:8px;box-shadow:0 1px 3px rgba(0,0,0,.06);overflow:hidden}.dv-opt:target .dv-oid{background:#2a78d6;color:#fff}.dv-next{margin:22px 0 0;font:12px/1.5 system-ui,sans-serif;color:rgba(0,0,0,.5)}</style></helmet>
+
+<section class="dv-turn" id="t0" style="padding:28px 44px 20px">
+<div style="max-width:760px;font:14px/1.55 'DM Sans',sans-serif;color:#3a3837">
+<div style="font:600 11px ui-monospace,Menlo,monospace;color:#8a8785;letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px">Contexto e premissas</div>
+<p style="margin:0 0 8px"><strong>Identidade:</strong> logo em preto e branco, traço fino, tipografia geométrica minúscula. Levei isso para o site: paleta monocromática (preto #1c1a1b, branco, cinza-papel), títulos sempre em minúsculas com a fonte Outfit, e o único toque de cor é o verde do WhatsApp. Em fundo claro o logo aparece invertido (preto sobre branco).</p>
+<p style="margin:0 0 8px"><strong>Objetivos:</strong> gerar contato por WhatsApp (botão fixo e CTA em cada seção), mostrar produtos/marcas e passar credibilidade. Site com várias páginas; aqui estão só as homes — as internas seguem a direção escolhida.</p>
+<p style="margin:0"><strong>Placeholders:</strong> telefone/WhatsApp, horário, marcas e fotos são fictícios até você enviar os reais. Endereço usado: R. Prof. Sud Menucci, 228 – Centro, Rinópolis/SP.</p>
+</div>
+</section>
+
+<section class="dv-turn" id="t1">
+<div class="dv-thd"><a class="dv-tid" href="#t1">1</a><span class="dv-tname">Três direções para a home (desktop 1280px)</span></div>
+<div class="dv-opts">
+
+<!-- ============ 1a VITRINE ============ -->
+<div class="dv-opt" id="1a"><div class="dv-olabel"><a class="dv-oid" href="#1a">1a</a>Vitrine — hero escuro, seções claras, fotos em destaque</div>
+<div class="dv-card" style="width:1280px;background:#fff;color:#1c1a1b;font-family:'DM Sans',sans-serif" data-screen-label="1a">
+  <header style="background:#1c1a1b;color:#fff;display:flex;align-items:center;justify-content:space-between;padding:0 64px;height:84px">
+    <img src="assets/logo.png" alt="ótica digital look" style="height:84px;width:auto;display:block;margin-left:-14px">
+    <nav style="display:flex;gap:32px;font:500 14px 'DM Sans',sans-serif;color:rgba(255,255,255,.78)"><a href="#1a">início</a><a href="#1a">sobre</a><a href="#1a">armações</a><a href="#1a">lentes de contato</a><a href="#1a">convênios</a><a href="#1a">blog</a><a href="#1a">contato</a></nav>
+    <a href="#1a" style="display:flex;align-items:center;gap:8px;background:#fff;color:#1c1a1b;padding:11px 18px;border-radius:999px;font:500 14px 'DM Sans',sans-serif"><span style="width:8px;height:8px;border-radius:50%;background:#25D366;display:inline-block"></span>WhatsApp</a>
+  </header>
+  <section style="background:#1c1a1b;color:#fff;display:grid;grid-template-columns:1.05fr 1fr;gap:48px;padding:48px 64px 88px;align-items:center">
+    <div>
+      <div style="font:500 13px 'DM Sans',sans-serif;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.55);margin-bottom:22px">ótica em rinópolis · sp</div>
+      <h1 style="font:300 72px/1.02 'Outfit',sans-serif;letter-spacing:-.02em;margin:0 0 24px;text-wrap:pretty">um novo olhar<br>para o seu <span style="font-weight:500">dia a dia.</span></h1>
+      <p style="font:400 18px/1.55 'DM Sans',sans-serif;color:rgba(255,255,255,.72);max-width:460px;margin:0 0 36px">Armações, óculos de sol e lentes de contato com atendimento próximo e tecnologia de ponta na medição.</p>
+      <div style="display:flex;gap:14px"><a href="#1a" style="background:#fff;color:#1c1a1b;padding:16px 26px;border-radius:999px;font:500 15px 'DM Sans',sans-serif">falar no WhatsApp</a><a href="#1a" style="border:1px solid rgba(255,255,255,.35);color:#fff;padding:16px 26px;border-radius:999px;font:500 15px 'DM Sans',sans-serif">ver armações</a></div>
+    </div>
+    <div style="aspect-ratio:5/4;border-radius:20px;background:linear-gradient(145deg,#3a3637,#242122);display:flex;align-items:center;justify-content:center;font:400 13px 'DM Sans',sans-serif;color:rgba(255,255,255,.5);outline:1px dashed rgba(255,255,255,.25);outline-offset:-10px">foto: cliente experimentando armação</div>
+  </section>
+  <section style="padding:80px 64px 40px">
+    <div style="display:flex;justify-content:space-between;align-items:end;margin-bottom:36px"><h2 style="font:300 44px/1.05 'Outfit',sans-serif;letter-spacing:-.02em;margin:0;white-space:nowrap">o que você <span style="font-weight:500">procura</span></h2><a href="#1a" style="font:500 14px 'DM Sans',sans-serif;border-bottom:1px solid #1c1a1b;padding-bottom:2px">ver tudo</a></div>
+    <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px">
+      <sc-for list="{{ cats }}" as="c" hint-placeholder-count="3">
+      <a href="#1a" style="display:block;border-radius:18px;overflow:hidden;background:#f4f3f1;color:#1c1a1b">
+        <div style="aspect-ratio:4/3;background:#e6e4e0;display:flex;align-items:center;justify-content:center;font:400 13px 'DM Sans',sans-serif;color:#8a8785">foto: {{ c.foto }}</div>
+        <div style="padding:22px 24px 26px;display:flex;justify-content:space-between;align-items:center"><div><div style="font:500 22px 'Outfit',sans-serif;margin-bottom:4px">{{ c.nome }}</div><div style="font:400 14px 'DM Sans',sans-serif;color:#6b6866">{{ c.desc }}</div></div><span style="font:300 26px 'Outfit',sans-serif">→</span></div>
+      </a>
+      </sc-for>
+    </div>
+  </section>
+  <section style="padding:72px 64px;display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center">
+    <div style="aspect-ratio:1;border-radius:20px;background:#e6e4e0;display:flex;align-items:center;justify-content:center;font:400 13px 'DM Sans',sans-serif;color:#8a8785">foto: fachada ou interior da loja</div>
+    <div>
+      <div style="font:500 13px 'DM Sans',sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#8a8785;margin-bottom:18px">sobre a ótica</div>
+      <h2 style="font:300 44px/1.08 'Outfit',sans-serif;letter-spacing:-.02em;margin:0 0 20px;text-wrap:pretty">tradição no atendimento, <span style="font-weight:500">tecnologia</span> na medição.</h2>
+      <p style="font:400 17px/1.6 'DM Sans',sans-serif;color:#4a4745;margin:0 0 28px">No centro de Rinópolis, a Digital Look une a atenção de uma ótica de bairro a equipamentos digitais que garantem lentes precisas para cada rosto.</p>
+      <div style="display:flex;gap:40px;margin-bottom:32px">
+        <div><div style="font:300 40px 'Outfit',sans-serif">+10</div><div style="font:400 13px 'DM Sans',sans-serif;color:#6b6866">anos de história</div></div>
+        <div><div style="font:300 40px 'Outfit',sans-serif">100%</div><div style="font:400 13px 'DM Sans',sans-serif;color:#6b6866">medição digital</div></div>
+      </div>
+      <a href="#1a" style="font:500 14px 'DM Sans',sans-serif;border-bottom:1px solid #1c1a1b;padding-bottom:2px">conheça nossa história</a>
+    </div>
+  </section>
+  <section style="margin:0 64px;background:#1c1a1b;color:#fff;border-radius:24px;padding:56px 56px;display:grid;grid-template-columns:1fr 1.2fr;gap:48px;align-items:center">
+    <div><div style="font:500 13px 'DM Sans',sans-serif;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.55);margin-bottom:16px">convênios e promoções</div><h2 style="font:300 38px/1.1 'Outfit',sans-serif;letter-spacing:-.02em;margin:0 0 16px">parcele em até <span style="font-weight:500">10x sem juros</span></h2><p style="font:400 16px/1.55 'DM Sans',sans-serif;color:rgba(255,255,255,.7);margin:0 0 24px">Aceitamos os principais convênios e cartões. Traga sua receita e monte seu óculos completo hoje.</p><a href="#1a" style="display:inline-block;background:#fff;color:#1c1a1b;padding:14px 22px;border-radius:999px;font:500 14px 'DM Sans',sans-serif">ver convênios</a></div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px"><sc-for list="{{ convenios }}" as="v" hint-placeholder-count="8"><div style="height:64px;border:1px solid rgba(255,255,255,.18);border-radius:12px;display:flex;align-items:center;justify-content:center;font:500 12px 'DM Sans',sans-serif;color:rgba(255,255,255,.6)">{{ v }}</div></sc-for></div>
+  </section>
+  <section style="padding:80px 64px;display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:stretch">
+    <div style="border-radius:20px;background:#e6e4e0;min-height:340px;display:flex;align-items:center;justify-content:center;font:400 13px 'DM Sans',sans-serif;color:#8a8785">mapa: R. Prof. Sud Menucci, 228</div>
+    <div style="display:flex;flex-direction:column;justify-content:center">
+      <div style="font:500 13px 'DM Sans',sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#8a8785;margin-bottom:18px">onde estamos</div>
+      <h2 style="font:300 40px/1.1 'Outfit',sans-serif;letter-spacing:-.02em;margin:0 0 24px">no coração de rinópolis</h2>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:28px;font:400 15px/1.55 'DM Sans',sans-serif;color:#4a4745">
+        <div><div style="font:500 13px 'DM Sans',sans-serif;color:#1c1a1b;margin-bottom:6px">endereço</div>R. Prof. Sud Menucci, 228<br>Centro, Rinópolis – SP<br>17740-000</div>
+        <div><div style="font:500 13px 'DM Sans',sans-serif;color:#1c1a1b;margin-bottom:6px">horário</div>seg–sex · 8h30 às 18h<br>sábado · 8h30 às 12h30</div>
+        <div><div style="font:500 13px 'DM Sans',sans-serif;color:#1c1a1b;margin-bottom:6px">WhatsApp</div>(18) 99999-9999</div>
+        <div><div style="font:500 13px 'DM Sans',sans-serif;color:#1c1a1b;margin-bottom:6px">instagram</div>@oticadigitallook</div>
+      </div>
+    </div>
+  </section>
+  <section style="padding:0 64px 88px">
+    <div style="display:flex;justify-content:space-between;align-items:end;margin-bottom:32px"><h2 style="font:300 40px/1.05 'Outfit',sans-serif;letter-spacing:-.02em;margin:0;white-space:nowrap">dicas para <span style="font-weight:500">seus olhos</span></h2><a href="#1a" style="font:500 14px 'DM Sans',sans-serif;border-bottom:1px solid #1c1a1b;padding-bottom:2px">ver o blog</a></div>
+    <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px"><sc-for list="{{ posts }}" as="p" hint-placeholder-count="3"><a href="#1a" style="display:block;color:#1c1a1b"><div style="aspect-ratio:16/10;border-radius:16px;background:#e6e4e0;margin-bottom:16px"></div><div style="font:400 12px 'DM Sans',sans-serif;color:#8a8785;margin-bottom:8px">{{ p.tag }}</div><div style="font:500 20px/1.3 'Outfit',sans-serif;text-wrap:pretty">{{ p.titulo }}</div></a></sc-for></div>
+  </section>
+  <footer style="background:#1c1a1b;color:#fff;padding:56px 64px 32px">
+    <div style="display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:40px;margin-bottom:48px">
+      <div><img src="assets/logo.png" alt="" style="height:96px;margin:-18px 0 8px -14px;display:block"><p style="font:400 14px/1.55 'DM Sans',sans-serif;color:rgba(255,255,255,.6);max-width:280px;margin:0">Ótica em Rinópolis/SP com medição digital e atendimento personalizado.</p></div>
+      <div style="font:400 14px/2 'DM Sans',sans-serif;color:rgba(255,255,255,.7)"><div style="color:#fff;font-weight:500;margin-bottom:6px">produtos</div>armações<br>óculos de sol<br>lentes de contato<br>lentes de grau</div>
+      <div style="font:400 14px/2 'DM Sans',sans-serif;color:rgba(255,255,255,.7)"><div style="color:#fff;font-weight:500;margin-bottom:6px">a ótica</div>sobre<br>convênios<br>blog<br>contato</div>
+      <div style="font:400 14px/1.7 'DM Sans',sans-serif;color:rgba(255,255,255,.7)"><div style="color:#fff;font-weight:500;margin-bottom:6px">contato</div>(18) 99999-9999<br>R. Prof. Sud Menucci, 228<br>Rinópolis – SP</div>
+    </div>
+    <div style="border-top:1px solid rgba(255,255,255,.14);padding-top:20px;font:400 12px 'DM Sans',sans-serif;color:rgba(255,255,255,.45);display:flex;justify-content:space-between"><span>© 2026 ótica digital look</span><span>CNPJ 00.000.000/0001-00</span></div>
+  </footer>
+</div></div>
+
+<!-- ============ 1b EDITORIAL ============ -->
+<div class="dv-opt" id="1b"><div class="dv-olabel"><a class="dv-oid" href="#1b">1b</a>Editorial — fundo claro, tipografia grande, logo invertido, lista numerada</div>
+<div class="dv-card" style="width:1280px;background:#f7f6f3;color:#1c1a1b;font-family:'DM Sans',sans-serif" data-screen-label="1b">
+  <header style="display:flex;align-items:center;justify-content:space-between;padding:20px 56px;border-bottom:1px solid rgba(0,0,0,.1)">
+    <img src="assets/logo.png" alt="ótica digital look" style="height:72px;width:auto;display:block;filter:invert(1);margin:-14px 0 -14px -12px">
+    <nav style="display:flex;gap:30px;font:500 14px 'DM Sans',sans-serif;color:#4a4745"><a href="#1b">sobre</a><a href="#1b">armações</a><a href="#1b">lentes de contato</a><a href="#1b">convênios</a><a href="#1b">blog</a></nav>
+    <a href="#1b" style="display:flex;align-items:center;gap:8px;border:1px solid #1c1a1b;padding:10px 18px;border-radius:999px;font:500 14px 'DM Sans',sans-serif"><span style="width:8px;height:8px;border-radius:50%;background:#25D366;display:inline-block"></span>(18) 99999-9999</a>
+  </header>
+  <section style="padding:72px 56px 56px;display:grid;grid-template-columns:1fr auto;gap:40px;align-items:end;border-bottom:1px solid rgba(0,0,0,.1)">
+    <div>
+      <h1 style="font:300 118px/.95 'Outfit',sans-serif;letter-spacing:-.04em;margin:0 0 32px;text-wrap:balance">ver bem é<br><span style="font-weight:500">viver melhor.</span></h1>
+      <div style="display:flex;gap:48px;align-items:center"><p style="font:400 18px/1.5 'DM Sans',sans-serif;color:#4a4745;max-width:420px;margin:0">Ótica em Rinópolis/SP. Armações, óculos de sol e lentes de contato — com medição digital e atendimento de verdade.</p><a href="#1b" style="background:#1c1a1b;color:#fff;padding:18px 28px;border-radius:999px;font:500 15px 'DM Sans',sans-serif;white-space:nowrap">chamar no WhatsApp →</a></div>
+    </div>
+    <img src="assets/logo.png" alt="" style="width:300px;height:300px;object-fit:cover;object-position:0 50%;filter:invert(1);clip-path:inset(0 46% 0 0);margin-right:-130px">
+  </section>
+  <section style="padding:0 56px">
+    <sc-for list="{{ catsNum }}" as="c" hint-placeholder-count="3">
+    <a href="#1b" style="display:grid;grid-template-columns:80px 1fr 1fr auto;gap:32px;align-items:center;padding:36px 0;border-bottom:1px solid rgba(0,0,0,.1);color:#1c1a1b">
+      <span style="font:300 18px 'Outfit',sans-serif;color:#8a8785">{{ c.n }}</span>
+      <span style="font:400 48px/1 'Outfit',sans-serif;letter-spacing:-.02em">{{ c.nome }}</span>
+      <span style="font:400 16px/1.5 'DM Sans',sans-serif;color:#4a4745;max-width:380px">{{ c.desc }}</span>
+      <span style="width:160px;height:96px;border-radius:12px;background:#dedbd5;display:flex;align-items:center;justify-content:center;font:400 12px 'DM Sans',sans-serif;color:#8a8785">foto</span>
+    </a>
+    </sc-for>
+  </section>
+  <section style="padding:88px 56px;display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:start">
+    <div><div style="font:400 13px 'DM Sans',sans-serif;color:#8a8785;margin-bottom:16px">— sobre a ótica</div><h2 style="font:300 56px/1.02 'Outfit',sans-serif;letter-spacing:-.03em;margin:0;text-wrap:pretty">uma ótica de bairro com <span style="font-weight:500">olhar digital.</span></h2></div>
+    <div style="padding-top:12px"><p style="font:400 19px/1.6 'DM Sans',sans-serif;color:#3a3837;margin:0 0 20px">Nascemos no centro de Rinópolis com uma ideia simples: tratar cada cliente pelo nome e cada receita com precisão. Hoje usamos medição digital para que suas lentes fiquem exatamente onde seus olhos precisam.</p><p style="font:400 19px/1.6 'DM Sans',sans-serif;color:#3a3837;margin:0 0 28px">Armações de marcas nacionais e importadas, lentes de contato e um laboratório parceiro ágil para você não esperar.</p><a href="#1b" style="font:500 15px 'DM Sans',sans-serif;border-bottom:1px solid #1c1a1b;padding-bottom:3px">nossa história →</a></div>
+  </section>
+  <section style="margin:0 56px;aspect-ratio:21/8;border-radius:4px;background:#dedbd5;display:flex;align-items:center;justify-content:center;font:400 13px 'DM Sans',sans-serif;color:#8a8785">foto panorâmica: interior da loja / expositor de armações</section>
+  <section style="padding:88px 56px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:48px;border-bottom:1px solid rgba(0,0,0,.1)">
+    <div><div style="font:400 13px 'DM Sans',sans-serif;color:#8a8785;margin-bottom:16px">— convênios</div><div style="font:400 28px/1.25 'Outfit',sans-serif;letter-wrap:pretty;margin-bottom:20px">aceitamos os principais convênios e parcelamos em até 10x.</div><div style="display:flex;flex-wrap:wrap;gap:8px"><sc-for list="{{ convenios }}" as="v" hint-placeholder-count="6"><span style="border:1px solid rgba(0,0,0,.2);padding:8px 14px;border-radius:999px;font:500 13px 'DM Sans',sans-serif;color:#4a4745">{{ v }}</span></sc-for></div></div>
+    <div><div style="font:400 13px 'DM Sans',sans-serif;color:#8a8785;margin-bottom:16px">— horário</div><div style="font:400 28px/1.25 'Outfit',sans-serif;margin-bottom:12px">seg–sex 8h30–18h<br>sáb 8h30–12h30</div><div style="font:400 15px/1.5 'DM Sans',sans-serif;color:#4a4745">R. Prof. Sud Menucci, 228<br>Centro · Rinópolis – SP</div></div>
+    <div><div style="font:400 13px 'DM Sans',sans-serif;color:#8a8785;margin-bottom:16px">— blog</div><sc-for list="{{ posts }}" as="p" hint-placeholder-count="3"><a href="#1b" style="display:block;font:400 20px/1.3 'Outfit',sans-serif;color:#1c1a1b;padding:12px 0;border-bottom:1px solid rgba(0,0,0,.1);text-wrap:pretty">{{ p.titulo }}</a></sc-for></div>
+  </section>
+  <footer style="padding:40px 56px;display:flex;justify-content:space-between;align-items:center;font:400 13px 'DM Sans',sans-serif;color:#6b6866"><span>© 2026 ótica digital look · Rinópolis/SP</span><span style="display:flex;gap:24px"><a href="#1b">instagram</a><a href="#1b">WhatsApp</a><a href="#1b">como chegar</a></span></footer>
+</div></div>
+
+<!-- ============ 1c TECH ============ -->
+<div class="dv-opt" id="1c"><div class="dv-olabel"><a class="dv-oid" href="#1c">1c</a>Tech — tudo escuro, grade de linhas finas, bento, mais próximo do traço do logo</div>
+<div class="dv-card" style="width:1280px;background:#141213;color:#fff;font-family:'DM Sans',sans-serif;border-color:#000" data-screen-label="1c">
+  <header style="display:grid;grid-template-columns:auto 1fr auto;align-items:center;padding:0 48px;height:80px;border-bottom:1px solid rgba(255,255,255,.12)">
+    <img src="assets/logo.png" alt="ótica digital look" style="height:80px;width:auto;display:block;margin-left:-14px">
+    <nav style="display:flex;justify-content:center;gap:36px;font:500 13px 'DM Sans',sans-serif;letter-spacing:.04em;color:rgba(255,255,255,.7)"><a href="#1c">sobre</a><a href="#1c">armações</a><a href="#1c">sol</a><a href="#1c">lentes de contato</a><a href="#1c">convênios</a><a href="#1c">blog</a></nav>
+    <a href="#1c" style="display:flex;align-items:center;gap:10px;border:1px solid rgba(255,255,255,.3);padding:10px 16px;border-radius:4px;font:500 13px 'DM Sans',sans-serif;letter-spacing:.04em"><span style="width:7px;height:7px;border-radius:50%;background:#25D366;display:inline-block"></span>WhatsApp</a>
+  </header>
+  <section style="display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid rgba(255,255,255,.12)">
+    <div style="padding:88px 48px 72px;border-right:1px solid rgba(255,255,255,.12)">
+      <div style="font:500 12px 'DM Sans',sans-serif;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.5);margin-bottom:28px">rinópolis · sp — desde 2014</div>
+      <h1 style="font:300 84px/.98 'Outfit',sans-serif;letter-spacing:-.035em;margin:0 0 28px;text-wrap:balance">precisão<br>digital,<br><span style="font-weight:500">olhar humano.</span></h1>
+      <p style="font:400 17px/1.55 'DM Sans',sans-serif;color:rgba(255,255,255,.65);max-width:420px;margin:0 0 40px">Medição digital de alta precisão, armações selecionadas e lentes de contato — tudo com atendimento próximo, no centro da cidade.</p>
+      <div style="display:flex;gap:12px"><a href="#1c" style="background:#fff;color:#141213;padding:15px 24px;border-radius:4px;font:500 14px 'DM Sans',sans-serif">falar no WhatsApp</a><a href="#1c" style="border:1px solid rgba(255,255,255,.3);padding:15px 24px;border-radius:4px;font:500 14px 'DM Sans',sans-serif">ver armações</a></div>
+    </div>
+    <div style="position:relative;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at 50% 50%,rgba(255,255,255,.08),transparent 60%)">
+      <img src="assets/logo.png" alt="" style="width:560px;height:560px;object-fit:cover;object-position:0 50%;clip-path:inset(0 48% 0 0);transform:translateX(130px)">
+      <div style="position:absolute;left:32px;bottom:28px;font:500 11px 'DM Sans',sans-serif;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.4)">01 — medição digital</div>
+    </div>
+  </section>
+  <section style="display:grid;grid-template-columns:repeat(3,1fr);border-bottom:1px solid rgba(255,255,255,.12)">
+    <sc-for list="{{ catsNum }}" as="c" hint-placeholder-count="3">
+    <a href="#1c" style="display:flex;flex-direction:column;gap:120px;padding:32px 36px;border-right:1px solid rgba(255,255,255,.12);color:#fff">
+      <div style="display:flex;justify-content:space-between;font:500 12px 'DM Sans',sans-serif;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.5)"><span>{{ c.n }}</span><span>→</span></div>
+      <div><div style="font:400 36px/1 'Outfit',sans-serif;letter-spacing:-.02em;margin-bottom:12px">{{ c.nome }}</div><div style="font:400 15px/1.5 'DM Sans',sans-serif;color:rgba(255,255,255,.6)">{{ c.desc }}</div></div>
+    </a>
+    </sc-for>
+  </section>
+  <section style="display:grid;grid-template-columns:repeat(12,1fr);gap:1px;background:rgba(255,255,255,.12);border-bottom:1px solid rgba(255,255,255,.12)">
+    <div style="grid-column:span 7;background:#141213;padding:56px 48px"><div style="font:500 12px 'DM Sans',sans-serif;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.5);margin-bottom:24px">sobre</div><h2 style="font:300 48px/1.05 'Outfit',sans-serif;letter-spacing:-.03em;margin:0 0 24px;text-wrap:pretty">tecnologia que você sente na <span style="font-weight:500">nitidez.</span></h2><p style="font:400 17px/1.6 'DM Sans',sans-serif;color:rgba(255,255,255,.65);margin:0 0 32px;max-width:520px">Equipamento digital para centragem e medição, laboratório parceiro ágil e uma equipe que explica cada escolha de lente sem pressa.</p><div style="display:flex;gap:48px"><div><div style="font:300 44px 'Outfit',sans-serif">+10</div><div style="font:400 13px 'DM Sans',sans-serif;color:rgba(255,255,255,.5)">anos em rinópolis</div></div><div><div style="font:300 44px 'Outfit',sans-serif">48h</div><div style="font:400 13px 'DM Sans',sans-serif;color:rgba(255,255,255,.5)">prazo médio das lentes</div></div><div><div style="font:300 44px 'Outfit',sans-serif">10x</div><div style="font:400 13px 'DM Sans',sans-serif;color:rgba(255,255,255,.5)">sem juros</div></div></div></div>
+    <div style="grid-column:span 5;background:#1f1c1d;display:flex;align-items:center;justify-content:center;font:400 12px 'DM Sans',sans-serif;color:rgba(255,255,255,.45);min-height:380px">foto: equipamento de medição digital</div>
+    <div style="grid-column:span 4;background:#1f1c1d;aspect-ratio:1;display:flex;align-items:center;justify-content:center;font:400 12px 'DM Sans',sans-serif;color:rgba(255,255,255,.45)">foto: expositor de armações</div>
+    <div style="grid-column:span 4;background:#141213;padding:40px 36px;display:flex;flex-direction:column;justify-content:space-between"><div style="font:500 12px 'DM Sans',sans-serif;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.5)">convênios</div><div><div style="font:400 26px/1.25 'Outfit',sans-serif;margin-bottom:18px;text-wrap:pretty">principais convênios e cartões aceitos.</div><div style="display:flex;flex-wrap:wrap;gap:6px"><sc-for list="{{ convenios }}" as="v" hint-placeholder-count="6"><span style="border:1px solid rgba(255,255,255,.2);padding:6px 10px;border-radius:3px;font:500 12px 'DM Sans',sans-serif;color:rgba(255,255,255,.7)">{{ v }}</span></sc-for></div></div></div>
+    <div style="grid-column:span 4;background:#141213;padding:40px 36px;display:flex;flex-direction:column;justify-content:space-between"><div style="font:500 12px 'DM Sans',sans-serif;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.5)">onde estamos</div><div style="font:400 17px/1.55 'DM Sans',sans-serif;color:rgba(255,255,255,.8)">R. Prof. Sud Menucci, 228<br>Centro · Rinópolis – SP<br><span style="color:rgba(255,255,255,.5)">seg–sex 8h30–18h · sáb 8h30–12h30</span><br><br><a href="#1c" style="border-bottom:1px solid #fff;padding-bottom:2px;font-weight:500">abrir no mapa →</a></div></div>
+  </section>
+  <section style="padding:64px 48px;border-bottom:1px solid rgba(255,255,255,.12)">
+    <div style="display:flex;justify-content:space-between;align-items:end;margin-bottom:28px"><div style="font:500 12px 'DM Sans',sans-serif;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.5)">blog · dicas</div><a href="#1c" style="font:500 13px 'DM Sans',sans-serif;border-bottom:1px solid #fff;padding-bottom:2px">todos os artigos</a></div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.12)"><sc-for list="{{ posts }}" as="p" hint-placeholder-count="3"><a href="#1c" style="display:block;background:#141213;padding:28px;color:#fff"><div style="font:400 12px 'DM Sans',sans-serif;color:rgba(255,255,255,.45);margin-bottom:40px">{{ p.tag }}</div><div style="font:400 22px/1.3 'Outfit',sans-serif;text-wrap:pretty">{{ p.titulo }}</div></a></sc-for></div>
+  </section>
+  <footer style="padding:40px 48px;display:flex;justify-content:space-between;align-items:center;font:400 12px 'DM Sans',sans-serif;letter-spacing:.04em;color:rgba(255,255,255,.45)"><span>© 2026 ótica digital look</span><span style="display:flex;gap:28px"><a href="#1c">instagram</a><a href="#1c">WhatsApp</a><a href="#1c">política de privacidade</a></span></footer>
+</div></div>
+
+</div>
+<p class="dv-next">Próximo passo: escolha uma direção e eu monto as páginas internas (sobre, armações, lentes, convênios, blog, contato). Ex.: "segue <a class="dv-oid" href="#1a">1a</a>" · "<a class="dv-oid" href="#1c">1c</a> mas com seções claras como <a class="dv-oid" href="#1a">1a</a>" · "hero do <a class="dv-oid" href="#1b">1b</a> no layout do <a class="dv-oid" href="#1a">1a</a>"</p>
+</section>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  renderVals() {
+    const cats = [
+      { nome: 'armações', desc: 'Grau e design para todo rosto', foto: 'armações em expositor' },
+      { nome: 'óculos de sol', desc: 'Proteção UV com estilo', foto: 'óculos de sol' },
+      { nome: 'lentes de contato', desc: 'Conforto diário e descartáveis', foto: 'lentes de contato' },
+    ];
+    return {
+      cats,
+      catsNum: cats.map((c, i) => ({ ...c, n: '0' + (i + 1) })),
+      convenios: ['Unimed', 'Sindicato', 'Prefeitura', 'Visa', 'Master', 'Elo', 'Pix', 'Crediário'],
+      posts: [
+        { tag: 'lentes', titulo: 'Lente antirreflexo vale a pena? Entenda quando faz diferença.' },
+        { tag: 'saúde ocular', titulo: 'Quanto tempo de tela por dia cansa seus olhos — e como aliviar.' },
+        { tag: 'armações', titulo: 'Como escolher a armação certa para o formato do seu rosto.' },
+      ],
+    };
+  }
+}
+</script>
+</body>
+</html>
