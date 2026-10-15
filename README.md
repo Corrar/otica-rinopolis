@@ -1,25 +1,42 @@
-# CODING AGENTS: READ THIS FIRST
+# Ótica Digital Look — site institucional
 
-This is a **handoff bundle** from Claude Design (claude.ai/design).
+Site da Ótica Digital Look (Rinópolis/SP), implementado a partir do design do Claude Design (`project/`, direção **1a Vitrine**).
+Vite + React + GSAP/ScrollTrigger, com **área do proprietário com backend real**: o que é editado no painel aparece para todos os visitantes.
 
-A user mocked up designs in HTML/CSS/JS using an AI design tool, then exported this bundle so a coding agent can implement the designs for real.
+## Páginas
+`/` início · `/sobre` · `/armacoes` (filtros) · `/lentes` (FAQ) · `/convenios` (promoções, eventos, convênios) · `/blog` · `/blog/<artigo>` · `/contato` (formulário → WhatsApp) · `/admin` (área do proprietário).
+Links antigos com `#admin`, `#sobre` etc. redirecionam para as URLs novas.
 
-## What you should do — IMPORTANT
+## Área do proprietário (`/admin`, ou "área do proprietário" no rodapé)
+- Senha inicial: valor de `ADMIN_PASSWORD` (se não definido, `digitallook`). O painel pede para trocar; a senha nova fica salva como hash scrypt.
+- Edita informações, horários e feriados (status "aberto agora" automático), capa, faixa de aviso, fotos e galeria, promoções, eventos, armações, lentes/FAQ, sobre/equipe, depoimentos e blog.
+- Salvamento automático no servidor, desfazer, aviso de conflito se outro aparelho editou, histórico das últimas 40 versões com restauração, exportar/importar backup (aceita também backups do protótipo com fotos embutidas).
+- Liga/desliga botão flutuante do WhatsApp e animações.
 
-**Read the chat transcripts first.** There are 1 chat transcript(s) in `chats/`. The transcripts show the full back-and-forth between the user and the design assistant — they tell you **what the user actually wants** and **where they landed** after iterating. Don't skip them. The final HTML files are the output, but the chat is where the intent lives.
+## Rodar localmente
+```bash
+npm install
+npm run dev          # http://localhost:5173 — API e fotos ficam em ./data
+```
 
-**Read `project/Ótica Digital Look - Site.dc.html` in full.** The user had this file open when they triggered the handoff, so it's almost certainly the primary design they want built. Read it top to bottom — don't skim. Then **follow its imports**: open every file it pulls in (shared components, CSS, scripts) so you understand how the pieces fit together before you start implementing.
+## Publicar na Vercel (recomendado)
+1. Importe o repositório na Vercel (framework: Vite — já configurado em `vercel.json`).
+2. Em **Storage**, crie um **Blob Store** e conecte ao projeto (isso cria `BLOB_READ_WRITE_TOKEN`).
+3. Em **Settings → Environment Variables**, defina `SESSION_SECRET` (texto longo aleatório, ex. `openssl rand -hex 32`) e `ADMIN_PASSWORD`.
+4. Faça o deploy. As funções em `api/` atendem `/api/*`; conteúdo, fotos e senha ficam no Blob.
 
-**If anything is ambiguous, ask the user to confirm before you start implementing.** It's much cheaper to clarify scope up front than to build the wrong thing.
+## Publicar em VPS / outro servidor Node
+```bash
+npm install && npm run build
+SESSION_SECRET=... ADMIN_PASSWORD=... DATA_DIR=/var/lib/odl PORT=3000 npm start
+```
+Sem `BLOB_READ_WRITE_TOKEN`, tudo é salvo em arquivos em `DATA_DIR` (faça backup dessa pasta).
 
-## About the design files
+## Estrutura
+- `src/` — site React (`pages/`, `admin/`, `components/`, `lib/anim.js` com as animações GSAP, `content/defaults.js` com o conteúdo padrão).
+- `server/` — API (`router.js`), autenticação (`auth.js`: scrypt + cookie HttpOnly assinado, limite de tentativas, proteção CSRF por cabeçalho) e armazenamento (`storage.js`: Vercel Blob ou arquivos).
+- `api/` — funções serverless da Vercel (reutilizam `server/router.js`). `server.js` — servidor Node standalone.
+- `project/`, `chats/` — pacote original do Claude Design (referência).
 
-The design medium is **HTML/CSS/JS** — these are prototypes, not production code. Your job is to **recreate them pixel-perfectly** in whatever technology makes sense for the target codebase (React, Vue, native, whatever fits). Match the visual output; don't copy the prototype's internal structure unless it happens to fit.
-
-**Don't render these files in a browser or take screenshots unless the user asks you to.** Everything you need — dimensions, colors, layout rules — is spelled out in the source. Read the HTML and CSS directly; a screenshot won't tell you anything they don't.
-
-## Bundle contents
-
-- `README.md` — this file
-- `chats/` — conversation transcripts (read these!)
-- `project/` — the `Site institucional para ótica` project files (HTML prototypes, assets, components)
+## Pendências de conteúdo
+Fotos reais, nomes da equipe, marcas, CNPJ e convênios definitivos — o painel lista o que falta em "visão geral".
