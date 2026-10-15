@@ -127,7 +127,7 @@ export function useSite() {
       mapaLink: 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(end),
       mapaEmbed: 'https://www.google.com/maps?q=' + encodeURIComponent(end) + '&output=embed',
       googleLink: 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent('Ótica Digital Look ' + info.bairroCidade),
-      igLink: 'https://instagram.com/' + String(info.instagram || '').replace(/^@/, ''),
+      igLink: 'https://www.instagram.com/' + String(info.instagram || '').replace(/^@/, '') + '/',
       selos: lista(info.selos),
       animar: info.animacoes !== false,
     };
