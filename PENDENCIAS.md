@@ -15,7 +15,7 @@ O painel `/admin` abre, mas **não salva nada** até existir um Blob Store. A in
 - Apagar o projeto vazio `otica-digital-look` na Vercel (sobrou de antes do repositório): Settings → General → Delete Project.
 
 ## 4. Conteúdo (pelo painel, depois do item 1)
-- Fotos reais: capa, loja, lentes, equipe, cards da home, armações, galeria.
+- Fotos reais: o site já mostra fotos de exemplo em todos os campos (lista em `FOTOS.md`); trocar pelas reais da loja, da equipe e das armações. A "visão geral" do painel conta quantas de exemplo ainda faltam trocar.
 - Nomes reais da equipe, marcas que trabalha, CNPJ, convênios definitivos.
 - Conferir horários, feriados, promoções, eventos e depoimentos.
 
