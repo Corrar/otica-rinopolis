@@ -1,4 +1,4 @@
-import { forwardRef, useEffect, useRef, useState } from 'react';
+import { forwardRef, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { Ic } from './Icons.jsx';
 import { href, onLink } from '../lib/router.js';
 import { useSite } from '../state/content.jsx';
@@ -40,8 +40,8 @@ export const Header = forwardRef(function Header({ ativa, wide, menuOpen, setMen
       ) : (
         <div className="header__mob">
           <a href={wa.link} target="_blank" rel="noopener" aria-label="WhatsApp" className="circle-44" style={{ background: 'var(--wa)', color: '#fff' }}><Ic n="wa" s={20} /></a>
-          <button onClick={() => setMenuOpen(!menuOpen)} aria-label="Menu" aria-expanded={menuOpen} aria-controls="menu-mobile" className="circle-44 burger">
-            <span /><span style={{ opacity: menuOpen ? 0 : 1 }} /><span />
+          <button onClick={() => setMenuOpen(!menuOpen)} aria-label={menuOpen ? 'Fechar menu' : 'Abrir menu'} aria-expanded={menuOpen} aria-controls="menu-mobile" className="circle-44 burger">
+            <span /><span /><span />
           </button>
         </div>
       )}
@@ -49,9 +49,19 @@ export const Header = forwardRef(function Header({ ativa, wide, menuOpen, setMen
   );
 });
 
-export function MobileMenu({ ativa, fechar, animar }) {
+export function MobileMenu({ ativa, fechar, animar, headerRef }) {
   const { wa, status } = useSite();
   const ref = useRef(null);
+  // O menu começa logo abaixo do cabeçalho, que desce quando a faixa de aviso está visível.
+  useLayoutEffect(() => {
+    const menu = ref.current, header = headerRef.current;
+    if (!menu || !header) return undefined;
+    const posicionar = () => menu.style.setProperty('--menu-top', `${Math.max(0, Math.round(header.getBoundingClientRect().bottom))}px`);
+    posicionar();
+    window.addEventListener('resize', posicionar);
+    window.addEventListener('scroll', posicionar, { passive: true });
+    return () => { window.removeEventListener('resize', posicionar); window.removeEventListener('scroll', posicionar); };
+  }, [headerRef]);
   useEffect(() => {
     if (animar) animarMenu(ref.current);
     document.body.style.overflow = 'hidden';
@@ -64,7 +74,7 @@ export function MobileMenu({ ativa, fechar, animar }) {
       <nav aria-label="principal">
         {PAGINAS.map(([id, label]) => <L key={id} to={id} onNav={fechar} aria-current={ativa === id ? 'page' : undefined}><span>{label}</span><Ic n="arrow" s={22} style={{ opacity: .5 }} /></L>)}
       </nav>
-      <div style={{ marginTop: 'auto', paddingTop: 28, display: 'flex', flexDirection: 'column', gap: 14 }}>
+      <div className="menu__rodape">
         <a href={wa.link} target="_blank" rel="noopener" className="btn btn--wa"><Ic n="wa" /><span>falar no WhatsApp</span></a>
         <Status st={status} style={{ justifyContent: 'center', font: "400 13px 'DM Sans',sans-serif", color: 'rgba(255,255,255,.6)', gap: 8 }} />
       </div>

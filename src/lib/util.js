@@ -4,6 +4,8 @@ export const bgOf = (img) => (img ? `url("${img}")` : 'none');
 export const num2 = (n) => String(n).padStart(2, '0');
 export const fmtData = (iso) => { const d = iso ? new Date(iso + 'T12:00:00') : null; return d && !isNaN(d) ? `${num2(d.getDate())} ${MESES[d.getMonth()]} ${d.getFullYear()}` : iso || ''; };
 export const numerar = (arr) => (arr || []).map((x, i) => ({ ...x, n: num2(i + 1) }));
+// Classe de grade que fecha as linhas sem card sobrando (4 → 1/2/4 colunas, 3 → 1/3 colunas).
+export const gradeEquilibrada = (arr) => { const n = (arr || []).length; return !n ? '' : n % 4 === 0 ? ' grid--4' : n % 3 === 0 ? ' grid--3' : ''; };
 export const slugify = (s) => String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 80) || 'artigo';
 
 const toMin = (s) => { const m = /^(\d{1,2}):(\d{2})$/.exec(String(s || '').trim()); return m ? +m[1] * 60 + +m[2] : null; };

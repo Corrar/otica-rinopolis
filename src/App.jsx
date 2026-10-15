@@ -68,12 +68,12 @@ function Site() {
   }
 
   return (
-    <div className={`app${fab ? ' app--fab' : ''}`}>
+    <div className={`app${fab ? ' app--fab' : ''}${menuOpen ? ' app--menu' : ''}`}>
       <a href="#conteudo" className="skip">pular para o conteúdo</a>
       <Seo page={r.page} titulo={tituloPost || TITULOS[r.page]} />
       <PromoBar />
       <Header ref={headerRef} ativa={ativa} wide={wide} menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
-      {menuOpen && <MobileMenu ativa={ativa} fechar={() => setMenuOpen(false)} animar={animar} />}
+      {menuOpen && <MobileMenu ativa={ativa} fechar={() => setMenuOpen(false)} animar={animar} headerRef={headerRef} />}
       <main id="conteudo" ref={mainRef} key={path}>{pagina}</main>
       <Footer ref={footerRef} />
       <ScrollExtras />

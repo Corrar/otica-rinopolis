@@ -1,6 +1,6 @@
 import { BtnWa, Foto } from '../components/bits.jsx';
 import { useSite } from '../state/content.jsx';
-import { numerar } from '../lib/util.js';
+import { gradeEquilibrada, numerar } from '../lib/util.js';
 
 export default function Sobre() {
   const { cms, info, wa } = useSite();
@@ -30,7 +30,7 @@ export default function Sobre() {
 
       <section data-reveal className="px" style={{ paddingBottom: 'clamp(40px,6vw,80px)' }}>
         <h2 className="h-sub" style={{ marginBottom: 28 }}>por que a <span className="b">digital look</span></h2>
-        <div data-grid className="grid" style={{ '--min': '220px', '--gap': '16px' }}>
+        <div data-grid className={`grid${gradeEquilibrada(cms.diferenciais)}`} style={{ '--min': '220px', '--gap': '16px' }}>
           {numerar(cms.diferenciais).map(d => (
             <div key={d.n} className="card-sand">
               <div className="t-n" style={{ marginBottom: 24 }}>{d.n}</div>
@@ -44,7 +44,7 @@ export default function Sobre() {
       {cms.equipe.length > 0 && (
         <section data-reveal className="px" style={{ paddingBottom: 'clamp(40px,6vw,80px)' }}>
           <h2 className="h-sub" style={{ marginBottom: 28 }}>quem atende você</h2>
-          <div data-grid className="grid" style={{ '--min': '200px' }}>
+          <div data-grid className="grid grid--2m" style={{ '--min': '200px' }}>
             {cms.equipe.map((e, i) => (
               <div key={i}>
                 <div className="ph" style={{ aspectRatio: '1', borderRadius: 18, marginBottom: 12, ...(e.img ? { backgroundImage: `url("${e.img}")` } : {}) }} role={e.img ? 'img' : undefined} aria-label={e.img ? e.nome : undefined}>{!e.img && 'foto'}</div>
@@ -59,7 +59,7 @@ export default function Sobre() {
       {galeria.length > 0 && (
         <section data-reveal className="px" style={{ paddingBottom: 'clamp(40px,6vw,80px)' }}>
           <h2 className="h-sub" style={{ marginBottom: 28 }}>a <span className="b">loja</span></h2>
-          <div data-grid className="grid grid--fill" style={{ '--min': '220px', '--gap': '14px' }}>
+          <div data-grid className="grid grid--fill grid--2m" style={{ '--min': '220px', '--gap': '14px' }}>
             {galeria.map((g, i) => (
               <figure key={i} style={{ borderRadius: 16, overflow: 'hidden', background: 'var(--ph)', position: 'relative', aspectRatio: '1' }}>
                 <img src={g.img} alt={g.legenda || 'foto da loja'} loading="lazy" onError={e => { e.currentTarget.style.visibility = 'hidden'; }} style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />

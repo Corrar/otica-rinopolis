@@ -15,6 +15,9 @@
 }
 
 html { -webkit-text-size-adjust: 100%; }
+/* Barras de rolagem ocultas em todo o site — a rolagem continua funcionando normalmente. */
+* { scrollbar-width: none; -ms-overflow-style: none; }
+*::-webkit-scrollbar { display: none; width: 0; height: 0; }
 body { margin: 0; background: #fff; color: var(--ink); font-family: var(--f-body); -webkit-font-smoothing: antialiased; overflow-x: hidden; }
 *, *::before, *::after { box-sizing: border-box; }
 img { max-width: 100%; }
@@ -39,6 +42,16 @@ main { flex: 1; min-width: 0; }
 .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, var(--min, 260px)), 1fr)); gap: var(--gap, 20px); }
 .grid--fill { grid-template-columns: repeat(auto-fill, minmax(min(100%, var(--min, 230px)), 1fr)); }
 .split { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, var(--min, 380px)), 1fr)); }
+/* Grades com quantidade conhecida de itens: evitam um card sozinho na última linha em tablets. */
+.grid--3 { grid-template-columns: minmax(0, 1fr); }
+@media (min-width: 640px) { .grid--3 { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+/* Cards com texto longo (depoimentos) só vão para 3 colunas a partir de 768px. */
+@media (min-width: 640px) and (max-width: 767px) { .grid--3.grid--longo { grid-template-columns: minmax(0, 1fr); } }
+.grid--4 { grid-template-columns: minmax(0, 1fr); }
+@media (min-width: 520px) { .grid--4 { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (min-width: 960px) { .grid--4 { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+/* Duas colunas no celular (catálogo, equipe, galeria). */
+@media (max-width: 559px) { .grid--2m { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 .min0 { min-width: 0; }
 .dark { background: var(--ink); color: #fff; }
 
@@ -93,11 +106,18 @@ main { flex: 1; min-width: 0; }
 .header__mob { display: flex; align-items: center; gap: 10px; flex: none; }
 .circle-44 { width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
 .burger { border: 1px solid rgba(255,255,255,.3); background: transparent; color: #fff; flex-direction: column; gap: 5px; }
-.burger span { width: 18px; height: 1.5px; background: #fff; display: block; transition: opacity .2s; }
-.menu { position: fixed; inset: 72px 0 0; z-index: 19; background: var(--ink); color: #fff; padding: 16px clamp(16px, 5vw, 64px) 32px; display: flex; flex-direction: column; overflow: auto; }
+.burger span { width: 18px; height: 1.5px; background: #fff; display: block; transition: opacity .2s, transform .25s; }
+.burger[aria-expanded="true"] span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+.burger[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
+.burger[aria-expanded="true"] span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+/* --menu-top é medido no componente (fim do cabeçalho, abaixo da faixa de aviso quando visível). */
+.menu { position: fixed; inset: var(--menu-top, 72px) 0 0; z-index: 19; background: var(--ink); color: #fff; padding: 16px clamp(16px, 5vw, 64px) calc(24px + env(safe-area-inset-bottom, 0px)); display: flex; flex-direction: column; overflow-y: auto; overscroll-behavior: contain; -webkit-overflow-scrolling: touch; }
 .menu nav { display: flex; flex-direction: column; border-top: 1px solid rgba(255,255,255,.12); }
-.menu nav a { display: flex; justify-content: space-between; align-items: center; padding: 16px 0; border-bottom: 1px solid rgba(255,255,255,.12); font: 300 26px var(--f-display); color: rgba(255,255,255,.72); }
+.menu nav a { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: clamp(10px, 2vh, 16px) 0; border-bottom: 1px solid rgba(255,255,255,.12); font: 300 clamp(21px, 3.4vh, 26px)/1.25 var(--f-display); color: rgba(255,255,255,.72); }
 .menu nav a[aria-current="page"] { color: #fff; }
+.menu__rodape { margin-top: auto; padding-top: 24px; display: flex; flex-direction: column; gap: 14px; }
+/* Com o menu aberto, os botões flutuantes não ficam por cima dele. */
+.app--menu .fab, .app--menu .to-top { visibility: hidden; pointer-events: none; }
 
 .status { display: inline-flex; align-items: center; gap: 6px; }
 .dot { width: 7px; height: 7px; border-radius: 50%; display: inline-block; flex: none; }
@@ -109,6 +129,12 @@ main { flex: 1; min-width: 0; }
 .ph--dark .ph__dash { outline: 1px dashed rgba(255,255,255,.25); outline-offset: 10px; }
 .card-sand { background: var(--sand); border-radius: 18px; padding: 26px 24px; }
 .cta-band { margin: 0 var(--px-card) clamp(48px, 7vw, 88px); background: var(--sand); border-radius: 24px; padding: clamp(24px, 4vw, 48px); display: flex; justify-content: space-between; align-items: center; gap: 20px; flex-wrap: wrap; }
+.btn-row { display: flex; gap: 12px; flex-wrap: wrap; }
+/* Celular: botões de ação na largura toda e sem o separador vertical da capa. */
+@media (max-width: 479px) {
+  .btn-row > .btn, .cta-band > .btn { flex: 1 1 100%; }
+  .hero-sep { display: none; }
+}
 .chip-box { height: 60px; border: 1px solid rgba(0,0,0,.12); border-radius: 12px; display: flex; align-items: center; justify-content: center; font: 500 13px var(--f-body); color: var(--muted); text-align: center; padding: 0 8px; }
 .steps { --gap: 0 24px; border-top: 1px solid var(--line); }
 .steps > div { padding: 26px 0; border-bottom: 1px solid var(--line); }
@@ -132,7 +158,13 @@ main { flex: 1; min-width: 0; }
 
 .filter { border: 1px solid var(--ink); background: #fff; color: var(--ink); padding: 10px 16px; border-radius: 999px; font: 500 13px var(--f-body); min-height: 40px; }
 .filter:hover, .filter[aria-pressed="true"] { background: var(--ink); color: #fff; }
-.badge { position: absolute; top: 12px; border-radius: 999px; padding: 4px 10px; font: 500 11px var(--f-body); }
+.badge { position: absolute; top: 12px; border-radius: 999px; padding: 4px 10px; font: 500 11px var(--f-body); max-width: calc(100% - 24px); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.badge:has(+ .badge), .badge + .badge { max-width: calc(50% - 16px); }
+.prod-nome { font: 500 18px var(--f-display); min-width: 0; overflow-wrap: anywhere; }
+@media (max-width: 559px) {
+  .prod-nome { font-size: 16px; }
+  .badge { top: 8px; padding: 3px 8px; }
+}
 
 .faq-q { width: 100%; display: flex; justify-content: space-between; align-items: center; gap: 16px; text-align: left; background: none; border: 0; padding: 18px 0; font: 500 17px/1.3 var(--f-display); color: var(--ink); }
 .faq-ic { width: 32px; height: 32px; border-radius: 50%; border: 1px solid rgba(0,0,0,.15); display: flex; align-items: center; justify-content: center; flex: none; font: 300 20px var(--f-display); transition: transform .3s; }
@@ -148,7 +180,13 @@ textarea.input { resize: vertical; }
 
 /* ---------- rodapé e flutuantes ---------- */
 .footer { background: var(--ink); color: #fff; padding: 48px var(--px) 28px; }
-.footer__cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 180px), 1fr)); gap: 32px; margin-bottom: 40px; }
+/* Celular: logo e contato ocupam a linha toda, "produtos" e "a ótica" lado a lado. */
+.footer__cols { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 32px 24px; margin-bottom: 40px; }
+.footer__cols > :first-child, .footer__cols > :last-child { grid-column: 1 / -1; }
+@media (min-width: 720px) {
+  .footer__cols { grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1.3fr); gap: 32px; }
+  .footer__cols > :first-child, .footer__cols > :last-child { grid-column: auto; }
+}
 .footer__col { font: 400 14px/2 var(--f-body); color: rgba(255,255,255,.7); display: flex; flex-direction: column; align-items: flex-start; }
 .footer__col .ttl { color: #fff; font-weight: 500; margin-bottom: 4px; }
 /* Última linha do rodapé termina antes do botão flutuante do WhatsApp (só ícone abaixo de 980px). */

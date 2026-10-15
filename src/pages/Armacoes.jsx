@@ -29,7 +29,7 @@ export default function Armacoes() {
           </div>
           <div style={{ font: "400 13px 'DM Sans',sans-serif", color: 'var(--muted-2)' }} aria-live="polite">{produtos.length} {produtos.length === 1 ? 'modelo' : 'modelos'}</div>
         </div>
-        <div data-grid-produtos ref={grade} className="grid grid--fill" style={{ '--min': '230px' }}>
+        <div data-grid-produtos ref={grade} className="grid grid--fill grid--2m" style={{ '--min': '230px' }}>
           {produtos.map((p, i) => (
             <div key={p.nome + i} style={{ display: 'flex', flexDirection: 'column', minWidth: 0 }}>
               <div className="ph" style={{ aspectRatio: '4/3', borderRadius: 16, backgroundColor: '#f0efec', backgroundImage: bgOf(p.img), fontSize: 12, marginBottom: 12, position: 'relative' }} role={p.img ? 'img' : undefined} aria-label={p.img ? p.nome : undefined}>
@@ -37,9 +37,9 @@ export default function Armacoes() {
                 <span className="badge" style={{ left: 12, background: '#fff', color: 'var(--ink)' }}>{rotuloCat[p.cat] || p.cat}</span>
                 {p.destaque ? <span className="badge" style={{ right: 12, background: 'var(--ink)', color: '#fff' }}>{p.selo || 'destaque'}</span> : null}
               </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', gap: 10, font: "400 12px 'DM Sans',sans-serif", color: 'var(--muted-2)', marginBottom: 4 }}><span>{p.marca}</span>{p.preco ? <span style={{ color: 'var(--ink)', fontWeight: 500 }}>{p.preco}</span> : null}</div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', gap: '2px 10px', flexWrap: 'wrap', font: "400 12px 'DM Sans',sans-serif", color: 'var(--muted-2)', marginBottom: 4 }}><span>{p.marca}</span>{p.preco ? <span style={{ color: 'var(--ink)', fontWeight: 500 }}>{p.preco}</span> : null}</div>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
-                <div style={{ font: "500 18px 'Outfit',sans-serif" }}>{p.nome}</div>
+                <div className="prod-nome">{p.nome}</div>
                 <a href={wa.msg(`Olá! Tenho interesse na armação "${p.nome}" (${p.marca}). Pode me passar mais informações?`)} target="_blank" rel="noopener" className="pill-sm"><Ic n="wa" s={14} /><span>consultar</span></a>
               </div>
             </div>
