@@ -96,7 +96,7 @@ export const Footer = forwardRef(function Footer(_, ref) {
           <Status st={status} style={{ marginTop: 8, font: "500 12px 'DM Sans',sans-serif", color: 'rgba(255,255,255,.8)' }} />
         </div>
       </div>
-      <div style={{ borderTop: '1px solid rgba(255,255,255,.14)', paddingTop: 18, font: "400 12px 'DM Sans',sans-serif", color: 'rgba(255,255,255,.45)', display: 'flex', justifyContent: 'space-between', gap: 12, flexWrap: 'wrap' }}>
+      <div className="footer__base" style={{ borderTop: '1px solid rgba(255,255,255,.14)', paddingTop: 18, font: "400 12px 'DM Sans',sans-serif", color: 'rgba(255,255,255,.45)', display: 'flex', justifyContent: 'space-between', gap: 12, flexWrap: 'wrap' }}>
         <span>© {new Date().getFullYear()} ótica digital look</span>
         <span style={{ display: 'flex', gap: 16, flexWrap: 'wrap' }}><span>CNPJ {info.cnpj}</span><L to="admin" style={{ display: 'inline-flex', alignItems: 'center', gap: 6, color: 'rgba(255,255,255,.55)' }}><Ic n="lock" s={12} />área do proprietário</L></span>
       </div>

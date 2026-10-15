@@ -46,6 +46,7 @@ function Site() {
   const mainRef = useRef(null), footerRef = useRef(null), headerRef = useRef(null), fabRef = useRef(null);
   const ativa = r.page === 'post' ? 'blog' : r.page;
   const admin = r.page === 'admin';
+  const fab = info.botaoFlutuante !== false && !admin;
 
   useEffect(() => setMenuOpen(false), [path]);
   useEffect(() => { if (wide) setMenuOpen(false); }, [wide]);
@@ -67,7 +68,7 @@ function Site() {
   }
 
   return (
-    <div className="app">
+    <div className={`app${fab ? ' app--fab' : ''}`}>
       <a href="#conteudo" className="skip">pular para o conteúdo</a>
       <Seo page={r.page} titulo={tituloPost || TITULOS[r.page]} />
       <PromoBar />
@@ -77,7 +78,7 @@ function Site() {
       <Footer ref={footerRef} />
       <ScrollExtras />
       {toast && <div className="toast" role="status">{toast}</div>}
-      {info.botaoFlutuante !== false && !admin && (
+      {fab && (
         <a ref={fabRef} href={wa.link} target="_blank" rel="noopener" aria-label="Falar no WhatsApp" className="fab"><Ic n="wa" s={22} />{wide && <span>fale conosco</span>}</a>
       )}
     </div>
