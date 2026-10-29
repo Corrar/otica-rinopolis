@@ -83,7 +83,7 @@ export function MobileMenu({ ativa, fechar, animar, headerRef }) {
 }
 
 export const Footer = forwardRef(function Footer(_, ref) {
-  const { info, wa, igLink, mapaLink, status } = useSite();
+  const { info, wa, tel, igLink, mapaLink, status } = useSite();
   return (
     <footer className="footer" ref={ref}>
       <div className="footer__cols">
@@ -101,7 +101,8 @@ export const Footer = forwardRef(function Footer(_, ref) {
         <div className="footer__col"><div className="ttl">a ótica</div><L to="sobre">sobre</L><L to="convenios">convênios e eventos</L><L to="blog">blog</L><L to="contato">contato</L></div>
         <div className="footer__col min0" style={{ lineHeight: 1.7 }}>
           <div className="ttl">contato</div>
-          <a href={wa.link} target="_blank" rel="noopener">{wa.fmt}</a>
+          <a href={wa.link} target="_blank" rel="noopener">{wa.fmt} (WhatsApp)</a>
+          {tel ? <a href={tel.link}>{tel.fmt}</a> : null}
           <span>{info.endereco}</span><span>{info.bairroCidade}</span>
           <Status st={status} style={{ marginTop: 8, font: "500 12px 'DM Sans',sans-serif", color: 'rgba(255,255,255,.8)' }} />
         </div>

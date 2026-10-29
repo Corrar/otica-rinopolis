@@ -35,11 +35,20 @@ export function statusLoja(info, fechamentos, now) {
   return { aberto, texto, cor: aberto ? '#25D366' : '#c9c6c1', hojeIso: iso };
 }
 
+// "1835831566" → "(18) 3583-1566"; "18997637896" → "(18) 99763-7896"
+export const fmtTel = (n) => (n.length === 11 ? `(${n.slice(0, 2)}) ${n.slice(2, 7)}-${n.slice(7)}` : n.length === 10 ? `(${n.slice(0, 2)}) ${n.slice(2, 6)}-${n.slice(6)}` : n);
+
+// Telefone fixo: link tel: e número formatado (vazio se não cadastrado).
+export function telefone(info) {
+  const n = String(info.telefone || '').replace(/\D/g, '');
+  return n ? { link: 'tel:+55' + n, fmt: fmtTel(n), digitos: n } : null;
+}
+
 export function whatsapp(info) {
   const wa = String(info.whatsapp || '').replace(/\D/g, '');
   const base = 'https://wa.me/55' + wa;
   const msg = (t) => base + '?text=' + encodeURIComponent(t);
-  const fmt = wa.length === 11 ? `(${wa.slice(0, 2)}) ${wa.slice(2, 7)}-${wa.slice(7)}` : wa.length === 10 ? `(${wa.slice(0, 2)}) ${wa.slice(2, 6)}-${wa.slice(6)}` : wa;
+  const fmt = fmtTel(wa);
   return {
     msg, fmt,
     link: msg(info.msgWhats || 'Olá! Vim pelo site da Ótica Digital Look e gostaria de atendimento.'),

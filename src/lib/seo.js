@@ -1,6 +1,6 @@
 // SEO: título, descrição e dados estruturados (schema.org) de cada página.
 // Usado no navegador (componente Seo) e no build, que gera o HTML pronto de cada página (scripts/prerender.js).
-import { fmtH, lista, MESES, num2, postsDe, eventosFuturos, whatsapp } from './util.js';
+import { fmtH, lista, MESES, num2, postsDe, eventosFuturos, telefone, whatsapp } from './util.js';
 
 export const NOME = 'Ótica Digital Look';
 export const PAGINAS_INDEXADAS = ['inicio', 'sobre', 'armacoes', 'lentes', 'convenios', 'blog', 'contato'];
@@ -30,7 +30,7 @@ export function metaPagina(r, cms) {
   const { info } = cms;
   const { cidade, uf } = localDe(info);
   const local = `${cidade}/${uf}`;
-  const wa = whatsapp(info);
+  const wa = whatsapp(info), tel = telefone(info);
   const horario = `seg a sex ${fmtH(info.abreSemana)} às ${fmtH(info.fechaSemana)}, sábado ${fmtH(info.abreSabado)} às ${fmtH(info.fechaSabado)}`;
   const parc = info.parcelas || '10';
   const base = { caminho: caminhoDe(r.page, r.slug), imagem: '/og-image.jpg', noindex: false, tipo: 'website' };
@@ -41,7 +41,7 @@ export function metaPagina(r, cms) {
     case 'lentes': return { ...base, titulo: `Lentes de contato em ${local} | ${NOME}`, descricao: corta(`Lentes de contato diárias, mensais, tóricas e multifocais em ${cidade}. Envie sua receita pelo WhatsApp e aprenda a colocar e cuidar com a nossa equipe.`) };
     case 'convenios': return { ...base, titulo: `Convênios, promoções e pagamento | ${NOME} – ${local}`, descricao: corta(`Convênios aceitos, promoções do mês e eventos da ${NOME} em ${cidade}. Parcele seu óculos completo em até ${parc}x sem juros no cartão.`) };
     case 'blog': return { ...base, titulo: `Blog: dicas de lentes, armações e saúde ocular | ${NOME}`, descricao: corta(`Dicas da ${NOME}, ótica no centro de ${cidade}, sobre lentes, armações, lentes de contato e cuidados com os olhos.`) };
-    case 'contato': return { ...base, titulo: `Contato, endereço e horário | ${NOME} – ${local}`, descricao: corta(`${info.endereco}, ${info.bairroCidade}. WhatsApp ${wa.fmt}. Horário: ${horario}. Veja o mapa e fale com a gente.`) };
+    case 'contato': return { ...base, titulo: `Contato, endereço e horário | ${NOME} – ${local}`, descricao: corta(`${info.endereco}, ${info.bairroCidade}. ${tel ? `Telefone ${tel.fmt}, WhatsApp ${wa.fmt}` : `WhatsApp ${wa.fmt}`}. Horário: ${horario}. Veja o mapa e fale com a gente.`) };
     case 'post': {
       const p = postsDe(cms).find(x => x.slug === r.slug);
       if (!p) return { ...base, titulo: `Página não encontrada | ${NOME}`, descricao: '', noindex: true };
@@ -60,13 +60,17 @@ export function dadosOtica(cms, site) {
   const { info } = cms;
   const { bairro, cidade, uf } = localDe(info);
   const wa = String(info.whatsapp || '').replace(/\D/g, '');
+  const tel = telefone(info);
+  const intl = (n) => (n.length >= 10 ? `+55 ${n.slice(0, 2)} ${n.slice(2, -4)}-${n.slice(-4)}` : undefined);
   const ig = String(info.instagram || '').replace(/^@/, '');
   const end = `${info.endereco}, ${info.bairroCidade}, ${info.cep}`;
   return {
     '@type': 'Optician', '@id': site + '/#otica', name: NOME, url: site + '/',
     description: info.siteDescricao, logo: site + '/logo.png',
     image: [site + '/og-image.jpg', site + '/fotos/fachada.jpg', site + '/fotos/loja-balcao.jpg', site + '/fotos/vitrine-feminina.jpg'],
-    telephone: wa.length >= 10 ? `+55 ${wa.slice(0, 2)} ${wa.slice(2, -4)}-${wa.slice(-4)}` : undefined,
+    // Telefone principal: o fixo (o mesmo da fachada e do Perfil da Empresa no Google); o WhatsApp entra como contato.
+    telephone: intl(tel ? tel.digitos : wa),
+    contactPoint: intl(wa) ? [{ '@type': 'ContactPoint', contactType: 'customer service', telephone: intl(wa), availableLanguage: 'Portuguese', description: 'WhatsApp' }] : undefined,
     priceRange: '$$', currenciesAccepted: 'BRL', paymentAccepted: lista(info.pagamentos).join(', ') || undefined,
     address: { '@type': 'PostalAddress', streetAddress: bairro ? `${info.endereco} - ${bairro}` : info.endereco, addressLocality: cidade, addressRegion: uf, postalCode: info.cep, addressCountry: 'BR' },
     areaServed: { '@type': 'City', name: `${cidade} - ${uf}` },

@@ -144,6 +144,7 @@ function Aba({ id, irAba, sessao, setSessao }) {
     case 'info': return <>
       <BlocoInfo titulo="contato e endereço">
         <Campo b={i('whatsapp')} label="WhatsApp (só números, com DDD)" placeholder="18997637896" tipo="tel" />
+        <Campo b={i('telefone')} label="Telefone fixo (só números, com DDD; vazio para não mostrar)" placeholder="1835831566" tipo="tel" />
         <Campo b={i('instagram')} label="Instagram (sem @)" />
         <Campo b={i('facebook')} label="Facebook (link completo, opcional)" placeholder="https://facebook.com/..." />
         <Campo b={i('endereco')} label="Endereço" />

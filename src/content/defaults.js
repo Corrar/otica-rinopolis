@@ -7,7 +7,7 @@ export const ehIlustrativa = (url) => String(url || '').startsWith('https://imag
 
 export const PADRAO = () => ({
   info: {
-    whatsapp: '18997637896', instagram: 'digitallookbr', endereco: 'R. Prof. Sud Menucci, 228', bairroCidade: 'Centro, Rinópolis – SP', cep: '17740-000', cidade: 'rinópolis · sp', cidadeNome: 'rinópolis', cnpj: '00.000.000/0001-00',
+    whatsapp: '18997637896', telefone: '1835831566', instagram: 'digitallookbr', endereco: 'R. Prof. Sud Menucci, 228', bairroCidade: 'Centro, Rinópolis – SP', cep: '17740-000', cidade: 'rinópolis · sp', cidadeNome: 'rinópolis', cnpj: '00.000.000/0001-00',
     abreSemana: '08:30', fechaSemana: '18:00', abreSabado: '08:30', fechaSabado: '12:30', parcelas: '10', anos: '10',
     heroLinha1: 'um novo olhar', heroLinha2: 'para o seu', heroDestaque: 'dia a dia.', heroTexto: 'Óculos de grau, óculos de sol e lentes de contato no centro de Rinópolis, com atendimento próximo e medição digital de precisão.',
     selos: 'medição digital, até 10x sem juros, ajuste e limpeza grátis',

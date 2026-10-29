@@ -45,14 +45,16 @@ export function Evento({ ev, comImagem = false }) {
 }
 
 export const InfoContato = ({ site, comStatus = false }) => {
-  const { info, wa, igLink, status, horarioSemana, horarioSabado } = site;
+  const { info, wa, tel, igLink, status, horarioSemana, horarioSabado } = site;
   return (
     <div className="info-grid">
       <div><div className="lbl">endereço</div>{info.endereco}<br />{info.bairroCidade}<br />{info.cep}</div>
       <div><div className="lbl">horário</div>seg–sex · {horarioSemana}<br />sábado · {horarioSabado}
         {comStatus ? <><br /><span className="status" style={{ marginTop: 6, font: "500 12px 'DM Sans',sans-serif", color: 'var(--ink)' }}><span className="dot" style={{ background: status.cor }} />{status.texto}</span></> : null}
       </div>
-      <div><div className="lbl">WhatsApp</div><a href={wa.link} target="_blank" rel="noopener" className="u-link"><Ic n="wa" s={14} style={{ color: 'var(--wa)' }} /><span>{wa.fmt}</span></a></div>
+      <div><div className="lbl">{tel ? 'telefones' : 'WhatsApp'}</div><a href={wa.link} target="_blank" rel="noopener" className="u-link"><Ic n="wa" s={14} style={{ color: 'var(--wa)' }} /><span>{wa.fmt}</span></a>
+        {tel ? <><br /><a href={tel.link} className="u-link"><Ic n="tel" s={14} /><span>{tel.fmt}</span></a></> : null}
+      </div>
       <div><div className="lbl">instagram</div><a href={igLink} target="_blank" rel="noopener" className="u-link"><Ic n="ig" s={14} /><span>@{String(info.instagram || '').replace(/^@/, '')}</span></a></div>
     </div>
   );

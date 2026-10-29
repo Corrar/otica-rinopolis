@@ -3,7 +3,7 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { mesclar } from '../content/defaults.js';
 import { api } from '../lib/api.js';
-import { agoraBrasilia, statusLoja, whatsapp, fmtH, lista } from '../lib/util.js';
+import { agoraBrasilia, statusLoja, telefone, whatsapp, fmtH, lista } from '../lib/util.js';
 
 const CACHE_KEY = 'odl-cache-v1';
 const Ctx = createContext(null);
@@ -127,7 +127,7 @@ export function useSite() {
       ? { aberto: false, texto: `seg a sex ${fmtH(info.abreSemana)}–${fmtH(info.fechaSemana)} · sáb ${fmtH(info.abreSabado)}–${fmtH(info.fechaSabado)}`, cor: '#c9c6c1', hojeIso: agoraBrasilia(now).iso }
       : statusLoja(info, cms.fechamentos, now);
     return {
-      cms, info, wa, status: st, hojeIso: st.hojeIso,
+      cms, info, wa, tel: telefone(info), status: st, hojeIso: st.hojeIso,
       horarioSemana: `${fmtH(info.abreSemana)} às ${fmtH(info.fechaSemana)}`,
       horarioSabado: `${fmtH(info.abreSabado)} às ${fmtH(info.fechaSabado)}`,
       mapaLink: 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(end),
