@@ -4,8 +4,8 @@
   "cleanUrls": true,
   "trailingSlash": false,
   "rewrites": [
-    { "source": "/admin", "destination": "/app.html" },
-    { "source": "/blog/:slug", "destination": "/app.html" }
+    { "source": "/admin", "destination": "/app" },
+    { "source": "/blog/:slug", "destination": "/app" }
   ],
   "headers": [
     {
@@ -15,6 +15,10 @@
         { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
         { "key": "X-Frame-Options", "value": "SAMEORIGIN" }
       ]
+    },
+    {
+      "source": "/app",
+      "headers": [{ "key": "X-Robots-Tag", "value": "noindex" }]
     },
     {
       "source": "/fotos/(.*)",

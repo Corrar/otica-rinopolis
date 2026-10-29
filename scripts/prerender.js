@@ -58,8 +58,9 @@ async function main() {
     const m = ssr.metaPagina(r, cms);
     const corpo = ssr.render(caminho, salvo);
     return modelo
-      .replace(/<!--seo-->[\s\S]*?<!--\/seo-->/, cabecalho(m, m.noindex ? [] : ssr.jsonLd(r, cms, SITE)))
-      .replace('<div id="root"></div>', `<div id="root">${corpo}</div>`);
+      // Substituição por função: o texto inserido pode ter "$" (ex.: "$$", preços), que no replace com string vira padrão especial.
+      .replace(/<!--seo-->[\s\S]*?<!--\/seo-->/, () => cabecalho(m, m.noindex ? [] : ssr.jsonLd(r, cms, SITE)))
+      .replace('<div id="root"></div>', () => `<div id="root">${corpo}</div>`);
   };
 
   // Página "vazia" (só o app) para rotas sem HTML gerado: /admin e artigos novos do blog.
