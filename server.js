@@ -21,9 +21,13 @@ createServer(async (req, res) => {
   const { pathname } = new URL(req.url, 'http://local');
   if (pathname.startsWith('/api/')) return handleApi(req, res);
   if (pathname.startsWith('/uploads/')) return serveUpload(req, res);
-  const alvo = path.join(DIST, path.normalize(decodeURIComponent(pathname)).replace(/^(\.\.[/\\])+/, ''));
-  try {
-    if (alvo.startsWith(DIST) && (await fs.stat(alvo)).isFile()) return arquivo(res, alvo, pathname.startsWith('/assets/') ? 'public, max-age=31536000, immutable' : 'public, max-age=300');
-  } catch { /* cai no index.html */ }
-  arquivo(res, path.join(DIST, 'index.html'), 'no-cache');
+  const limpo = pathname.length > 1 ? pathname.replace(/\/+$/, '') : pathname;
+  const alvo = path.join(DIST, path.normalize(decodeURIComponent(limpo)).replace(/^(\.\.[/\\])+/, ''));
+  const existe = async (arq) => { try { return arq.startsWith(DIST) && (await fs.stat(arq)).isFile(); } catch { return false; } };
+  if (await existe(alvo)) return arquivo(res, alvo, limpo.startsWith('/assets/') ? 'public, max-age=31536000, immutable' : 'public, max-age=300');
+  // Páginas geradas no build (/sobre → sobre.html); /admin e artigos novos do blog abrem o app; o resto é 404.
+  if (await existe(alvo + '.html')) return arquivo(res, alvo + '.html', 'no-cache');
+  if (limpo === '/' || limpo === '/admin' || limpo.startsWith('/blog/')) return arquivo(res, path.join(DIST, limpo === '/' ? 'index.html' : 'app.html'), 'no-cache');
+  res.statusCode = 404;
+  arquivo(res, path.join(DIST, '404.html'), 'no-cache');
 }).listen(PORT, () => console.log(`Ótica Digital Look em http://localhost:${PORT}`));

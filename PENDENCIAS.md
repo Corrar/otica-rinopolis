@@ -19,7 +19,13 @@ O painel `/admin` abre, mas **não salva nada** até existir um Blob Store. A in
 - Nomes reais da equipe, marcas que trabalha, CNPJ, convênios definitivos.
 - Conferir horários, feriados, promoções, eventos e depoimentos.
 
-## 5. Opcional
+## 5. Google (SEO local) — o que só o dono pode fazer
+- **Perfil da Empresa no Google** (google.com/business): é o que mais pesa para aparecer em "ótica em Rinópolis" e no mapa. Cadastrar/reivindicar a Ótica Digital Look com o mesmo nome, endereço (R. Prof. Sud Menucci, 228 – Centro) e telefone do site, categoria "Ótica", horário, fotos da loja e o link do site. Pedir avaliações aos clientes.
+- **Google Search Console** (search.google.com/search-console): adicionar o site, enviar o sitemap (`/sitemap.xml`) e pedir indexação da home.
+- **Telefone fixo**: a fachada mostra (18) 3583-1566, mas o site só tem o WhatsApp. Confirmar se o fixo está ativo — se sim, usar o mesmo número no Perfil da Empresa e pedir para incluir no site.
+- Domínio próprio (item 6) ajuda a passar confiança e facilita divulgar o endereço.
+
+## 6. Opcional
 - Domínio próprio (ex.: oticadigitallook.com.br) apontado para o projeto na Vercel.
 
 ## Referências

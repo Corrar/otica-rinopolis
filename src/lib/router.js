@@ -12,7 +12,10 @@ export function navegar(para, { replace = false } = {}) {
   avisar();
 }
 
-export const usePath = () => useSyncExternalStore(assinar, () => location.pathname);
+// No build (HTML gerado de cada página) não há location: o caminho vem de definirCaminhoServidor.
+let caminhoServidor = '/';
+export const definirCaminhoServidor = (p) => { caminhoServidor = p; };
+export const usePath = () => useSyncExternalStore(assinar, () => location.pathname, () => caminhoServidor);
 
 // Links antigos do protótipo usavam #pagina (ex.: #admin) — redireciona para a URL limpa.
 export function useHashLegado() {

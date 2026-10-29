@@ -124,7 +124,8 @@ main { flex: 1; min-width: 0; }
 
 /* ---------- blocos comuns ---------- */
 .hero { padding: clamp(48px, 7vw, 96px) var(--px); }
-.ph { background-color: var(--ph); background-size: cover; background-position: center; display: flex; align-items: center; justify-content: center; font: 400 13px var(--f-body); color: var(--muted-2); text-align: center; }
+.ph { position: relative; overflow: hidden; background-color: var(--ph); background-size: cover; background-position: center; display: flex; align-items: center; justify-content: center; font: 400 13px var(--f-body); color: var(--muted-2); text-align: center; }
+.ph__img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
 .ph--dark { background-color: #2b2829; background-image: linear-gradient(145deg, #3a3637, #242122); color: rgba(255,255,255,.5); }
 .ph--dark .ph__dash { outline: 1px dashed rgba(255,255,255,.25); outline-offset: 10px; }
 .card-sand { background: var(--sand); border-radius: 18px; padding: 26px 24px; }

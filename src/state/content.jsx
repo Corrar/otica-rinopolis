@@ -3,16 +3,18 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { mesclar } from '../content/defaults.js';
 import { api } from '../lib/api.js';
-import { statusLoja, whatsapp, fmtH, lista } from '../lib/util.js';
+import { agoraBrasilia, statusLoja, whatsapp, fmtH, lista } from '../lib/util.js';
 
 const CACHE_KEY = 'odl-cache-v1';
 const Ctx = createContext(null);
 
 const lerCache = () => { try { const c = JSON.parse(localStorage.getItem(CACHE_KEY) || 'null'); return c && c.content ? c : null; } catch { return null; } };
+export const temCacheLocal = () => !!lerCache();
 const gravarCache = (content, version) => { try { localStorage.setItem(CACHE_KEY, JSON.stringify({ content, version })); } catch { /* sem espaço / modo privado */ } };
 
-export function ContentProvider({ children }) {
-  const cache = useMemo(lerCache, []);
+// inicial: conteúdo já buscado antes de montar ({ content, version }) — usado quando a página veio pronta do build.
+export function ContentProvider({ inicial, children }) {
+  const cache = useMemo(() => inicial || lerCache(), []); // eslint-disable-line react-hooks/exhaustive-deps
   const [cms, setCms] = useState(() => (cache ? mesclar(cache.content) : null));
   const [now, setNow] = useState(Date.now());
   const [salvar, setSalvar] = useState({ status: 'ocioso', erro: '' }); // ocioso | pendente | salvando | salvo | erro | conflito | sessao
@@ -30,10 +32,11 @@ export function ContentProvider({ children }) {
   }, []);
 
   useEffect(() => {
+    const tick = setInterval(() => setNow(Date.now()), 60000);
+    if (inicial) { gravarCache(inicial.content, inicial.version); return () => clearInterval(tick); }
     // Sem resposta em 5s (ou erro), mostra o conteúdo padrão para o visitante não ficar esperando.
     const t = setTimeout(() => setCms(c => c || mesclar(null)), 5000);
     carregar(false).catch(() => setCms(c => c || mesclar(null))).finally(() => clearTimeout(t));
-    const tick = setInterval(() => setNow(Date.now()), 60000);
     return () => { clearTimeout(t); clearInterval(tick); };
   }, [carregar]);
 
@@ -119,7 +122,10 @@ export function useSite() {
     const info = cms.info;
     const wa = whatsapp(info);
     const end = `${info.endereco}, ${info.bairroCidade}, ${info.cep}`;
-    const st = statusLoja(info, cms.fechamentos, now);
+    // No HTML gerado no build, "aberto agora" ficaria congelado: mostra só o horário.
+    const st = typeof window === 'undefined'
+      ? { aberto: false, texto: `seg a sex ${fmtH(info.abreSemana)}–${fmtH(info.fechaSemana)} · sáb ${fmtH(info.abreSabado)}–${fmtH(info.fechaSabado)}`, cor: '#c9c6c1', hojeIso: agoraBrasilia(now).iso }
+      : statusLoja(info, cms.fechamentos, now);
     return {
       cms, info, wa, status: st, hojeIso: st.hojeIso,
       horarioSemana: `${fmtH(info.abreSemana)} às ${fmtH(info.fechaSemana)}`,

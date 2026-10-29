@@ -7,7 +7,7 @@ import { animarMenu } from '../lib/anim.js';
 export const PAGINAS = [['inicio', 'início'], ['sobre', 'sobre'], ['armacoes', 'armações'], ['lentes', 'lentes de contato'], ['convenios', 'convênios'], ['blog', 'blog'], ['contato', 'contato']];
 
 export const useLargura = () => {
-  const [w, setW] = useState(() => window.innerWidth);
+  const [w, setW] = useState(() => (typeof window === 'undefined' ? 1280 : window.innerWidth));
   useEffect(() => { const f = () => setW(window.innerWidth); window.addEventListener('resize', f); return () => window.removeEventListener('resize', f); }, []);
   return w;
 };
@@ -89,7 +89,7 @@ export const Footer = forwardRef(function Footer(_, ref) {
       <div className="footer__cols">
         <div className="min0">
           <img src="/logo.png" alt="" style={{ height: 88, margin: '-16px 0 6px -12px', display: 'block' }} />
-          <p style={{ font: "400 14px/1.55 'DM Sans',sans-serif", color: 'rgba(255,255,255,.6)', maxWidth: 280, margin: '0 0 16px' }}>Ótica em {info.cidade} com medição digital e atendimento personalizado.</p>
+          <p style={{ font: "400 14px/1.55 'DM Sans',sans-serif", color: 'rgba(255,255,255,.6)', maxWidth: 280, margin: '0 0 16px' }}>Ótica no centro de {info.cidade}, com medição digital e atendimento personalizado.</p>
           <div style={{ display: 'flex', gap: 10 }}>
             <a href={wa.link} target="_blank" rel="noopener" aria-label="WhatsApp" className="soc soc--wa"><Ic n="wa" /></a>
             <a href={igLink} target="_blank" rel="noopener" aria-label="Instagram" className="soc"><Ic n="ig" /></a>

@@ -4,7 +4,7 @@ import { Footer, Header, MobileMenu, PromoBar, ScrollExtras, useLargura } from '
 import { useContent, useSite } from './state/content.jsx';
 import { rota, useHashLegado, usePath } from './lib/router.js';
 import { useToast } from './lib/toast.js';
-import { postsDe } from './lib/util.js';
+import { absolutoUrl, metaPagina } from './lib/seo.js';
 import { animarEntradaHeader, useAnimacoesPagina } from './lib/anim.js';
 import Inicio from './pages/Inicio.jsx';
 import Sobre from './pages/Sobre.jsx';
@@ -16,29 +16,41 @@ import { Artigo, Blog, NaoEncontrada } from './pages/Blog.jsx';
 
 const Admin = lazy(() => import('./admin/Admin.jsx'));
 
-function Seo({ page, titulo }) {
-  const { info } = useSite();
+// Mantém título, descrição, link canônico e Open Graph de acordo com a página
+// (o HTML gerado no build já vem com essas tags; aqui elas acompanham a navegação).
+function Seo({ r }) {
+  const { cms } = useSite();
   useEffect(() => {
-    const base = info.siteTitulo || 'Ótica Digital Look';
-    document.title = titulo ? `${titulo} · ${base}` : base;
-    let m = document.querySelector('meta[name="description"]');
-    if (!m) { m = document.createElement('meta'); m.name = 'description'; document.head.appendChild(m); }
-    m.content = info.siteDescricao || '';
-    let r = document.querySelector('meta[name="robots"]');
-    if (page === 'admin') { if (!r) { r = document.createElement('meta'); r.name = 'robots'; document.head.appendChild(r); } r.content = 'noindex'; }
-    else if (r) r.remove();
-  }, [info.siteTitulo, info.siteDescricao, page, titulo]);
+    const m = metaPagina(r, cms);
+    const tag = (sel, criar) => { let el = document.head.querySelector(sel); if (!el) { el = criar(); document.head.appendChild(el); } return el; };
+    const meta = (attr, nome, valor) => {
+      const sel = `meta[${attr}="${nome}"]`;
+      if (valor == null || valor === '') { document.head.querySelector(sel)?.remove(); return; }
+      tag(sel, () => { const el = document.createElement('meta'); el.setAttribute(attr, nome); return el; }).setAttribute('content', valor);
+    };
+    const url = location.origin + m.caminho;
+    document.title = m.titulo;
+    meta('name', 'description', m.descricao);
+    meta('name', 'robots', m.noindex ? 'noindex' : null);
+    meta('property', 'og:title', m.titulo);
+    meta('property', 'og:description', m.descricao);
+    meta('property', 'og:url', url);
+    meta('property', 'og:type', m.tipo);
+    meta('property', 'og:image', absolutoUrl(m.imagem, location.origin));
+    meta('name', 'twitter:title', m.titulo);
+    meta('name', 'twitter:description', m.descricao);
+    meta('name', 'twitter:image', absolutoUrl(m.imagem, location.origin));
+    if (m.noindex) document.head.querySelector('link[rel="canonical"]')?.remove();
+    else tag('link[rel="canonical"]', () => Object.assign(document.createElement('link'), { rel: 'canonical' })).href = url;
+  }, [r.page, r.slug, cms]); // eslint-disable-line react-hooks/exhaustive-deps
   return null;
 }
-
-const TITULOS = { sobre: 'Sobre', armacoes: 'Armações e óculos de sol', lentes: 'Lentes de contato', convenios: 'Convênios, promoções e eventos', blog: 'Blog', contato: 'Contato', admin: 'Área do proprietário', naoEncontrada: 'Página não encontrada' };
 
 function Site() {
   useHashLegado();
   const path = usePath();
   const r = rota(path);
-  const { cms, info, wa, animar } = useSite();
-  const tituloPost = r.page === 'post' ? (postsDe(cms).find(p => p.slug === r.slug) || {}).titulo : null;
+  const { info, wa, animar } = useSite();
   const w = useLargura();
   const wide = w >= 980, desktop = w >= 640;
   const [menuOpen, setMenuOpen] = useState(false);
@@ -70,7 +82,7 @@ function Site() {
   return (
     <div className={`app${fab ? ' app--fab' : ''}${menuOpen ? ' app--menu' : ''}`}>
       <a href="#conteudo" className="skip">pular para o conteúdo</a>
-      <Seo page={r.page} titulo={tituloPost || TITULOS[r.page]} />
+      <Seo r={r} />
       <PromoBar />
       <Header ref={headerRef} ativa={ativa} wide={wide} menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
       {menuOpen && <MobileMenu ativa={ativa} fechar={() => setMenuOpen(false)} animar={animar} headerRef={headerRef} />}

@@ -4,14 +4,20 @@ Usadas até o proprietário enviar as fotos reais pelo painel (`/admin` → foto
 O painel lista em "pendências" quantas fotos de exemplo do banco de imagens ainda estão no site.
 
 ## Enviadas no projeto (`public/fotos/`)
-Recortadas e otimizadas a partir das imagens enviadas na conversa de 15/10/2026.
+Recortadas e otimizadas a partir das imagens enviadas nas conversas de 15/10/2026 e 29/10/2026 (fotos reais da loja).
 
 | Onde aparece | Arquivo |
 |---|---|
 | Capa da home | `capa-armacao.jpg` |
-| Foto da loja (home) | `loja-vitrine.jpg` |
-| Card "armações" (home) | `armacoes-variadas.jpg` |
+| Foto da loja (home, "sobre a ótica") | `loja-balcao.jpg` — balcão com o logo |
+| Nossa história (página sobre) | `fachada.jpg` — fachada na R. Prof. Sud Menucci, 228 |
+| Card "armações" (home) | `vitrine-feminina.jpg` |
+| Card "óculos de sol" (home) | `oculos-clip-on.jpg` — óculos de sol e clip-on na vitrine |
+| Galeria "a loja" (página sobre) | `galeria-feminina.jpg`, `galeria-masculina.jpg`, `galeria-metal.jpg`, `galeria-balcao.jpg` |
 | Armação "Play color" (infantil) | `infantil-rosa.jpg` |
+| Imagem de compartilhamento (WhatsApp, Facebook, Google) | `public/og-image.jpg` — fachada, 1200×630 |
+
+Ficaram de fora as fotos do balcão com o banner da CIA CAP e da mesa de atendimento com o computador (muita informação na imagem).
 
 ## Banco de imagens Pexels (licença Pexels: uso gratuito, inclusive comercial, sem atribuição obrigatória)
 Servidas pela CDN do Pexels (`images.pexels.com`), no tamanho de cada bloco.
@@ -19,13 +25,7 @@ Servidas pela CDN do Pexels (`images.pexels.com`), no tamanho de cada bloco.
 | Onde aparece | Foto |
 |---|---|
 | Capa de lentes de contato | [lente de contato e estojo](https://www.pexels.com/photo/close-up-shot-of-a-contact-lens-5843417/) — Nataliya Vaitkevich |
-| Sobre: nossa história | [óptica ajustando óculos no rosto da cliente](https://www.pexels.com/photo/crop-oculist-adjusting-eyeglasses-on-face-of-woman-5752308/) — Ksenia Chernaya |
-| Card "óculos de sol" (home) | [óculos de sol na mesa de madeira](https://www.pexels.com/photo/sunglasses-on-wooden-table-10388460/) — Ron Lach |
 | Card "lentes de contato" (home) | [lente de contato na ponta do dedo](https://www.pexels.com/photo/putting-of-contact-lens-on-fingers-5842844/) — Nataliya Vaitkevich |
-| Galeria: provando armações | [cliente se olhando no espelho](https://www.pexels.com/photo/woman-looking-at-a-mirror-5201931/) — Kaboompics |
-| Galeria: medição para as lentes | [medição da lente no rosto](https://www.pexels.com/photo/crop-ophthalmologist-measuring-eyewear-lens-on-woman-5765759/) — Ksenia Chernaya |
-| Galeria: conferência das lentes | [óculos sobre régua de lentes](https://www.pexels.com/photo/crop-ophthalmologist-measuring-eyeglasses-with-lens-ruler-5752402/) — Ksenia Chernaya |
-| Galeria: atendimento para toda a família | [mãe e filha escolhendo armação](https://www.pexels.com/photo/mother-and-daughter-picking-out-frames-for-glasses-5621834/) |
 | Armação Lumen round | [óculos redondo de metal](https://www.pexels.com/photo/photo-of-round-eyeglasses-on-white-surface-2530391/) — Golnar Sabzpoush Rashidi |
 | Armação Vértice acetato | [armações tartaruga e preta](https://www.pexels.com/photo/bold-stylish-amber-tortoiseshell-and-sleek-black-frames-for-every-look-28211038/) |
 | Armação Costa aviador | [óculos de sol aviador](https://www.pexels.com/photo/focus-photo-of-black-aviator-style-sunglasses-on-surface-1548027/) |

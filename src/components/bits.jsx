@@ -1,11 +1,17 @@
 import { Ic } from './Icons.jsx';
 import { L } from './Layout.jsx';
-import { bgOf } from '../lib/util.js';
+
+// Imagem que preenche o bloco (tag <img> real, para o Google indexar a foto e ler o texto alternativo).
+export const Img = ({ src, alt, prioridade = false }) => (
+  <img className="ph__img" src={src} alt={alt || ''} loading={prioridade ? 'eager' : 'lazy'} fetchPriority={prioridade ? 'high' : undefined} decoding="async" onError={e => { e.currentTarget.style.visibility = 'hidden'; }} />
+);
 
 // Bloco de foto com placeholder ("foto: ...") enquanto o proprietário não envia a imagem.
-export function Foto({ img, rotulo, ratio, radius = 20, dark = false, style, className = '', children }) {
+// alt: descrição da foto; sem ele, usa o rótulo do placeholder.
+export function Foto({ img, rotulo, alt, ratio, radius = 20, dark = false, prioridade = false, style, className = '', children }) {
   return (
-    <div className={`ph ${dark ? 'ph--dark' : ''} ${className}`} style={{ aspectRatio: ratio, borderRadius: radius, ...(img ? { backgroundImage: bgOf(img) } : {}), ...style }} role={img ? 'img' : undefined} aria-label={img ? rotulo : undefined}>
+    <div className={`ph ${dark ? 'ph--dark' : ''} ${className}`} style={{ aspectRatio: ratio, borderRadius: radius, ...style }}>
+      {img ? <Img src={img} alt={alt || rotulo} prioridade={prioridade} /> : null}
       {!img && rotulo ? (dark ? <span className="ph__dash">foto: {rotulo}</span> : <>foto: {rotulo}</>) : null}
       {children}
     </div>
@@ -25,7 +31,7 @@ export const Titulo = ({ as: T = 'h2', a, b, className = 'h-sec', style }) => <T
 export function Evento({ ev, comImagem = false }) {
   return (
     <div style={{ background: 'var(--sand)', borderRadius: 18, overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
-      {comImagem && ev.img ? <div style={{ aspectRatio: '16/9', backgroundImage: bgOf(ev.img), backgroundSize: 'cover', backgroundPosition: 'center' }} /> : null}
+      {comImagem && ev.img ? <div className="ph" style={{ aspectRatio: '16/9' }}><Img src={ev.img} alt={ev.titulo} /></div> : null}
       <div className="event" style={{ padding: 22, gridTemplateColumns: comImagem ? '64px 1fr' : undefined, gap: comImagem ? 16 : undefined }}>
         <div className="event__date" style={comImagem ? { paddingRight: 14 } : undefined}><div className="event__dia" style={comImagem ? { fontSize: 32 } : undefined}>{ev.dia}</div><div className="event__mes">{ev.mes}</div></div>
         <div className="min0">

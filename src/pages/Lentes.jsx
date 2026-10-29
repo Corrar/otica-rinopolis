@@ -15,7 +15,7 @@ export default function Lentes() {
           <p className="lead lead--inv" style={{ maxWidth: 520, marginBottom: 28 }}>Diárias, mensais, tóricas e multifocais das principais marcas. Ensinamos a colocar, tirar e cuidar — na primeira compra, sem pressa.</p>
           <BtnWa href={wa.receita}>enviar minha receita</BtnWa>
         </div>
-        <Foto img={cms.fotos.lentes} rotulo="lente de contato / estojo" ratio="5/4" dark />
+        <Foto img={cms.fotos.lentes} rotulo="lente de contato / estojo" alt="Lente de contato e estojo" ratio="5/4" dark prioridade />
       </section>
 
       <section data-reveal className="px" style={{ paddingTop: 'clamp(40px,6vw,80px)' }}>
