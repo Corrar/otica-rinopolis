@@ -205,7 +205,7 @@ function Aba({ id, irAba, sessao, setSessao }) {
         <Campo b={bind(['fotos', 'hero'])} label="Capa da home (cliente / loja)" tipo="img" />
         <Campo b={bind(['fotos', 'loja'])} label="Fachada ou interior (home)" tipo="img" />
         <Campo b={bind(['fotos', 'lentes'])} label="Capa de lentes de contato" tipo="img" />
-        <Campo b={bind(['fotos', 'equipe'])} label="Equipe / fundadores (página sobre)" tipo="img" />
+        <Campo b={bind(['fotos', 'equipe'])} label="Nossa história (página sobre: fachada, equipe ou fundadores)" tipo="img" />
         <Campo b={bind(['fotos', 'cat_armacoes'])} label='Card "armações" (home)' tipo="img" />
         <Campo b={bind(['fotos', 'cat_sol'])} label='Card "óculos de sol" (home)' tipo="img" />
         <Campo b={bind(['fotos', 'cat_lentes'])} label='Card "lentes de contato" (home)' tipo="img" />

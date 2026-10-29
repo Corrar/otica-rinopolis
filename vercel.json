@@ -1,7 +1,12 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": "vite",
-  "rewrites": [{ "source": "/((?!api/|assets/|uploads/).*)", "destination": "/index.html" }],
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "rewrites": [
+    { "source": "/admin", "destination": "/app.html" },
+    { "source": "/blog/:slug", "destination": "/app.html" }
+  ],
   "headers": [
     {
       "source": "/(.*)",
@@ -10,6 +15,10 @@
         { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
         { "key": "X-Frame-Options", "value": "SAMEORIGIN" }
       ]
+    },
+    {
+      "source": "/fotos/(.*)",
+      "headers": [{ "key": "Cache-Control", "value": "public, max-age=604800, stale-while-revalidate=86400" }]
     }
   ]
 }

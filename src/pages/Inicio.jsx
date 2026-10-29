@@ -1,17 +1,17 @@
 import { Ic } from '../components/Icons.jsx';
 import { L, Status } from '../components/Layout.jsx';
-import { BtnWa, Evento, Foto, InfoContato, LinkSeta, Mapa, Titulo } from '../components/bits.jsx';
+import { BtnWa, Evento, Foto, Img, InfoContato, LinkSeta, Mapa, Titulo } from '../components/bits.jsx';
 import { useSite } from '../state/content.jsx';
-import { bgOf, eventosFuturos, gradeEquilibrada, lista, numerar, postsDe } from '../lib/util.js';
+import { eventosFuturos, gradeEquilibrada, lista, numerar, postsDe } from '../lib/util.js';
 
 export default function Inicio({ desktop }) {
   const site = useSite();
   const { cms, info, wa, status, selos, mapaEmbed, mapaLink, googleLink } = site;
   const eventos = eventosFuturos(cms).slice(0, 2);
   const cats = [
-    { nome: 'armações', desc: 'Grau e design para todo rosto', foto: 'armações em expositor', to: 'armacoes', img: cms.fotos.cat_armacoes },
-    { nome: 'óculos de sol', desc: 'Proteção UV com estilo', foto: 'óculos de sol', to: 'armacoes', img: cms.fotos.cat_sol },
-    { nome: 'lentes de contato', desc: 'Conforto diário e descartáveis', foto: 'lentes de contato', to: 'lentes', img: cms.fotos.cat_lentes },
+    { nome: 'armações', desc: 'Grau e design para todo rosto', foto: 'armações em expositor', alt: 'Vitrine de armações de grau na Ótica Digital Look', to: 'armacoes', img: cms.fotos.cat_armacoes },
+    { nome: 'óculos de sol', desc: 'Proteção UV com estilo', foto: 'óculos de sol', alt: 'Óculos de sol e armações com clip-on solar na vitrine da ótica', to: 'armacoes', img: cms.fotos.cat_sol },
+    { nome: 'lentes de contato', desc: 'Conforto diário e descartáveis', foto: 'lentes de contato', alt: 'Lente de contato na ponta do dedo', to: 'lentes', img: cms.fotos.cat_lentes },
   ];
   const marquee = [...selos, 'lentes em até 48h', 'óculos de sol com proteção UV', 'lentes de contato'];
   const anos = parseInt(info.anos, 10) || 0;
@@ -21,14 +21,14 @@ export default function Inicio({ desktop }) {
       <section data-hero className="dark split" style={{ '--min': '420px', gap: 'clamp(28px,4vw,48px)', padding: 'clamp(32px,5vw,56px) var(--px) clamp(48px,7vw,88px)', alignItems: 'center' }}>
         <div className="min0">
           <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 22, flexWrap: 'wrap' }}>
-            <span className="eyebrow">ótica em {info.cidade}</span>
+            <h1 className="eyebrow">ótica no centro de {info.cidade}</h1>
             <span className="hero-sep" style={{ width: 1, height: 12, background: 'rgba(255,255,255,.25)' }} />
             <Status st={status} style={{ font: "500 12px 'DM Sans',sans-serif", color: 'rgba(255,255,255,.75)' }} />
           </div>
-          <h1 className="h-display" style={{ marginBottom: 24 }}>
+          <p className="h-display" style={{ marginBottom: 24 }}>
             <span style={{ display: 'block' }}>{info.heroLinha1}</span>
             <span style={{ display: 'block' }}><span>{info.heroLinha2}</span> <span className="b">{info.heroDestaque}</span></span>
-          </h1>
+          </p>
           <p style={{ font: "400 clamp(16px,1.6vw,18px)/1.55 'DM Sans',sans-serif", color: 'rgba(255,255,255,.72)', maxWidth: 460, marginBottom: 32 }}>{info.heroTexto}</p>
           <div className="btn-row" style={{ marginBottom: 32 }}>
             <BtnWa href={wa.link} />
@@ -39,7 +39,7 @@ export default function Inicio({ desktop }) {
           </div>
         </div>
         <div className="min0" style={{ position: 'relative' }}>
-          <Foto img={cms.fotos.hero} rotulo="cliente experimentando armação" ratio="5/4" dark />
+          <Foto img={cms.fotos.hero} rotulo="cliente experimentando armação" alt="Cliente escolhendo armação de óculos de grau na ótica" ratio="5/4" dark prioridade />
           {desktop && (
             <>
               <div data-float style={{ position: 'absolute', left: -16, bottom: 28, background: '#fff', color: 'var(--ink)', borderRadius: 16, padding: '14px 18px', display: 'flex', alignItems: 'center', gap: 12, boxShadow: '0 18px 40px rgba(0,0,0,.35)' }}>
@@ -63,7 +63,7 @@ export default function Inicio({ desktop }) {
         <div data-grid className="grid grid--3">
           {cats.map(c => (
             <L key={c.nome} to={c.to} className="card-link">
-              <Foto img={c.img} rotulo={c.foto} ratio="4/3" radius={0} style={{ color: 'var(--muted-2)' }} />
+              <Foto img={c.img} rotulo={c.foto} alt={c.alt} ratio="4/3" radius={0} style={{ color: 'var(--muted-2)' }} />
               <div style={{ padding: '20px 22px 24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 12 }}>
                 <div className="min0"><div style={{ font: "500 21px 'Outfit',sans-serif", marginBottom: 4 }}>{c.nome}</div><div className="t-small">{c.desc}</div></div>
                 <span className="round-ic"><Ic n="arrow" /></span>
@@ -81,7 +81,7 @@ export default function Inicio({ desktop }) {
       )}
 
       <section data-reveal className="px split" style={{ paddingTop: 'clamp(48px,6vw,72px)', paddingBottom: 'clamp(48px,6vw,72px)', gap: 'clamp(28px,5vw,64px)', alignItems: 'center' }}>
-        <Foto img={cms.fotos.loja} rotulo="fachada ou interior da loja" ratio="1" />
+        <Foto img={cms.fotos.loja} rotulo="fachada ou interior da loja" alt={`Balcão de atendimento da Ótica Digital Look, no centro de ${info.cidadeNome}`} ratio="1" />
         <div className="min0">
           <div className="eyebrow" style={{ marginBottom: 16 }}>sobre a ótica</div>
           <h2 className="h-sec" style={{ lineHeight: 1.08, marginBottom: 18, textWrap: 'pretty' }}>{info.sobreTitulo}</h2>
@@ -152,7 +152,7 @@ export default function Inicio({ desktop }) {
         <div data-grid className="grid grid--3">
           {postsDe(cms).slice(0, 3).map(p => (
             <L key={p.slug} to={'blog/' + p.slug} className="lift" style={{ display: 'block', color: 'var(--ink)' }}>
-              <div style={{ aspectRatio: '16/10', borderRadius: 16, background: 'var(--ph)', backgroundImage: bgOf(p.img), backgroundSize: 'cover', backgroundPosition: 'center', marginBottom: 14 }} />
+              <div className="ph" style={{ aspectRatio: '16/10', borderRadius: 16, marginBottom: 14 }}>{p.img ? <Img src={p.img} alt="" /> : null}</div>
               <div style={{ font: "400 12px 'DM Sans',sans-serif", color: 'var(--muted-2)', marginBottom: 6 }}>{p.tag} · {p.leitura}</div>
               <div style={{ font: "500 19px/1.3 'Outfit',sans-serif", textWrap: 'pretty' }}>{p.titulo}</div>
             </L>

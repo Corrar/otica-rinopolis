@@ -7,6 +7,14 @@ Vite + React + GSAP/ScrollTrigger, com **área do proprietário com backend real
 `/` início · `/sobre` · `/armacoes` (filtros) · `/lentes` (FAQ) · `/convenios` (promoções, eventos, convênios) · `/blog` · `/blog/<artigo>` · `/contato` (formulário → WhatsApp) · `/admin` (área do proprietário).
 Links antigos com `#admin`, `#sobre` etc. redirecionam para as URLs novas.
 
+## SEO (Google)
+- `npm run build` gera, além do app, o **HTML pronto de cada página** (`scripts/prerender.js`): título, descrição, link canônico, Open Graph e dados estruturados (schema.org `Optician` com endereço, horário e WhatsApp; `FAQPage` em lentes; `Event` para eventos; `BlogPosting` nos artigos; `BreadcrumbList`). O Google lê o conteúdo sem precisar executar o JavaScript.
+- Também gera `sitemap.xml`, `robots.txt` (bloqueia `/admin` e `/api/`), `404.html` (com status 404 de verdade) e `app.html` (usada por `/admin` e por artigos criados depois do último deploy).
+- O conteúdo usado no build é o último salvo no painel; no navegador o site sempre mostra o conteúdo atual. Depois de mudanças grandes no painel (artigos novos, textos), faça um **Redeploy** para atualizar as páginas geradas e o sitemap.
+- O endereço do site vem de `SITE_URL` ou do domínio de produção da Vercel; ao ligar um domínio próprio, basta fazer um novo deploy.
+- Títulos e descrições por página ficam em `src/lib/seo.js`; os da home são editáveis no painel (configurações).
+- Artigos do blog só com título ficam fora do Google (`noindex`) até ganharem texto (mín. 300 caracteres).
+
 ## Área do proprietário (`/admin`, ou "área do proprietário" no rodapé)
 - Senha inicial: valor de `ADMIN_PASSWORD` (se não definido, `digitallook`). O painel pede para trocar; a senha nova fica salva como hash scrypt.
 - Edita informações, horários e feriados (status "aberto agora" automático), capa, faixa de aviso, fotos e galeria, promoções, eventos, armações, lentes/FAQ, sobre/equipe, depoimentos e blog.

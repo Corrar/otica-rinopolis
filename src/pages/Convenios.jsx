@@ -1,7 +1,7 @@
 import { Ic } from '../components/Icons.jsx';
-import { BtnWa, Evento } from '../components/bits.jsx';
+import { BtnWa, Evento, Img } from '../components/bits.jsx';
 import { useSite } from '../state/content.jsx';
-import { bgOf, eventosFuturos, lista, promosAtivas } from '../lib/util.js';
+import { eventosFuturos, lista, promosAtivas } from '../lib/util.js';
 
 export default function Convenios() {
   const { cms, info, wa } = useSite();
@@ -19,7 +19,7 @@ export default function Convenios() {
           <div data-grid className="grid" style={{ '--min': '300px' }}>
             {promos.map((pr, i) => (
               <div key={i} className="dark" style={{ borderRadius: 24, overflow: 'hidden', display: 'flex', flexDirection: 'column', minHeight: 240 }}>
-                {pr.img ? <div style={{ aspectRatio: '16/8', backgroundImage: bgOf(pr.img), backgroundSize: 'cover', backgroundPosition: 'center' }} /> : null}
+                {pr.img ? <div className="ph" style={{ aspectRatio: '16/8' }}><Img src={pr.img} alt={pr.titulo} /></div> : null}
                 <div style={{ padding: 'clamp(24px,3vw,36px)', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', flex: 1, gap: 20 }}>
                   <div className="eyebrow" style={{ color: 'rgba(255,255,255,.5)' }}>{pr.tag}</div>
                   <div>
