@@ -5,7 +5,7 @@ import { ContentProvider } from './state/content.jsx';
 import { definirCaminhoServidor } from './lib/router.js';
 
 export { mesclar } from './content/defaults.js';
-export { metaPagina, jsonLd, rotasPublicas, caminhoDe, absolutoUrl, dataIso } from './lib/seo.js';
+export { metaPagina, jsonLd, rotasPublicas, paginasGeradas, caminhoDe, absolutoUrl, dataIso, SITE } from './lib/seo.js';
 
 export function render(caminho, content) {
   definirCaminhoServidor(caminho);

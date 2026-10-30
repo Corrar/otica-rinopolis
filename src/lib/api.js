@@ -14,12 +14,14 @@ async function req(method, url, body) {
 
 export const api = {
   conteudo: (fresh) => req('GET', '/api/content' + (fresh ? '?fresh=' + Date.now() : '')),
-  salvar: (content, baseVersion, force) => req('PUT', '/api/content', { content, baseVersion, force }),
+  salvar: (content, baseVersion, force, resumo) => req('PUT', '/api/content', { content, baseVersion, force, resumo }),
   sessao: () => req('GET', '/api/session'),
   entrar: (senha, lembrar) => req('POST', '/api/login', { senha, lembrar }),
-  sair: () => req('POST', '/api/logout', {}),
+  sair: (todos) => req('POST', '/api/logout', todos ? { todos: true } : {}),
   trocarSenha: (atual, nova) => req('POST', '/api/password', { atual, nova }),
   enviarFoto: (dataUrl) => req('POST', '/api/upload', { dataUrl }),
   historico: () => req('GET', '/api/history'),
   restaurarVersao: (id) => req('POST', '/api/history', { id }),
+  limparFotos: (historico) => req('POST', '/api/limpar-fotos', { historico: !!historico }),
+  publicar: () => req('POST', '/api/publicar', {}),
 };
