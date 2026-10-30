@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Ic } from '../components/Icons.jsx';
-import { Status } from '../components/Layout.jsx';
+import { L, Status } from '../components/Layout.jsx';
 import { InfoContato, Mapa } from '../components/bits.jsx';
 import { useSite } from '../state/content.jsx';
 import { fmtData } from '../lib/util.js';
@@ -9,7 +9,7 @@ const ASSUNTOS = ['Óculos de grau', 'Óculos de sol', 'Lentes de contato', 'Or�
 
 export default function Contato() {
   const site = useSite();
-  const { cms, wa, status, hojeIso, mapaEmbed, horarioSemana } = site;
+  const { cms, wa, status, hojeIso, mapaEmbed, mapaLink, horarioSemana } = site;
   const [form, setForm] = useState({ nome: '', assunto: ASSUNTOS[0], msg: '' });
   const set = (k) => (e) => setForm({ ...form, [k]: e.target.value });
   // Fechamentos só aparecem junto com o horário de funcionamento (sem horário, o site manda consultar pelo WhatsApp).
@@ -36,14 +36,15 @@ export default function Contato() {
             </div>
           )}
           <div style={{ marginBottom: 32 }}><InfoContato site={site} /></div>
-          <Mapa src={mapaEmbed} style={{ aspectRatio: '16/9' }} />
+          <Mapa src={mapaEmbed} link={mapaLink} style={{ aspectRatio: '16/9' }} />
         </div>
         <form onSubmit={enviar} style={{ background: 'var(--sand)', borderRadius: 24, padding: 'clamp(20px,3vw,40px)', display: 'flex', flexDirection: 'column', gap: 14, minWidth: 0 }}>
           <label className="field">seu nome<input className="input" value={form.nome} onChange={set('nome')} placeholder="Maria Silva" required autoComplete="name" /></label>
           <label className="field">o que você procura<select className="input" value={form.assunto} onChange={set('assunto')}>{ASSUNTOS.map(a => <option key={a}>{a}</option>)}</select></label>
           <label className="field">mensagem<textarea className="input" value={form.msg} onChange={set('msg')} rows={5} placeholder="Conte o que precisa. Se tiver receita, pode enviar a foto depois no WhatsApp." /></label>
-          <button type="submit" className="btn btn--dark" style={{ marginTop: 6, border: 0, minHeight: 52, padding: '16px 24px' }}><Ic n="wa" /><span>abrir conversa no WhatsApp</span></button>
-          <div style={{ font: "400 12px/1.5 'DM Sans',sans-serif", color: 'var(--muted-2)', textAlign: 'center' }}>Você será redirecionado para o WhatsApp com a mensagem preenchida.</div>
+          {/* Aviso de privacidade antes do botão (LGPD, art. 9º): o site não grava nada, só abre o WhatsApp. */}
+          <p id="aviso-whats" style={{ font: "400 13px/1.55 'DM Sans',sans-serif", color: 'var(--muted)', marginTop: 2 }}>Ao tocar no botão, o WhatsApp (serviço da Meta) abre com a mensagem pronta. Este site não grava o que você digitou; usamos seus dados só para responder e preparar o orçamento. Veja a <L to="politica-de-privacidade" className="u-link">Política de Privacidade</L>.</p>
+          <button type="submit" aria-describedby="aviso-whats" className="btn btn--dark" style={{ border: 0, minHeight: 52, padding: '16px 24px' }}><Ic n="wa" /><span>abrir conversa no WhatsApp</span></button>
         </form>
       </section>
     </div>

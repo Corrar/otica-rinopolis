@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Ic } from './Icons.jsx';
 import { L } from './Layout.jsx';
 
@@ -46,8 +46,16 @@ export const LinkSeta = ({ to, href, children }) => (to
   ? <L to={to} className="link-arrow">{children}<Ic n="arrow" s={14} /></L>
   : <a href={href} target="_blank" rel="noopener" className="link-arrow">{children}<Ic n="arrow" s={14} /></a>);
 
-export const BtnWa = ({ href, children = 'falar no WhatsApp', variant = 'light', sm = false }) => (
-  <a href={href} target="_blank" rel="noopener" className={`btn btn--ic btn--${variant} ${sm ? 'btn--sm' : ''}`}><Ic n="wa" /><span>{children}</span></a>
+// descricao: id de um texto que complementa o botão (ex.: aviso de privacidade), lido pelo leitor de tela.
+export const BtnWa = ({ href, children = 'falar no WhatsApp', variant = 'light', sm = false, descricao }) => (
+  <a href={href} target="_blank" rel="noopener" aria-describedby={descricao} className={`btn btn--ic btn--${variant} ${sm ? 'btn--sm' : ''}`}><Ic n="wa" /><span>{children}</span></a>
+);
+
+// Aviso de privacidade logo abaixo dos botões de enviar receita (dado de saúde; LGPD, arts. 11 e 14).
+export const AvisoReceita = ({ id, inv = false, style }) => (
+  <p id={id} className={`aviso-receita${inv ? ' aviso-receita--inv' : ''}`} style={style}>
+    Ao enviar a foto da receita, você autoriza o uso dela só para preparar o seu orçamento. Se a receita for de uma criança, envie como pai, mãe ou responsável. <L to="politica-de-privacidade">Política de Privacidade</L>.
+  </p>
 );
 
 export const Titulo = ({ as: T = 'h2', a, b, className = 'h-sec', style }) => <T className={className} style={style}>{a}{b ? <> <span className="b">{b}</span></> : null}</T>;
@@ -70,7 +78,7 @@ export function Evento({ ev, comImagem = false }) {
 
 // Horário: sem horário confirmado, orienta a consultar pelo WhatsApp; sábado vazio = fechado.
 export const InfoContato = ({ site, comStatus = false }) => {
-  const { info, wa, tel, igLink, status, horarioSemana, horarioSabado } = site;
+  const { info, wa, tel, emp, igLink, status, horarioSemana, horarioSabado } = site;
   return (
     <div className="info-grid">
       <div><div className="lbl">endereço</div>{info.endereco}<br />{info.bairroCidade}<br />{info.cep}</div>
@@ -82,8 +90,30 @@ export const InfoContato = ({ site, comStatus = false }) => {
         {tel ? <><br /><a href={tel.link} className="u-link"><Ic n="tel" s={14} /><span>{tel.fmt}</span></a></> : null}
       </div>
       <div><div className="lbl">instagram</div><a href={igLink} target="_blank" rel="noopener" className="u-link"><Ic n="ig" s={14} /><span>@{String(info.instagram || '').replace(/^@/, '')}</span></a></div>
+      {emp.email ? <div className="min0"><div className="lbl">e-mail</div><a href={'mailto:' + emp.email} className="u-link" style={{ maxWidth: '100%' }}><Ic n="mail" s={14} /><span style={{ overflowWrap: 'anywhere' }}>{emp.email}</span></a></div> : null}
     </div>
   );
 };
 
-export const Mapa = ({ src, style }) => <div className="map" style={style}><iframe title="Mapa da ótica" src={src} loading="lazy" referrerPolicy="no-referrer-when-downgrade" /></div>;
+// Mapa do Google só depois do clique: até lá nenhum dado vai ao Google (sem cookies de terceiros automáticos).
+// link: endereço no Google Maps, para abrir direto no aplicativo de mapas.
+export function Mapa({ src, link, style }) {
+  const [ver, setVer] = useState(false);
+  const quadro = useRef(null);
+  useEffect(() => { if (ver) quadro.current?.focus(); }, [ver]);
+  return (
+    <div className="map" style={style}>
+      {ver ? <iframe ref={quadro} title="Mapa com a localização da Ótica Digital Look" src={src} referrerPolicy="strict-origin-when-cross-origin" allowFullScreen />
+        : (
+          <div className="map__fachada">
+            <span className="map__pin" aria-hidden="true"><Ic n="pin" s={20} /></span>
+            <p>O mapa é carregado do Google Maps, que pode registrar seu IP e usar cookies.</p>
+            <div className="map__acoes">
+              <button type="button" className="btn btn--dark btn--sm" onClick={() => setVer(true)}>mostrar mapa</button>
+              {link ? <a href={link} target="_blank" rel="noopener" className="u-link">abrir no Google Maps<Ic n="arrow" s={13} /></a> : null}
+            </div>
+          </div>
+        )}
+    </div>
+  );
+}

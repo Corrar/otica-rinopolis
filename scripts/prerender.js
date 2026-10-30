@@ -78,11 +78,11 @@ async function main() {
   // sitemap.xml e robots.txt com o endereço do site.
   const hoje = new Date().toISOString().slice(0, 10);
   const atualizado = (cms.meta?.atualizadoEm || '').slice(0, 10) || hoje;
-  const PRIORIDADE = { inicio: '1.0', armacoes: '0.9', lentes: '0.9', contato: '0.8', convenios: '0.8', sobre: '0.7', blog: '0.6', post: '0.5' };
+  const PRIORIDADE = { inicio: '1.0', armacoes: '0.9', lentes: '0.9', contato: '0.8', convenios: '0.8', sobre: '0.7', blog: '0.6', post: '0.5', 'politica-de-privacidade': '0.2', 'termos-de-uso': '0.2', acessibilidade: '0.2' };
   const urls = rotas.map(r => {
     const post = r.page === 'post' ? ssr.metaPagina(r, cms).post : null;
     const lastmod = (post && ssr.dataIso(post.data)) || atualizado;
-    return `  <url><loc>${esc(SITE + ssr.caminhoDe(r.page, r.slug))}</loc><lastmod>${lastmod}</lastmod><priority>${PRIORIDADE[r.page]}</priority></url>`;
+    return `  <url><loc>${esc(SITE + ssr.caminhoDe(r.page, r.slug))}</loc><lastmod>${lastmod}</lastmod><priority>${PRIORIDADE[r.page] || '0.5'}</priority></url>`;
   });
   await fs.writeFile(path.join(DIST, 'sitemap.xml'), `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls.join('\n')}\n</urlset>\n`);
   await fs.writeFile(path.join(DIST, 'robots.txt'), `User-agent: *\nAllow: /\nDisallow: /admin\nDisallow: /api/\n\nSitemap: ${SITE}/sitemap.xml\n`);

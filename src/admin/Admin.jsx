@@ -7,10 +7,10 @@ import { CATEGORIAS } from '../pages/Armacoes.jsx';
 import { useContent, useSite } from '../state/content.jsx';
 import { api } from '../lib/api.js';
 import { aviso } from '../lib/toast.js';
-import { eventosFuturos, fmtData, horaValida, lista, num2, promosAtivas } from '../lib/util.js';
+import { empresa, eventosFuturos, fmtData, horaValida, lista, num2, promosAtivas } from '../lib/util.js';
 import { dataIso } from '../lib/seo.js';
 import { ehIlustrativa, PADRAO } from '../content/defaults.js';
-import { facebookValido, googleValido } from '../lib/validar.js';
+import { cnpjValido, emailValido, facebookValido, googleValido } from '../lib/validar.js';
 
 const ABAS = [
   ['visao', 'visão geral', 'Resumo do site e o que ainda falta preencher.', 'inicio'],
@@ -169,9 +169,13 @@ function Aba({ id, irAba, sessao, setSessao }) {
         <Campo b={i('endereco')} label="Endereço" />
         <Campo b={i('bairroCidade')} label="Bairro, cidade – UF" />
         <Campo b={i('cep')} label="CEP" />
-        <Campo b={i('cnpj')} label="CNPJ" />
         <Campo b={i('cidade')} label="Cidade (rodapé/capa, minúsculas)" placeholder="rinópolis · sp" />
         <Campo b={i('cidadeNome')} label="Nome da cidade (seção mapa)" />
+      </BlocoInfo>
+      <BlocoInfo titulo="identificação da empresa" desc="Aparecem no rodapé, na Política de Privacidade e nos Termos de Uso (exigência da LGPD e do Código de Defesa do Consumidor). Vazios, o site mostra só o nome fantasia e o endereço.">
+        <Campo b={i('razaoSocial')} label="Razão social (como no cartão CNPJ)" placeholder="ex.: Fulano de Tal Óptica Ltda" />
+        <Campo b={i('cnpj')} label="CNPJ" placeholder="00.000.000/0000-00" erro={!String(i('cnpj').value || '').trim() || cnpjValido(i('cnpj').value) ? '' : 'CNPJ inválido: confira os números (enquanto isso, ele não aparece no site).'} />
+        <Campo b={i('email')} label="E-mail de contato e de privacidade" tipo="email" placeholder="contato@..." ajuda="Canal para pedidos sobre dados pessoais (LGPD). Use um e-mail que a loja confira com frequência." erro={!String(i('email').value || '').trim() || emailValido(i('email').value) ? '' : 'E-mail inválido: confira o endereço (enquanto isso, ele não aparece no site).'} />
       </BlocoInfo>
       <BlocoInfo titulo="horário de funcionamento" desc='Deixe vazio até confirmar; o site mostra "consulte o horário pelo WhatsApp". Sábado vazio = fechado aos sábados. Com o horário preenchido, o site mostra "aberto agora" automaticamente (horário de Brasília).'>
         <Campo b={i('abreSemana')} label="Seg–sex abre" tipo="time" />
@@ -285,7 +289,7 @@ function Visao({ irAba, sessao }) {
   const fotosFixas = Object.values(cms.fotos), fotosOk = fotosFixas.filter(Boolean).length;
   const fotosTotal = fotosOk + (cms.galeria || []).filter(g => g.img).length + cms.produtos.filter(x => x.img).length;
   const ilustrativas = [...fotosFixas, ...['galeria', 'produtos', 'equipe', 'promocoes', 'eventos', 'posts'].flatMap(k => (cms[k] || []).map(x => x.img))].filter(ehIlustrativa).length;
-  const cnpj = String(info.cnpj || '').trim();
+  const emp = empresa(info);
   const marcas = lista(info.marcas);
   const vitrinePadrao = JSON.stringify(cms.produtos) === JSON.stringify(PADRAO().produtos);
   const datasOk = (cms.posts || []).every(p => { const d = dataIso(p.data); return d && d <= hojeIso; });
@@ -293,7 +297,7 @@ function Visao({ irAba, sessao }) {
   const pend = [
     [sessao.armazenamento !== 'nenhum', sessao.armazenamento !== 'nenhum' ? 'Armazenamento conectado' : 'Conectar o armazenamento (as alterações não estão sendo salvas)', 'config'],
     [!sessao.senhaInicial, 'Trocar a senha inicial', 'config'],
-    [!!(info.razaoSocial && cnpj && cnpj !== '00.000.000/0001-00' && info.email), 'Informar razão social, CNPJ e e-mail (privacidade)', 'info'],
+    [!!(emp.razao && emp.cnpj && emp.email), 'Informar razão social, CNPJ e e-mail (privacidade)', 'info'],
     [horaValida(info.abreSemana) && horaValida(info.fechaSemana), 'Informar o horário de funcionamento', 'info'],
     [lista(info.pagamentos).length > 0, 'Formas de pagamento e parcelas', 'info'],
     [marcas.length > 0 && !marcas.some(m => /^marca \d+$/i.test(m)), 'Marcas que trabalha', 'info'],

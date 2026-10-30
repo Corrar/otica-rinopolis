@@ -12,6 +12,7 @@ export function IconSprite() {
         <symbol id="ic-cal" viewBox="0 0 24 24"><rect fill="none" stroke="currentColor" strokeWidth="2" x="3" y="5" width="18" height="16" rx="3" /><path stroke="currentColor" strokeWidth="2" strokeLinecap="round" d="M8 3v4M16 3v4M3 10h18" /></symbol>
         <symbol id="ic-lock" viewBox="0 0 24 24"><rect fill="none" stroke="currentColor" strokeWidth="2" x="4" y="10" width="16" height="11" rx="2" /><path fill="none" stroke="currentColor" strokeWidth="2" d="M8 10V7a4 4 0 0 1 8 0v3" /></symbol>
         <symbol id="ic-trash" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3" /></symbol>
+        <symbol id="ic-mail" viewBox="0 0 24 24"><rect fill="none" stroke="currentColor" strokeWidth="2" x="3" y="5" width="18" height="14" rx="3" /><path fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" d="m4 7 8 6 8-6" /></symbol>
         <symbol id="ic-img" viewBox="0 0 24 24"><rect fill="none" stroke="currentColor" strokeWidth="2" x="3" y="4" width="18" height="16" rx="3" /><circle fill="currentColor" cx="9" cy="10" r="1.6" /><path fill="none" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" d="M21 16l-5-5-9 9" /></symbol>
       </defs>
     </svg>

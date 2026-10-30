@@ -1,5 +1,6 @@
 // Roteador mínimo baseado em history (URLs limpas: /sobre, /blog/<artigo>, /admin).
 import { useEffect, useSyncExternalStore } from 'react';
+import { PAGINAS_LEGAIS } from './seo.js';
 
 const ouvintes = new Set();
 const avisar = () => ouvintes.forEach(f => f());
@@ -30,7 +31,7 @@ export function rota(path) {
   const [, a = '', b = ''] = path.replace(/\/+$/, '').split('/');
   if (a === '') return { page: 'inicio' };
   if (a === 'blog' && b) return { page: 'post', slug: (() => { try { return decodeURIComponent(b); } catch { return b; } })() };
-  if (['sobre', 'armacoes', 'lentes', 'convenios', 'blog', 'contato', 'admin'].includes(a)) return { page: a };
+  if (['sobre', 'armacoes', 'lentes', 'convenios', 'blog', 'contato', 'admin', ...PAGINAS_LEGAIS].includes(a)) return { page: a };
   return { page: 'naoEncontrada' };
 }
 

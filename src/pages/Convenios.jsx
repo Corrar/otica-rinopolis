@@ -1,5 +1,5 @@
 import { Ic } from '../components/Icons.jsx';
-import { ArteMarca, BtnWa, Evento, Img } from '../components/bits.jsx';
+import { ArteMarca, AvisoReceita, BtnWa, Evento, Img } from '../components/bits.jsx';
 import { useSite } from '../state/content.jsx';
 import { eventosFuturos, lista, promosAtivas } from '../lib/util.js';
 
@@ -77,7 +77,8 @@ export default function Convenios() {
         <div style={{ background: 'var(--sand)', borderRadius: 20, padding: 'clamp(24px,3vw,32px)' }}>
           <div style={{ font: "500 20px 'Outfit',sans-serif", marginBottom: 10 }}>precisa de orçamento?</div>
           <div className="t-body" style={{ marginBottom: 20 }}>Envie a foto da sua receita pelo WhatsApp e respondemos com opções de lentes e valores em horário comercial.</div>
-          <BtnWa href={wa.receita} variant="dark" sm>enviar receita no WhatsApp</BtnWa>
+          <BtnWa href={wa.receita} variant="dark" sm descricao="aviso-receita-convenios">enviar receita no WhatsApp</BtnWa>
+          <AvisoReceita id="aviso-receita-convenios" />
         </div>
       </section>
     </div>

@@ -169,7 +169,7 @@ export default function Inicio({ desktop }) {
       ) : null}
 
       <section data-reveal className="px split" style={{ '--min': '360px', paddingTop: 'clamp(48px,6vw,80px)', paddingBottom: 'clamp(48px,6vw,80px)', gap: 'clamp(28px,4vw,48px)' }}>
-        <Mapa src={mapaEmbed} style={{ minHeight: 280 }} />
+        <Mapa src={mapaEmbed} link={mapaLink} style={{ minHeight: 280 }} />
         <div className="min0" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
           <div className="eyebrow" style={{ marginBottom: 16 }}>onde estamos</div>
           <h2 style={{ font: "300 clamp(28px,3.2vw,40px)/1.1 'Outfit',sans-serif", letterSpacing: '-.02em', marginBottom: 22 }}>no coração de {info.cidadeNome}</h2>

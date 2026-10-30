@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { BtnWa, Foto } from '../components/bits.jsx';
+import { AvisoReceita, BtnWa, Foto } from '../components/bits.jsx';
 import { useSite } from '../state/content.jsx';
 import { gradeEquilibrada, numerar } from '../lib/util.js';
 
@@ -14,7 +14,8 @@ export default function Lentes() {
           <div className="eyebrow" style={{ marginBottom: 20 }}>lentes de contato</div>
           <h1 className="h-page" style={{ marginBottom: 18 }}>liberdade para ver <span className="b">sem armação.</span></h1>
           {info.lentesTexto ? <p className="lead lead--inv" style={{ maxWidth: 520, marginBottom: 28, whiteSpace: 'pre-line' }}>{info.lentesTexto}</p> : null}
-          <BtnWa href={wa.receita}>enviar minha receita</BtnWa>
+          <BtnWa href={wa.receita} descricao="aviso-receita-lentes">enviar minha receita</BtnWa>
+          <AvisoReceita id="aviso-receita-lentes" inv />
         </div>
         <Foto img={cms.fotos.lentes} rotulo="lente de contato / estojo" alt="Lente de contato e estojo" ratio="5/4" dark prioridade />
       </section>

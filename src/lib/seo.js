@@ -1,9 +1,11 @@
 // SEO: título, descrição e dados estruturados (schema.org) de cada página.
 // Usado no navegador (componente Seo) e no build, que gera o HTML pronto de cada página (scripts/prerender.js).
-import { horaValida, horarios, lista, MESES, num2, postsDe, eventosFuturos, telefone, whatsapp } from './util.js';
+import { empresa, horaValida, horarios, lista, MESES, num2, postsDe, eventosFuturos, telefone, whatsapp } from './util.js';
 
 export const NOME = 'Ótica Digital Look';
-export const PAGINAS_INDEXADAS = ['inicio', 'sobre', 'armacoes', 'lentes', 'convenios', 'blog', 'contato'];
+// Páginas de texto fixo no código (não editáveis pelo painel), com link no rodapé.
+export const PAGINAS_LEGAIS = ['politica-de-privacidade', 'termos-de-uso', 'acessibilidade'];
+export const PAGINAS_INDEXADAS = ['inicio', 'sobre', 'armacoes', 'lentes', 'convenios', 'blog', 'contato', ...PAGINAS_LEGAIS];
 export const caminhoDe = (page, slug) => (page === 'inicio' ? '/' : page === 'post' ? '/blog/' + slug : '/' + page);
 
 // "Centro, Rinópolis – SP" → { bairro, cidade, uf }
@@ -50,6 +52,9 @@ export function metaPagina(r, cms) {
       if (!p) return { ...base, titulo: `Página não encontrada | ${NOME}`, descricao: '', noindex: true };
       return { ...base, titulo: `${p.titulo.replace(/[.\s]+$/, "")} | ${NOME}`, descricao: corta(p.resumo || p.conteudo || `${p.titulo} — dicas da ${NOME}, ótica em ${local}.`), imagem: p.img || base.imagem, tipo: 'article', post: p, noindex: !temTexto(p) };
     }
+    case 'politica-de-privacidade': return { ...base, titulo: `Política de Privacidade | ${NOME}`, descricao: corta(`Como a ${NOME}, ótica em ${local}, trata dados pessoais no site e no atendimento: receitas, WhatsApp, cookies, prazos de guarda e como exercer seus direitos (LGPD).`) };
+    case 'termos-de-uso': return { ...base, titulo: `Termos de Uso | ${NOME}`, descricao: corta(`Regras de uso do site da ${NOME}: site informativo, sem venda online; lentes de grau e de contato somente com receita médica; garantias e direitos do consumidor.`) };
+    case 'acessibilidade': return { ...base, titulo: `Acessibilidade | ${NOME}`, descricao: corta(`Recursos de acessibilidade do site da ${NOME}, limitações conhecidas e como relatar barreiras pelo WhatsApp, pelo telefone ou na loja em ${cidade}.`) };
     case 'admin': return { ...base, titulo: `Área do proprietário | ${NOME}`, descricao: '', noindex: true };
     default: return { ...base, titulo: `Página não encontrada | ${NOME}`, descricao: '', noindex: true };
   }
@@ -73,8 +78,11 @@ export function dadosOtica(cms, site) {
   const end = `${info.endereco}, ${info.bairroCidade}, ${info.cep}`;
   const semana = horaValida(info.abreSemana) && horaValida(info.fechaSemana);
   const horas = semana ? horarioOtica(info) : [];
+  const emp = empresa(info);
   return {
     '@type': 'Optician', '@id': site + '/#otica', name: NOME, url: site + '/',
+    // Nome empresarial, CNPJ e e-mail: só quando o proprietário informou (e são válidos).
+    legalName: emp.razao || undefined, taxID: emp.cnpj || undefined, email: emp.email || undefined,
     description: info.siteDescricao, logo: site + '/logo.png',
     image: [site + '/og-image.jpg', site + '/fotos/fachada.jpg', site + '/fotos/loja-balcao.jpg', site + '/fotos/vitrine-feminina.jpg'],
     // Telefone principal: o fixo (use o mesmo número no Perfil da Empresa no Google); o WhatsApp entra como contato.

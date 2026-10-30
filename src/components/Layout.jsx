@@ -86,9 +86,9 @@ export function MobileMenu({ ativa, fechar, animar, headerRef }) {
 }
 
 export const Footer = forwardRef(function Footer(_, ref) {
-  const { info, wa, tel, igLink, mapaLink, status } = useSite();
+  const { info, wa, tel, emp, igLink, mapaLink, status } = useSite();
   const { cidade, uf } = localDe(info);
-  const cnpj = String(info.cnpj || '').trim();
+  const linkBase = { display: 'inline-flex', alignItems: 'center', gap: 6, color: 'rgba(255,255,255,.6)' };
   return (
     <footer className="footer" ref={ref}>
       <div className="footer__cols">
@@ -108,13 +108,20 @@ export const Footer = forwardRef(function Footer(_, ref) {
           <div className="ttl">contato</div>
           <a href={wa.link} target="_blank" rel="noopener">{wa.fmt} (WhatsApp)</a>
           {tel ? <a href={tel.link}>{tel.fmt}</a> : null}
-          <span>{info.endereco}</span><span>{info.bairroCidade}</span>
+          {emp.email ? <a href={'mailto:' + emp.email} style={{ overflowWrap: 'anywhere', maxWidth: '100%' }}>{emp.email}</a> : null}
+          <span>{info.endereco}</span><span>{info.bairroCidade}{info.cep ? ` · ${info.cep}` : ''}</span>
           <Status st={status} style={{ marginTop: 8, font: "500 12px 'DM Sans',sans-serif", color: 'rgba(255,255,255,.8)' }} />
         </div>
       </div>
       <div className="footer__base" style={{ borderTop: '1px solid rgba(255,255,255,.14)', paddingTop: 18, font: "400 12px 'DM Sans',sans-serif", color: 'rgba(255,255,255,.45)', display: 'flex', justifyContent: 'space-between', gap: 12, flexWrap: 'wrap' }}>
-        <span>© {new Date().getFullYear()} ótica digital look</span>
-        <span style={{ display: 'flex', gap: 16, flexWrap: 'wrap' }}>{cnpj && cnpj !== '00.000.000/0001-00' ? <span>CNPJ {cnpj}</span> : null}<L to="admin" style={{ display: 'inline-flex', alignItems: 'center', gap: 6, color: 'rgba(255,255,255,.55)' }}><Ic n="lock" s={12} />área do proprietário</L></span>
+        {/* Identificação do fornecedor: razão social e CNPJ só quando informados e válidos (nunca a palavra "CNPJ" sozinha). */}
+        <span>© {new Date().getFullYear()} {emp.razao || 'ótica digital look'}{emp.cnpj ? ` · CNPJ ${emp.cnpj}` : ''}</span>
+        <nav aria-label="documentos e acesso restrito" style={{ display: 'flex', gap: '8px 16px', flexWrap: 'wrap' }}>
+          <L to="politica-de-privacidade" style={linkBase}>política de privacidade</L>
+          <L to="termos-de-uso" style={linkBase}>termos de uso</L>
+          <L to="acessibilidade" style={linkBase}>acessibilidade</L>
+          <L to="admin" style={linkBase}><Ic n="lock" s={12} />área do proprietário</L>
+        </nav>
       </div>
     </footer>
   );

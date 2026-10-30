@@ -1,3 +1,5 @@
+import { cnpjValido, emailValido } from './validar.js';
+
 export const MESES = ['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez'];
 export const lista = (s) => String(s || '').split(',').map(x => x.trim()).filter(Boolean);
 export const bgOf = (img) => (img ? `url("${img}")` : 'none');
@@ -57,6 +59,13 @@ export const fmtTel = (n) => (n.length === 11 ? `(${n.slice(0, 2)}) ${n.slice(2,
 export function telefone(info) {
   const n = String(info.telefone || '').replace(/\D/g, '');
   return n ? { link: 'tel:+55' + n, fmt: fmtTel(n), digitos: n } : null;
+}
+
+// Identificação da empresa (rodapé, páginas legais e Google): só o que foi preenchido e é válido.
+// Sem razão social, o site usa o nome fantasia; CNPJ e e-mail inválidos não aparecem.
+export function empresa(info) {
+  const cnpj = String(info.cnpj || '').trim(), email = String(info.email || '').trim();
+  return { razao: String(info.razaoSocial || '').trim(), cnpj: cnpjValido(cnpj) ? cnpj : '', email: emailValido(email) ? email : '' };
 }
 
 export function whatsapp(info) {

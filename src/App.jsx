@@ -13,6 +13,9 @@ import Lentes from './pages/Lentes.jsx';
 import Convenios from './pages/Convenios.jsx';
 import Contato from './pages/Contato.jsx';
 import { Artigo, Blog, NaoEncontrada } from './pages/Blog.jsx';
+import Privacidade from './pages/Privacidade.jsx';
+import Termos from './pages/Termos.jsx';
+import Acessibilidade from './pages/Acessibilidade.jsx';
 
 const Admin = lazy(() => import('./admin/Admin.jsx'));
 
@@ -75,6 +78,9 @@ function Site() {
     case 'blog': pagina = <Blog />; break;
     case 'post': pagina = <Artigo slug={r.slug} />; break;
     case 'contato': pagina = <Contato />; break;
+    case 'politica-de-privacidade': pagina = <Privacidade />; break;
+    case 'termos-de-uso': pagina = <Termos />; break;
+    case 'acessibilidade': pagina = <Acessibilidade />; break;
     case 'admin': pagina = <Suspense fallback={<div className="loading"><span className="spinner" /></div>}><Admin wide={wide} /></Suspense>; break;
     default: pagina = <NaoEncontrada />;
   }

@@ -4,7 +4,7 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useRef, use
 import { mesclar } from '../content/defaults.js';
 import { api } from '../lib/api.js';
 import { googleValido } from '../lib/validar.js';
-import { agoraBrasilia, statusLoja, telefone, whatsapp, horarios, lista } from '../lib/util.js';
+import { agoraBrasilia, empresa, statusLoja, telefone, whatsapp, horarios, lista } from '../lib/util.js';
 
 const CACHE_KEY = 'odl-cache-v1';
 const Ctx = createContext(null);
@@ -134,7 +134,7 @@ export function useSite() {
     // Link das avaliações: só o do Perfil da Empresa informado no painel (uma busca genérica pode cair em outra ótica).
     const google = String(info.googleAvaliacoes || '').trim();
     return {
-      cms, info, wa, tel: telefone(info), status: st, hojeIso: agoraBrasilia(now).iso,
+      cms, info, wa, tel: telefone(info), emp: empresa(info), status: st, hojeIso: agoraBrasilia(now).iso,
       horarioSemana: h.semana, horarioSabado: h.sabado,
       mapaLink: 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(end),
       mapaEmbed: 'https://www.google.com/maps?q=' + encodeURIComponent(end) + '&output=embed',

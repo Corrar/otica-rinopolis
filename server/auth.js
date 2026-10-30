@@ -135,9 +135,14 @@ export async function sessao(token) {
 const tentativas = new Map();
 const geral = { falhas: [], ate: 0 };
 const JANELA_GERAL = 10 * 60e3, LIMITE_GERAL = 30, BLOQUEIO_GERAL = 5 * 60e3;
+// O IP de quem errou a senha fica só na memória e é esquecido 1 hora depois da última falha (prazo da Política de Privacidade).
+const GUARDA_IP = 60 * 60e3;
+const esquecerAntigos = (agora = Date.now()) => { for (const [k, t] of tentativas) if (agora - t.ultima > GUARDA_IP && t.ate <= agora) tentativas.delete(k); };
+setInterval(esquecerAntigos, 10 * 60e3).unref?.();
 
 export function bloqueado(ip) {
   const agora = Date.now();
+  esquecerAntigos(agora);
   if (geral.ate > agora) return Math.ceil((geral.ate - agora) / 1000);
   const t = tentativas.get(ip);
   return t && t.ate > agora ? Math.ceil((t.ate - agora) / 1000) : 0;
@@ -147,7 +152,7 @@ export function registrarFalha(ip) {
   const agora = Date.now();
   if (tentativas.size > 5000) tentativas.clear();
   let t = tentativas.get(ip);
-  if (!t || agora - t.ultima > 60 * 60e3) t = { n: 0, ate: 0 };
+  if (!t || agora - t.ultima > GUARDA_IP) t = { n: 0, ate: 0 };
   t.n += 1; t.ultima = agora;
   if (t.n >= 5) t.ate = agora + Math.min(15 * 60e3, 30e3 * 2 ** (t.n - 5));
   tentativas.set(ip, t);

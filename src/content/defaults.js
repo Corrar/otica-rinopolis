@@ -13,7 +13,9 @@ const DATA_POSTS = '30 out 2026';
 
 export const PADRAO = () => ({
   info: {
-    whatsapp: '18997637896', telefone: '1835831566', instagram: 'digitallookbr', endereco: 'R. Prof. Sud Menucci, 228', bairroCidade: 'Centro, Rinópolis – SP', cep: '17740-000', cidade: 'rinópolis · sp', cidadeNome: 'rinópolis', cnpj: '',
+    whatsapp: '18997637896', telefone: '1835831566', instagram: 'digitallookbr', endereco: 'R. Prof. Sud Menucci, 228', bairroCidade: 'Centro, Rinópolis – SP', cep: '17740-000', cidade: 'rinópolis · sp', cidadeNome: 'rinópolis',
+    // Identificação da empresa (Política de Privacidade, Termos de Uso e rodapé): vazia até o proprietário informar.
+    razaoSocial: '', cnpj: '', email: '',
     // Horário vazio até o proprietário confirmar: o site mostra "consulte o horário pelo WhatsApp".
     abreSemana: '', fechaSemana: '', abreSabado: '', fechaSabado: '', parcelas: '', anos: '',
     heroLinha1: 'um novo olhar', heroLinha2: 'para o seu', heroDestaque: 'dia a dia.', heroTexto: 'Óculos de grau, óculos de sol e lentes de contato no centro de Rinópolis, com atendimento próximo — na loja ou pelo WhatsApp.',
