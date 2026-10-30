@@ -356,6 +356,10 @@ textarea.input { resize: vertical; }
 .fab:focus-visible, .to-top:focus-visible { outline: 3px solid var(--ink); outline-offset: 2px; box-shadow: 0 0 0 2px #fff; }
 
 .loading { min-height: 60vh; display: flex; align-items: center; justify-content: center; }
+/* Tela de erro (ErroGeral, em App.jsx): só o essencial, sem depender do conteúdo salvo. */
+.erro-geral { min-height: 100vh; background: var(--ink); color: #fff; --foco: #fff; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px; padding: 32px var(--px); text-align: center; }
+.erro-geral h1 { font: 300 clamp(26px, 4vw, 40px)/1.15 var(--f-display); letter-spacing: -.02em; }
+.erro-geral p { font: 400 15px/1.55 var(--f-body); color: rgba(255,255,255,.72); }
 .spinner { width: 28px; height: 28px; border-radius: 50%; border: 2px solid rgba(0,0,0,.12); border-top-color: var(--ink); animation: spin .8s linear infinite; }
 
 /* ---------- painel do proprietário ---------- */

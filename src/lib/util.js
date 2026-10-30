@@ -12,6 +12,8 @@ export const gradeEquilibrada = (arr) => { const n = (arr || []).length; return 
 // se nenhuma dividir, a que deixa a última linha mais cheia. No celular, 2 colunas só com quantidade par.
 const melhorColuna = (n, opcoes) => opcoes.find(c => n % c === 0) || opcoes.reduce((a, c) => ((n % c) / c > (n % a) / a ? c : a));
 export const colunas = (n) => ({ '--cd': melhorColuna(n, [4, 5, 3]), '--ct': melhorColuna(n, [3, 2]), '--cm': n % 2 ? 1 : 2 });
+// Atributo sizes das fotos de uma grade feita com colunas(n): largura de cada coluna em cada faixa de tela.
+export const tamanhosColunas = (n) => { const c = colunas(n), vw = (k) => Math.round(100 / c[k]) + 'vw'; return `(max-width: 559px) ${vw('--cm')}, (max-width: 1099px) ${vw('--ct')}, ${vw('--cd')}`; };
 export const slugify = (s) => String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 80) || 'artigo';
 
 const toMin = (s) => { const m = /^(\d{1,2}):(\d{2})$/.exec(String(s || '').trim()); return m ? +m[1] * 60 + +m[2] : null; };

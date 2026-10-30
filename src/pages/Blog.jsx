@@ -1,6 +1,6 @@
 import { Ic } from '../components/Icons.jsx';
 import { L } from '../components/Layout.jsx';
-import { ArteMarca, BtnWa, Foto, Img, Paragrafos } from '../components/bits.jsx';
+import { ArteMarca, BtnWa, Foto, Img, Paragrafos, TAM_METADE } from '../components/bits.jsx';
 import { useSite } from '../state/content.jsx';
 import { postsDe } from '../lib/util.js';
 
@@ -18,7 +18,7 @@ export function Blog() {
       {destaque && (
         <section data-reveal className="px" style={{ paddingBottom: 'clamp(32px,5vw,64px)' }}>
           <L to={'blog/' + destaque.slug} className="split" style={{ '--min': '360px', gap: 'clamp(24px,4vw,40px)', alignItems: 'center', color: 'var(--ink)' }}>
-            <Foto img={destaque.img} rotulo="" alt="" ratio="16/10" />
+            <Foto img={destaque.img} rotulo="" alt="" ratio="16/10" prioridade tamanhos={TAM_METADE} />
             <div className="min0">
               <div style={{ font: "400 13px 'DM Sans',sans-serif", color: 'var(--muted-2)', marginBottom: 12 }}>{destaque.tag} · {destaque.data} · {destaque.leitura}</div>
               <h2 style={{ font: "300 clamp(26px,3.2vw,40px)/1.15 'Outfit',sans-serif", letterSpacing: '-.02em', marginBottom: 14, textWrap: 'pretty' }}>{destaque.titulo}</h2>
@@ -73,7 +73,7 @@ export function Artigo({ slug }) {
       </div></section>
       <section data-reveal className="px" style={{ paddingBottom: 'clamp(48px,7vw,88px)' }}>
         <div style={{ maxWidth: 820 }}>
-          <div className="ph" style={{ aspectRatio: '16/9', maxHeight: artigo.img ? undefined : 360, borderRadius: 20, marginBottom: 32 }}>{artigo.img ? <Img src={artigo.img} alt="" /> : <ArteMarca />}</div>
+          <div className="ph" style={{ aspectRatio: '16/9', maxHeight: artigo.img ? undefined : 360, borderRadius: 20, marginBottom: 32 }}>{artigo.img ? <Img src={artigo.img} alt="" prioridade tamanhos="(max-width: 900px) 100vw, 820px" /> : <ArteMarca />}</div>
           <div style={{ font: "400 clamp(16px,1.5vw,18px)/1.75 'DM Sans',sans-serif", color: 'var(--ink-2)', textWrap: 'pretty' }}><Paragrafos texto={artigo.conteudo === artigo.resumo ? '' : artigo.conteudo} espaco="1.75em" /></div>
           <p className="t-small" style={{ marginTop: 28 }}>Conteúdo informativo. Não substitui a consulta com o médico oftalmologista. A Ótica Digital Look não realiza exames de vista.</p>
           <div style={{ marginTop: 40, background: 'var(--sand)', borderRadius: 20, padding: 'clamp(22px,3vw,32px)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 16, flexWrap: 'wrap' }}>

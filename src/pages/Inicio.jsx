@@ -1,11 +1,11 @@
 import { useEffect, useRef, useState } from 'react';
 import { Ic } from '../components/Icons.jsx';
 import { L, NovaAba, Status } from '../components/Layout.jsx';
-import { ArteMarca, BtnWa, Evento, Foto, Img, InfoContato, LinkSeta, Mapa, Titulo } from '../components/bits.jsx';
+import { ArteMarca, BtnWa, Evento, Foto, Img, InfoContato, LinkSeta, Mapa, TAM_METADE, TAM_TERCO, Titulo } from '../components/bits.jsx';
 import { useSite } from '../state/content.jsx';
 import { eventosFuturos, gradeEquilibrada, lista, numerar, postsDe } from '../lib/util.js';
 import { NOME, localDe } from '../lib/seo.js';
-import { pausarFaixa, reduzMovimento } from '../lib/anim.js';
+import { pausarFaixa, reduzMovimento } from '../lib/anim-lazy.js';
 
 // Faixa rolante com botão "pausar animação" (WCAG 2.2.2). Também para com o mouse em cima, com o foco no botão
 // e fora da tela. Sem movimento (preferência "reduzir movimento" ou animações desligadas no painel), não há botão.
@@ -84,7 +84,7 @@ export default function Inicio() {
           </div>
         </div>
         <div className="min0" style={{ position: 'relative' }}>
-          <Foto img={cms.fotos.hero} rotulo="loja" alt={`Ótica Digital Look, no centro de ${cidade}`} ratio="5/4" dark prioridade />
+          <Foto img={cms.fotos.hero} rotulo="loja" alt={`Ótica Digital Look, no centro de ${cidade}`} ratio="5/4" dark prioridade tamanhos={TAM_METADE} />
           {/* Cards flutuantes: ocultos abaixo de 640px pelo CSS ([data-float]). */}
           {info.capaCardTitulo || info.capaCardTexto ? (
             <div data-float style={{ position: 'absolute', left: -16, bottom: 28, background: '#fff', color: 'var(--ink)', borderRadius: 16, padding: '14px 18px', display: 'flex', alignItems: 'center', gap: 12, boxShadow: '0 18px 40px rgba(0,0,0,.35)' }}>
@@ -103,7 +103,7 @@ export default function Inicio() {
         <div data-grid className="grid grid--3">
           {cats.map(c => (
             <L key={c.nome} to={c.to} className="card-link">
-              <Foto img={c.img} rotulo={c.foto} alt="" ratio="4/3" radius={0} style={{ color: 'var(--muted-2)' }} />
+              <Foto img={c.img} rotulo={c.foto} alt="" ratio="4/3" radius={0} tamanhos={TAM_TERCO} style={{ color: 'var(--muted-2)' }} />
               <div className="card-link__txt">
                 <div className="min0"><h3 style={{ font: "500 21px 'Outfit',sans-serif", marginBottom: 4 }}>{c.nome}</h3><div className="t-small">{c.desc}</div></div>
                 <span className="round-ic"><Ic n="arrow" /></span>
@@ -121,7 +121,7 @@ export default function Inicio() {
       )}
 
       <section data-reveal className="px split" style={{ paddingTop: 'clamp(48px,6vw,72px)', paddingBottom: 'clamp(48px,6vw,72px)', gap: 'clamp(28px,5vw,64px)', alignItems: 'center' }}>
-        <Foto img={cms.fotos.loja} rotulo="fachada ou interior da loja" alt={`Balcão de atendimento da Ótica Digital Look, no centro de ${cidade}`} ratio="1" />
+        <Foto img={cms.fotos.loja} rotulo="fachada ou interior da loja" alt={`Balcão de atendimento da Ótica Digital Look, no centro de ${cidade}`} ratio="1" tamanhos={TAM_METADE} />
         <div className="min0">
           <div className="eyebrow" style={{ marginBottom: 16 }}>sobre a ótica</div>
           <h2 className="h-sec" style={{ lineHeight: 1.08, marginBottom: 18, textWrap: 'pretty' }}>{info.sobreTitulo}</h2>
@@ -213,7 +213,7 @@ export default function Inicio() {
             {posts.map(p => (
               <li key={p.slug}>
                 <L to={'blog/' + p.slug} className="lift" style={{ display: 'block', color: 'var(--ink)' }}>
-                  <div className="ph" style={{ aspectRatio: '16/10', borderRadius: 16, marginBottom: 14 }}>{p.img ? <Img src={p.img} alt="" /> : <ArteMarca />}</div>
+                  <div className="ph" style={{ aspectRatio: '16/10', borderRadius: 16, marginBottom: 14 }}>{p.img ? <Img src={p.img} alt="" tamanhos={TAM_TERCO} /> : <ArteMarca />}</div>
                   <div style={{ font: "400 12px 'DM Sans',sans-serif", color: 'var(--muted-2)', marginBottom: 6 }}>{p.tag} · {p.leitura}</div>
                   <h3 style={{ font: "500 19px/1.3 'Outfit',sans-serif", textWrap: 'pretty' }}>{p.titulo}</h3>
                 </L>

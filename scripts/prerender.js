@@ -1,8 +1,10 @@
 // Depois do build: gera o HTML pronto de cada página pública, com título, descrição, link canônico,
 // Open Graph e dados estruturados próprios — o Google lê tudo sem precisar executar o JavaScript.
 // Também gera sitemap.xml, robots.txt, 404.html e app.html (página "vazia" para rotas não geradas, como /admin).
-// O conteúdo usado é o último salvo no painel (Blob ou ./data), ou o padrão; cada deploy atualiza as páginas,
-// e no navegador o site sempre busca o conteúdo atual.
+// O conteúdo usado é o último salvo no painel (Blob ou ./data), ou o padrão; cada deploy atualiza as páginas.
+// Esse conteúdo vai embutido em cada página (#odl-inicial): o site monta na hora com ele e confere a versão atual
+// em segundo plano. Se o armazenamento estiver configurado e falhar, o build falha (a Vercel mantém o deploy
+// anterior) em vez de publicar o conteúdo padrão por cima do que o proprietário salvou.
 import { promises as fs } from 'node:fs';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
@@ -17,16 +19,32 @@ const SITE = (process.env.SITE_URL
 const esc = (s) => String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 const jsonScript = (o) => `<script type="application/ld+json">${JSON.stringify(o).replace(/</g, '\\u003c')}</script>`;
 
+// { content, version } da versão mais recente, ou null sem nada salvo.
 async function conteudoSalvo() {
   try {
     const [ultima] = await getStorage().listVersions();
     if (!ultima) return null;
     const v = await getStorage().readVersion(ultima);
-    return v && v.content ? v.content : v;
+    return { content: v && v.content ? v.content : v, version: ultima.id };
   } catch (e) {
+    if (process.env.BLOB_READ_WRITE_TOKEN || process.env.DATA_DIR) throw new Error('prerender: não foi possível ler o conteúdo salvo (' + e.message + '). Build interrompido para não publicar o conteúdo padrão.');
     console.warn('prerender: usando conteúdo padrão (' + e.message + ')');
     return null;
   }
+}
+
+// JSON dentro de <script>: "<" escapado não deixa o texto fechar a tag nem abrir comentário.
+const jsonSeguro = (o) => JSON.stringify(o).replace(/</g, '\\u003c');
+
+// No início do HTML gerado, o React põe os <link rel="preload"> que achou (ex.: logo); o lugar deles é o <head>.
+// A foto principal dentro de <picture> não ganha preload do React: ele é criado aqui, com as versões WebP.
+function separarPreloads(corpo) {
+  const inicio = /^(?:<link rel="preload"[^>]*\/>)+/.exec(corpo);
+  const links = inicio ? inicio[0].match(/<link[^>]*\/>/g) : [];
+  const resto = inicio ? corpo.slice(inicio[0].length) : corpo;
+  const foto = /<picture><source type="image\/webp" srcSet="([^"]+)" sizes="([^"]+)"\/><img [^>]*fetchPriority="high"/.exec(resto);
+  if (foto) links.push(`<link rel="preload" as="image" type="image/webp" imagesrcset="${foto[1]}" imagesizes="${foto[2]}" fetchpriority="high" />`);
+  return { links, corpo: resto };
 }
 
 function cabecalho(m, blocos) {
@@ -48,19 +66,33 @@ function cabecalho(m, blocos) {
   ].filter(Boolean).join('\n    ');
 }
 
+// Fontes do texto mais usado (títulos finos e corpo): começam a baixar junto com o CSS.
+async function preloadFontes() {
+  const nomes = await fs.readdir(path.join(DIST, 'assets'));
+  return ['outfit-latin-300-normal', 'dm-sans-latin-400-normal']
+    .map(base => nomes.find(n => n.startsWith(base + '-') && n.endsWith('.woff2')))
+    .filter(Boolean)
+    .map(n => `<link rel="preload" as="font" type="font/woff2" href="/assets/${n}" crossorigin />`);
+}
+
 async function main() {
   const ssr = await import(pathToFileURL(SSR).href);
   const salvo = await conteudoSalvo();
-  const cms = ssr.mesclar(salvo);
-  const modelo = await fs.readFile(path.join(DIST, 'index.html'), 'utf8');
-  if (!modelo.includes('<!--seo-->') || !modelo.includes('<div id="root"></div>')) throw new Error('index.html sem os marcadores esperados');
+  const content = salvo ? salvo.content : null;
+  const cms = ssr.mesclar(content);
+  const fontes = await preloadFontes();
+  const bruto = await fs.readFile(path.join(DIST, 'index.html'), 'utf8');
+  if (!bruto.includes('<!--seo-->') || !bruto.includes('<div id="root"></div>') || !bruto.includes('</head>') || !bruto.includes('</body>')) throw new Error('index.html sem os marcadores esperados');
+  // Substituições por função: o texto inserido pode ter "$" (ex.: "$$", preços), que no replace com string vira padrão especial.
+  const modelo = bruto.replace(/(\s*)<\/head>/, (_, esp) => fontes.map(l => '\n    ' + l).join('') + esp + '</head>');
+  const inicial = `<script id="odl-inicial" type="application/json">${jsonSeguro({ content, version: salvo ? salvo.version : null })}</script>`;
   const pagina = (r, caminho) => {
     const m = ssr.metaPagina(r, cms);
-    const corpo = ssr.render(caminho, salvo);
+    const { links, corpo } = separarPreloads(ssr.render(caminho, content));
     return modelo
-      // Substituição por função: o texto inserido pode ter "$" (ex.: "$$", preços), que no replace com string vira padrão especial.
-      .replace(/<!--seo-->[\s\S]*?<!--\/seo-->/, () => cabecalho(m, m.noindex ? [] : ssr.jsonLd(r, cms, SITE)))
-      .replace('<div id="root"></div>', () => `<div id="root">${corpo}</div>`);
+      .replace(/<!--seo-->[\s\S]*?<!--\/seo-->/, () => [cabecalho(m, m.noindex ? [] : ssr.jsonLd(r, cms, SITE)), ...links].join('\n    '))
+      .replace('<div id="root"></div>', () => `<div id="root">${corpo}</div>`)
+      .replace(/(\s*)<\/body>/, (_, esp) => '\n    ' + inicial + esp + '</body>');
   };
 
   // Página "vazia" (só o app) para rotas sem HTML gerado: /admin e artigos novos do blog.

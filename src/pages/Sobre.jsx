@@ -1,6 +1,6 @@
-import { ArteMarca, BtnWa, Foto, Img, Paragrafos } from '../components/bits.jsx';
+import { ArteMarca, BtnWa, Foto, Img, Paragrafos, TAM_METADE, TAM_TERCO } from '../components/bits.jsx';
 import { useSite } from '../state/content.jsx';
-import { colunas, gradeEquilibrada, numerar } from '../lib/util.js';
+import { colunas, gradeEquilibrada, numerar, tamanhosColunas } from '../lib/util.js';
 import { localDe } from '../lib/seo.js';
 
 export default function Sobre() {
@@ -16,7 +16,7 @@ export default function Sobre() {
       </div></section>
 
       <section data-reveal className="px split" style={{ '--min': '340px', paddingTop: 'clamp(40px,6vw,80px)', paddingBottom: 'clamp(40px,6vw,80px)', gap: 'clamp(28px,5vw,64px)', alignItems: 'start' }}>
-        <Foto img={cms.fotos.equipe} rotulo="fachada, equipe ou fundadores" alt={`Ótica Digital Look na ${info.endereco}, ${info.bairroCidade}`} ratio="4/5" />
+        <Foto img={cms.fotos.equipe} rotulo="fachada, equipe ou fundadores" alt={`Ótica Digital Look na ${info.endereco}, ${info.bairroCidade}`} ratio="4/5" prioridade tamanhos={TAM_METADE} />
         <div className="min0">
           <h2 className="h-sub" style={{ marginBottom: 18 }}>nossa história</h2>
           <div style={{ font: "400 clamp(15px,1.5vw,17px)/1.65 'DM Sans',sans-serif", color: 'var(--text-2)', marginBottom: marcos.length ? 32 : 0 }}><Paragrafos texto={info.sobreTexto} espaco="1.65em" /></div>
@@ -54,7 +54,7 @@ export default function Sobre() {
           <ul data-grid role="list" className="grid grid--cols" style={colunas(cms.equipe.length)}>
             {cms.equipe.map((e, i) => (
               <li key={i}>
-                <div className="ph" style={{ aspectRatio: '1', borderRadius: 18, marginBottom: 12 }}>{e.img ? <Img src={e.img} alt={`${e.nome} — ${e.cargo}`} /> : <ArteMarca />}</div>
+                <div className="ph" style={{ aspectRatio: '1', borderRadius: 18, marginBottom: 12 }}>{e.img ? <Img src={e.img} alt={`${e.nome} — ${e.cargo}`} tamanhos={TAM_TERCO} /> : <ArteMarca />}</div>
                 <h3 style={{ font: "500 18px 'Outfit',sans-serif" }}>{e.nome}</h3>
                 <div style={{ font: "400 14px 'DM Sans',sans-serif", color: 'var(--muted)' }}>{e.cargo}</div>
               </li>
@@ -70,7 +70,7 @@ export default function Sobre() {
             {galeria.map((g, i) => (
               <li key={i}>
                 <figure style={{ borderRadius: 16, overflow: 'hidden', background: 'var(--ph)', position: 'relative', aspectRatio: '1' }}>
-                  <img src={g.img} alt={g.legenda ? `${g.legenda} — Ótica Digital Look, ${cidade}` : 'foto da loja'} loading="lazy" decoding="async" onError={e => { e.currentTarget.style.visibility = 'hidden'; }} style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
+                  <Img src={g.img} alt={g.legenda ? `${g.legenda} — Ótica Digital Look, ${cidade}` : 'foto da loja'} tamanhos={tamanhosColunas(galeria.length)} />
                   {/* Fundo sólido: a legenda tem contraste suficiente sobre qualquer foto. */}
                   {g.legenda ? <figcaption style={{ position: 'absolute', left: 0, right: 0, bottom: 0, padding: '10px 14px', background: 'rgba(0,0,0,.65)', color: '#fff', font: "500 13px/1.4 'DM Sans',sans-serif" }}>{g.legenda}</figcaption> : null}
                 </figure>

@@ -1,10 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
 import { Ic } from '../components/Icons.jsx';
 import { useSite } from '../state/content.jsx';
-import { colunas, lista } from '../lib/util.js';
+import { colunas, lista, tamanhosColunas } from '../lib/util.js';
 import { NovaAba } from '../components/Layout.jsx';
 import { ArteMarca, Img } from '../components/bits.jsx';
-import { animarGrade } from '../lib/anim.js';
+import { animarGrade } from '../lib/anim-lazy.js';
 
 export const CATEGORIAS = [['todos', 'todos'], ['grau', 'grau'], ['sol', 'sol'], ['infantil', 'infantil'], ['esportivo', 'esportivo']];
 const rotuloCat = Object.fromEntries(CATEGORIAS);
@@ -45,7 +45,7 @@ export default function Armacoes() {
           {produtos.map((p, i) => (
             <li key={p.nome + i} style={{ display: 'flex', flexDirection: 'column', minWidth: 0 }}>
               <div className="ph" style={{ aspectRatio: '4/3', borderRadius: 16, backgroundColor: '#f0efec', fontSize: 12, marginBottom: 12 }}>
-                {p.img ? <Img src={p.img} alt={`${p.nome}${p.marca ? ` (${p.marca})` : ''} — ${rotuloAlt[p.cat] || 'óculos'}`} /> : <ArteMarca />}
+                {p.img ? <Img src={p.img} alt={`${p.nome}${p.marca ? ` (${p.marca})` : ''} — ${rotuloAlt[p.cat] || 'óculos'}`} tamanhos={tamanhosColunas(produtos.length)} /> : <ArteMarca />}
                 <span className="badge" style={{ left: 12, background: '#fff', color: 'var(--ink)' }}>{rotuloCat[p.cat] || p.cat}</span>
                 {p.destaque ? <span className="badge" style={{ right: 12, background: 'var(--ink)', color: '#fff' }}>{p.selo || 'destaque'}</span> : null}
               </div>

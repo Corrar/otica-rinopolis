@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import fotosWebp from 'virtual:fotos';
 import { Ic } from './Icons.jsx';
 import { L, NovaAba } from './Layout.jsx';
 
@@ -22,21 +23,37 @@ export const ArteMarca = ({ tom = 'areia' }) => (
   </svg>
 );
 
+// Largura que a foto ocupa na tela (atributo sizes), para o navegador escolher a versão certa do srcset.
+export const TAM_PADRAO = '(max-width: 640px) 100vw, 50vw';
+export const TAM_METADE = '(max-width: 900px) 100vw, 50vw';
+export const TAM_TERCO = '(max-width: 639px) 100vw, 33vw';
+
 // Imagem que preenche o bloco (tag <img> real, para o Google indexar a foto e ler o texto alternativo).
-// Se a imagem não carregar, mostra a arte da marca no lugar de um bloco vazio.
-export function Img({ src, alt, prioridade = false, tom }) {
+// Fotos do site (public/fotos) ganham versões WebP em várias larguras, geradas no build (scripts/fotos-responsivas.js);
+// o JPEG original fica de reserva para navegadores sem WebP. Fotos enviadas pelo painel saem como foram salvas.
+// prioridade: a foto principal da página (carrega antes das outras, sem espera). Se não carregar, mostra a arte da marca.
+export function Img({ src, alt, prioridade = false, tom, tamanhos = TAM_PADRAO }) {
   const [falhou, setFalhou] = useState('');
   if (falhou && falhou === src) return <ArteMarca tom={tom} />;
-  return <img className="ph__img" src={src} alt={alt || ''} loading={prioridade ? 'eager' : 'lazy'} fetchPriority={prioridade ? 'high' : undefined} decoding="async" onError={() => setFalhou(src)} />;
+  const img = <img className="ph__img" src={src} alt={alt || ''} loading={prioridade ? 'eager' : 'lazy'} fetchPriority={prioridade ? 'high' : undefined} decoding={prioridade ? undefined : 'async'} onError={() => setFalhou(src)} />;
+  const larguras = fotosWebp[src];
+  if (!larguras || !larguras.length) return img;
+  const base = src.replace(/\.[a-z]+$/i, '');
+  return (
+    <picture>
+      <source type="image/webp" srcSet={larguras.map(w => `${base}-${w}.webp ${w}w`).join(', ')} sizes={tamanhos} />
+      {img}
+    </picture>
+  );
 }
 
 // Bloco de foto; sem imagem, mostra a arte da marca (o texto "foto: ..." fica só nas prévias do painel).
 // alt: descrição da foto; sem ele, usa o rótulo. alt="" (foto decorativa ou repetida no texto ao lado) é respeitado.
-export function Foto({ img, rotulo, alt, ratio, radius = 20, dark = false, prioridade = false, style, className = '', children }) {
+export function Foto({ img, rotulo, alt, ratio, radius = 20, dark = false, prioridade = false, tamanhos, style, className = '', children }) {
   const tom = dark ? 'escuro' : 'areia';
   return (
     <div className={`ph ${dark ? 'ph--dark' : ''} ${className}`} style={{ aspectRatio: ratio, borderRadius: radius, ...style }}>
-      {img ? <Img src={img} alt={alt ?? rotulo} prioridade={prioridade} tom={tom} /> : <ArteMarca tom={tom} />}
+      {img ? <Img src={img} alt={alt ?? rotulo} prioridade={prioridade} tom={tom} tamanhos={tamanhos} /> : <ArteMarca tom={tom} />}
       {children}
     </div>
   );

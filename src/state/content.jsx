@@ -10,10 +10,12 @@ const CACHE_KEY = 'odl-cache-v1';
 const Ctx = createContext(null);
 
 const lerCache = () => { try { const c = JSON.parse(localStorage.getItem(CACHE_KEY) || 'null'); return c && c.content ? c : null; } catch { return null; } };
-export const temCacheLocal = () => !!lerCache();
 const gravarCache = (content, version) => { try { localStorage.setItem(CACHE_KEY, JSON.stringify({ content, version })); } catch { /* sem espaço / modo privado */ } };
+// Usado pela rede de segurança (ErroGeral e main.jsx): uma cópia local com dados ruins não pode travar as próximas visitas.
+export const limparCache = () => { try { localStorage.removeItem(CACHE_KEY); } catch { /* modo privado */ } };
 
-// inicial: conteúdo já buscado antes de montar ({ content, version }) — usado quando a página veio pronta do build.
+// inicial: conteúdo com que a página foi gerada no build ({ content, version }, embutido no HTML em #odl-inicial).
+// Ele tem prioridade sobre a cópia local antiga; a versão atual é conferida em segundo plano.
 export function ContentProvider({ inicial, children }) {
   const cache = useMemo(() => inicial || lerCache(), []); // eslint-disable-line react-hooks/exhaustive-deps
   const [cms, setCms] = useState(() => (cache ? mesclar(cache.content) : null));
@@ -34,7 +36,18 @@ export function ContentProvider({ inicial, children }) {
 
   useEffect(() => {
     const tick = setInterval(() => setNow(Date.now()), 60000);
-    if (inicial) { gravarCache(inicial.content, inicial.version); return () => clearInterval(tick); }
+    if (inicial) {
+      gravarCache(inicial.content, inicial.version);
+      // Conteúdo salvo no painel depois do build: troca só se a versão mudou e ninguém começou a editar nesta aba.
+      // Resposta sem versão (armazenamento indisponível) não troca o conteúdo do build pelo padrão.
+      let ativo = true;
+      api.conteudo(false).then(r => {
+        if (!ativo || !r || !r.version || r.version === inicial.version || versao.current !== inicial.version || sujo.current || undo.current.length) return;
+        const c = mesclar(r.content);
+        versao.current = r.version; atual.current = c; setCms(c); gravarCache(r.content, r.version);
+      }, () => { /* sem conexão: fica o conteúdo do build */ });
+      return () => { ativo = false; clearInterval(tick); };
+    }
     // Sem resposta em 5s (ou erro), mostra o conteúdo padrão para o visitante não ficar esperando.
     const t = setTimeout(() => setCms(c => c || mesclar(null)), 5000);
     carregar(false).catch(() => setCms(c => c || mesclar(null))).finally(() => clearTimeout(t));

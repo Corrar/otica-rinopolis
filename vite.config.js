@@ -1,5 +1,6 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
+import fotosResponsivas from './scripts/fotos-responsivas.js';
 
 // Em desenvolvimento, a mesma API das funções da Vercel roda dentro do Vite.
 const apiLocal = () => ({
@@ -20,6 +21,6 @@ const apiLocal = () => ({
 });
 
 export default defineConfig({
-  plugins: [react(), apiLocal()],
+  plugins: [react(), apiLocal(), fotosResponsivas()],
   server: { watch: { ignored: ['**/data/**'] } },
 });

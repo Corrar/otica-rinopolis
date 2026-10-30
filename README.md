@@ -10,10 +10,17 @@ Links antigos com `#admin`, `#sobre` etc. redirecionam para as URLs novas.
 ## SEO (Google)
 - `npm run build` gera, além do app, o **HTML pronto de cada página** (`scripts/prerender.js`): título, descrição, link canônico, Open Graph e dados estruturados (schema.org `Optician` com endereço, horário e WhatsApp; `FAQPage` em lentes; `Event` para eventos; `BlogPosting` nos artigos; `BreadcrumbList`). O Google lê o conteúdo sem precisar executar o JavaScript.
 - Também gera `sitemap.xml`, `robots.txt` (bloqueia `/admin` e `/api/`), `404.html` (com status 404 de verdade) e `app.html` (usada por `/admin` e por artigos criados depois do último deploy).
-- O conteúdo usado no build é o último salvo no painel; no navegador o site sempre mostra o conteúdo atual. Depois de mudanças grandes no painel (artigos novos, textos), faça um **Redeploy** para atualizar as páginas geradas e o sitemap.
+- O conteúdo usado no build é o último salvo no painel e vai embutido em cada página: o site abre na hora com ele e confere a versão atual em segundo plano (se o proprietário salvou algo depois do build, a página se atualiza sozinha). Depois de mudanças grandes no painel (artigos novos, textos), faça um **Redeploy** para atualizar as páginas geradas e o sitemap.
+- Se o armazenamento estiver configurado (`BLOB_READ_WRITE_TOKEN` ou `DATA_DIR`) e não puder ser lido no build, o build **falha** de propósito: a Vercel mantém o deploy anterior em vez de publicar o conteúdo padrão.
 - O endereço do site vem de `SITE_URL` ou do domínio de produção da Vercel; ao ligar um domínio próprio, basta fazer um novo deploy.
 - Títulos e descrições por página ficam em `src/lib/seo.js`; os da home são editáveis no painel (configurações).
 - Artigos do blog só com título ficam fora do Google (`noindex`) até ganharem texto (mín. 300 caracteres).
+
+## Desempenho
+- Nenhum recurso de terceiros ao abrir o site: fontes (Outfit e DM Sans, via `@fontsource`, só os pesos usados) e imagens são servidas pelo próprio site. O mapa do Google só carrega depois do clique.
+- Fotos de `public/fotos`: o build gera versões WebP em 480, 800 e 1200 px (`scripts/fotos-responsivas.js`, com `sharp`), e o site escolhe a do tamanho da tela (`srcset`), com o JPEG de reserva. Foto nova nessa pasta ganha as versões no próximo build.
+- O GSAP (animações) é baixado à parte, depois da página; a entrada animada não esconde o conteúdo que já veio pronto do build.
+- Cache: `/assets` (arquivos com hash) por 1 ano; `/fotos` por 7 dias; `logo.png` e `og-image.jpg` por 1 dia. O `server.js` também comprime (brotli/gzip) e responde 304 com ETag.
 
 ## Área do proprietário (`/admin`, ou "área do proprietário" no rodapé)
 - Senha inicial: valor de `ADMIN_PASSWORD` (obrigatório em produção; sem ele o painel avisa "Configuração pendente"). No primeiro acesso o painel **só deixa trocar a senha** (mín. 10 caracteres) antes de qualquer edição; a nova fica salva como hash scrypt e, a partir daí, `ADMIN_PASSWORD` deixa de funcionar — quem configurou o servidor não conhece mais a senha.
@@ -51,7 +58,7 @@ Sem `BLOB_READ_WRITE_TOKEN`, tudo é salvo em arquivos em `DATA_DIR` (faça back
 `npm start` roda com `NODE_ENV=production`: o servidor não sobe sem `SESSION_SECRET` (32+ caracteres) e não há senha padrão. Atrás de nginx ou outro proxy, defina `TRUST_PROXY=1` (o limite de tentativas passa a usar o IP real do visitante). Os cabeçalhos de segurança são lidos do `vercel.json`.
 
 ## Estrutura
-- `src/` — site React (`pages/`, `admin/`, `components/`, `lib/anim.js` com as animações GSAP, `content/defaults.js` com o conteúdo padrão).
+- `src/` — site React (`pages/`, `admin/`, `components/`, `lib/anim.js` com as animações GSAP, carregadas sob demanda por `lib/anim-lazy.js`, `content/defaults.js` com o conteúdo padrão).
 - `server/` — API (`router.js`), autenticação (`auth.js`: scrypt + cookie HttpOnly assinado, limite de tentativas, proteção CSRF por cabeçalho) e armazenamento (`storage.js`: Vercel Blob ou arquivos).
 - Segurança: cabeçalhos (CSP, HSTS, Permissions-Policy, `noindex` em `/admin` e `/api`) no `vercel.json`, aplicados também pelo `server.js`; envio de fotos confere o tipo real do arquivo (JPG, PNG, WebP, até 3 MB).
 - `api/` — funções serverless da Vercel (reutilizam `server/router.js`). `server.js` — servidor Node standalone.

@@ -26,7 +26,7 @@ export default function Convenios() {
               const validade = fmtValidade(pr.fim);
               return (
                 <div key={i} className="dark" style={{ borderRadius: 24, overflow: 'hidden', display: 'flex', flexDirection: 'column', minHeight: 240 }}>
-                  <div className="ph" style={{ aspectRatio: '16/8', maxHeight: pr.img ? undefined : 240 }}>{pr.img ? <Img src={pr.img} alt="" tom="escuro" /> : <ArteMarca tom="escuro" />}</div>
+                  <div className="ph" style={{ aspectRatio: '16/8', maxHeight: pr.img ? undefined : 240 }}>{pr.img ? <Img src={pr.img} alt="" tom="escuro" prioridade={i === 0} /> : <ArteMarca tom="escuro" />}</div>
                   <div style={{ padding: 'clamp(24px,3vw,36px)', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', flex: 1, gap: 20 }}>
                     {pr.tag ? <div className="eyebrow" style={{ color: 'rgba(255,255,255,.5)' }}>{pr.tag}</div> : null}
                     <div>

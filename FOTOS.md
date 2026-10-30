@@ -3,6 +3,8 @@
 Todas as fotos do conteúdo padrão são **reais, da loja** (`public/fotos/`), recortadas e otimizadas a partir das imagens enviadas nas conversas de 15/10/2026 e 29/10/2026.
 Onde ainda não há foto real (capa e card de lentes de contato, artigos do blog sem imagem, armações, equipe, promoções e eventos cadastrados sem foto), o site mostra a **arte da marca** — o olho do logo em traço fino, desenhado em SVG no próprio código (`ArteMarca`, em `src/components/bits.jsx`). Não há imagens de banco de imagens no site.
 
+No build, cada foto de `public/fotos/` ganha versões WebP menores (480, 800 e 1200 px de largura, sem ampliar), geradas por `scripts/fotos-responsivas.js`; o site escolhe a versão pelo tamanho da tela e mantém o JPEG original de reserva. Para trocar uma foto padrão, basta substituir o JPEG (de preferência com 1000 a 1600 px de largura) e fazer um novo deploy.
+
 O proprietário troca ou acrescenta fotos pelo painel (`/admin` → fotos, armações, sobre/equipe, promoções, eventos, blog). A "visão geral" do painel lista as fotos que ainda faltam.
 
 ## Fotos em `public/fotos/`

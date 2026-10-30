@@ -1,11 +1,13 @@
-import { lazy, Suspense, useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { Component, lazy, Suspense, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { IconSprite, Ic } from './components/Icons.jsx';
 import { Footer, Header, MobileMenu, NovaAba, PromoBar, ScrollExtras, useLargura } from './components/Layout.jsx';
-import { useContent, useSite } from './state/content.jsx';
+import { limparCache, useContent, useSite } from './state/content.jsx';
 import { rota, useHashLegado, usePath } from './lib/router.js';
 import { useToast } from './lib/toast.js';
 import { absolutoUrl, metaPagina } from './lib/seo.js';
-import { animarEntradaHeader, useAnimacoesPagina } from './lib/anim.js';
+import { PADRAO } from './content/defaults.js';
+import { whatsapp } from './lib/util.js';
+import { animarEntradaHeader, useAnimacoesPagina } from './lib/anim-lazy.js';
 import Inicio from './pages/Inicio.jsx';
 import Sobre from './pages/Sobre.jsx';
 import Armacoes from './pages/Armacoes.jsx';
@@ -75,7 +77,9 @@ function Site() {
     mainRef.current?.focus({ preventScroll: true });
     setAnuncio(document.title);
   }, [path]);
-  useLayoutEffect(() => (animar ? animarEntradaHeader(headerRef.current, fabRef.current) : undefined), []); // eslint-disable-line react-hooks/exhaustive-deps
+  // Entrada do cabeçalho e do botão flutuante só quando a página é montada pelo navegador: na página pronta do build
+  // eles já estão na tela, e esconder para animar faria a página "piscar".
+  useLayoutEffect(() => (animar && !window.__odlPre ? animarEntradaHeader(headerRef.current, fabRef.current) : undefined), []); // eslint-disable-line react-hooks/exhaustive-deps
   useAnimacoesPagina(mainRef, footerRef, path, animar && !admin);
 
   let pagina;
@@ -115,6 +119,30 @@ function Site() {
       <div className="toast" role="status">{toast}</div>
     </div>
   );
+}
+
+// Rede de segurança: um erro inesperado (ex.: cópia local do conteúdo com dados ruins) mostra o essencial da ótica
+// em vez de uma tela em branco, e apaga a cópia local para a próxima visita carregar o conteúdo de novo.
+export class ErroGeral extends Component {
+  constructor(props) { super(props); this.state = { erro: false }; }
+  static getDerivedStateFromError() { return { erro: true }; }
+  componentDidCatch() { limparCache(); }
+  render() {
+    if (!this.state.erro) return this.props.children;
+    const info = PADRAO().info, wa = whatsapp(info);
+    return (
+      <div className="erro-geral" role="alert">
+        <IconSprite />
+        <img src="/logo.png" alt="Ótica Digital Look" width="96" height="96" />
+        <h1>não foi possível abrir esta página.</h1>
+        <p>{info.endereco} · {info.bairroCidade} · {info.cep}</p>
+        <div className="btn-row" style={{ justifyContent: 'center' }}>
+          <a href={wa.link} target="_blank" rel="noopener" className="btn btn--wa"><Ic n="wa" /><span>falar no WhatsApp</span><span className="sr-only"> (abre em nova aba)</span></a>
+          <button type="button" className="btn btn--ghost-inv" style={{ background: 'transparent' }} onClick={() => location.reload()}>recarregar</button>
+        </div>
+      </div>
+    );
+  }
 }
 
 export default function App() {

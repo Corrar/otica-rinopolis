@@ -2,7 +2,7 @@ import { forwardRef, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { Ic } from './Icons.jsx';
 import { href, onLink } from '../lib/router.js';
 import { useSite } from '../state/content.jsx';
-import { animarMenu, reduzMovimento } from '../lib/anim.js';
+import { animarMenu, reduzMovimento } from '../lib/anim-lazy.js';
 import { localDe } from '../lib/seo.js';
 
 export const PAGINAS = [['inicio', 'início'], ['sobre', 'sobre'], ['armacoes', 'armações'], ['lentes', 'lentes de contato'], ['convenios', 'convênios'], ['blog', 'blog'], ['contato', 'contato']];
@@ -104,13 +104,13 @@ export const Footer = forwardRef(function Footer({ inert }, ref) {
     <footer className="footer" ref={ref} inert={inert}>
       <div className="footer__cols">
         <div className="min0">
-          <img src="/logo.png" alt="" style={{ height: 88, margin: '-16px 0 6px -12px', display: 'block' }} />
+          <img src="/logo.png" alt="" width="88" height="88" loading="lazy" decoding="async" style={{ height: 88, width: 88, margin: '-16px 0 6px -12px', display: 'block' }} />
           <p style={{ font: "400 14px/1.55 'DM Sans',sans-serif", color: 'rgba(255,255,255,.6)', maxWidth: 280, margin: '0 0 16px' }}>Ótica no centro de {cidade}/{uf}. Não realizamos exames de vista: lentes de grau e de contato somente com receita de médico oftalmologista.</p>
           <div style={{ display: 'flex', gap: 10 }}>
             <NovaAba href={wa.link} aria-label="WhatsApp" className="soc soc--wa"><Ic n="wa" /></NovaAba>
             <NovaAba href={igLink} aria-label="Instagram" className="soc"><Ic n="ig" /></NovaAba>
             <NovaAba href={mapaLink} aria-label="Como chegar" className="soc"><Ic n="pin" /></NovaAba>
-            {info.facebook ? <NovaAba href={info.facebook} aria-label="Facebook" className="soc" style={{ font: "600 15px 'DM Sans',sans-serif" }}>f</NovaAba> : null}
+            {info.facebook ? <NovaAba href={info.facebook} aria-label="Facebook" className="soc" style={{ font: "500 15px 'DM Sans',sans-serif" }}>f</NovaAba> : null}
           </div>
         </div>
         <nav aria-label="rodapé" className="footer__nav">
