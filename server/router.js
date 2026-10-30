@@ -1,5 +1,6 @@
 // API do site. Usada pelas funções da Vercel (api/*.js), pelo servidor Node (server.js)
 // e pelo servidor de desenvolvimento do Vite. Só depende de req/res do Node.
+import { createHash, timingSafeEqual } from 'node:crypto';
 import { getStorage } from './storage.js';
 import { COOKIE, COOKIE_HTTPS, DIAS_LEMBRAR, bloqueado, conferirSenha, criarToken, encerrarSessoes, limparFalhas, registrarFalha, senhaProibida, sessao, trocarSenha } from './auth.js';
 import { problemaNoConteudo } from '../src/lib/validar.js';
@@ -103,6 +104,27 @@ function tipoDaImagem(buf) {
   return null;
 }
 
+// Publicar no Google: dispara um novo deploy pelo Deploy Hook da Vercel (DEPLOY_HOOK_URL), que refaz as páginas
+// prontas, o sitemap e os dados estruturados com o conteúdo salvo. Sem a variável, nada é disparado.
+const INTERVALO_PUBLICAR_MS = 60e3;
+let ultimaPublicacao = 0;
+const publicarConfigurado = () => /^https:\/\//.test(process.env.DEPLOY_HOOK_URL || '');
+
+async function dispararPublicacao() {
+  if (!publicarConfigurado()) throw new HttpErro(503, 'Publicação automática não configurada: defina DEPLOY_HOOK_URL.');
+  const espera = Math.ceil((ultimaPublicacao + INTERVALO_PUBLICAR_MS - Date.now()) / 1000);
+  if (espera > 0) throw new HttpErro(429, `Uma publicação acabou de ser iniciada. Aguarde ${espera}s para pedir outra.`);
+  let r;
+  try { r = await fetch(process.env.DEPLOY_HOOK_URL, { method: 'POST', signal: AbortSignal.timeout(15e3) }); }
+  catch { throw new HttpErro(502, 'Não foi possível iniciar a publicação. Tente de novo em alguns minutos.'); }
+  if (!r.ok) throw new HttpErro(502, `A hospedagem recusou a publicação (erro ${r.status}). Tente de novo em alguns minutos.`);
+  ultimaPublicacao = Date.now();
+  return { ok: true, iniciadaEm: new Date(ultimaPublicacao).toISOString() };
+}
+
+// Compara em tempo constante (o tempo da resposta não revela quantos caracteres conferem).
+const iguais = (a, b) => timingSafeEqual(createHash('sha256').update(String(a)).digest(), createHash('sha256').update(String(b)).digest());
+
 // Conteúdo atual em memória por 30 s (menos leituras no Blob); atualizado ao salvar ou restaurar.
 let cacheConteudo = null;
 const guardarConteudo = (dados) => { cacheConteudo = { t: Date.now(), dados }; };
@@ -147,7 +169,12 @@ const rotas = {
 
   'GET /api/session': async (req, res) => {
     const r = await sessao(tokenDe(req));
-    json(res, 200, r ? { logado: true, senhaInicial: r.inicial, armazenamento: getStorage().kind } : { logado: false });
+    // publicar: o painel só mostra o botão "publicar alterações no Google" com o Deploy Hook configurado;
+    // publicarDiario: a republicação diária (cron) também está ligada.
+    json(res, 200, r ? {
+      logado: true, senhaInicial: r.inicial, armazenamento: getStorage().kind,
+      publicar: publicarConfigurado(), publicarDiario: publicarConfigurado() && !!process.env.CRON_SECRET,
+    } : { logado: false });
   },
 
   'POST /api/login': async (req, res) => {
@@ -220,6 +247,23 @@ const rotas = {
     json(res, 200, { content, version: nova.id, updatedAt: nova.at });
   },
 
+  // Botão "publicar alterações no Google" do painel (não é chamado a cada salvamento automático).
+  'POST /api/publicar': async (req, res) => {
+    await exigirLogin(req);
+    json(res, 200, await dispararPublicacao());
+  },
+
+  // Republicação diária (crons do vercel.json): eventos e promoções vencidos saem das páginas prontas e do sitemap
+  // mesmo sem ninguém mexer no painel. A Vercel envia "Authorization: Bearer <CRON_SECRET>"; sem CRON_SECRET
+  // definido, ninguém passa. Sem DEPLOY_HOOK_URL, não dispara nada.
+  'GET /api/cron-publicar': async (req, res) => {
+    const segredo = process.env.CRON_SECRET || '';
+    if (!segredo || !iguais(req.headers.authorization || '', 'Bearer ' + segredo)) throw new HttpErro(401, 'Não autorizado.');
+    // O proprietário acabou de publicar pelo painel: não precisa de outra.
+    const r = await dispararPublicacao().catch(e => { if (e.status === 429) return { ok: true, ignorada: 'publicação recente' }; throw e; });
+    json(res, 200, r);
+  },
+
   // Apaga de vez as fotos enviadas que não aparecem no conteúdo atual nem nas versões guardadas.
   // { historico: true } antes apaga as versões antigas (fica só a atual).
   'POST /api/limpar-fotos': async (req, res) => {
@@ -254,7 +298,9 @@ export async function handleApi(req, res) {
     await rota(req, res, url);
   } catch (e) {
     const status = e.status || 500;
-    if (status >= 500) console.error('[api]', status === 503 ? e.message : e);
-    if (!res.headersSent) json(res, status, { error: status >= 500 && status !== 503 ? 'Erro no servidor. Tente novamente.' : e.message });
+    // Mensagens escritas para o painel (HttpErro e "Configuração pendente") vão como estão; erro inesperado, genérico.
+    const conhecido = e instanceof HttpErro || status === 503;
+    if (status >= 500) console.error('[api]', conhecido ? e.message : e);
+    if (!res.headersSent) json(res, status, { error: status >= 500 && !conhecido ? 'Erro no servidor. Tente novamente.' : e.message });
   }
 }

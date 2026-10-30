@@ -7,8 +7,8 @@ import { CATEGORIAS } from '../pages/Armacoes.jsx';
 import { useContent, useSite } from '../state/content.jsx';
 import { api } from '../lib/api.js';
 import { aviso } from '../lib/toast.js';
-import { empresa, eventosFuturos, fmtData, horaValida, lista, num2, promosAtivas } from '../lib/util.js';
-import { dataIso } from '../lib/seo.js';
+import { empresa, eventosFuturos, fmtData, horaValida, lista, num2, postsDe, promosAtivas } from '../lib/util.js';
+import { dataIso, temTexto } from '../lib/seo.js';
 import { ehIlustrativa, PADRAO } from '../content/defaults.js';
 import { cnpjValido, emailValido, facebookValido, googleValido } from '../lib/validar.js';
 
@@ -92,7 +92,50 @@ function TrocaInicial({ setSessao }) {
   );
 }
 
-function IndicadorSalvar() {
+const fmtDiaHora = (d) => `${num2(d.getDate())}/${num2(d.getMonth() + 1)} às ${num2(d.getHours())}:${num2(d.getMinutes())}`;
+
+// "publicar alterações no Google": quem visita o site já vê as alterações na hora, mas as páginas prontas que o
+// Google lê, o sitemap e os dados estruturados só mudam com um novo deploy — o botão dispara esse deploy
+// (só aparece com DEPLOY_HOOK_URL configurado; nunca é chamado pelo salvamento automático).
+// /publicado.json, gerado no build, diz qual versão do conteúdo está publicada e quando.
+function Publicar({ status, diario }) {
+  const { cms } = useContent();
+  const [publicado, setPublicado] = useState(null); // { atualizadoEm, geradoEm } do último build
+  const [pedido, setPedido] = useState(0); // hora do clique, enquanto o novo build não fica pronto
+  const [enviando, setEnviando] = useState(false);
+  const ler = useCallback(() => fetch('/publicado.json', { cache: 'no-store' }).then(r => (r.ok ? r.json() : null)).then(p => { if (p && p.geradoEm) setPublicado(p); return p; }).catch(() => null), []);
+  useEffect(() => { ler(); }, [ler]);
+  // Depois do clique, confere a cada 20 s (por até 10 min) se o novo build já está no ar.
+  useEffect(() => {
+    if (!pedido) return undefined;
+    const t = setInterval(async () => {
+      const p = await ler();
+      if (p && new Date(p.geradoEm).getTime() > pedido) { setPedido(0); aviso('Publicado: as páginas e o sitemap já estão atualizados para o Google.'); }
+      else if (Date.now() - pedido > 10 * 60e3) setPedido(0);
+    }, 20e3);
+    return () => clearInterval(t);
+  }, [pedido, ler]);
+  const pronto = status === 'salvo' || status === 'ocioso';
+  const naoPublicado = publicado && (cms.meta.atualizadoEm || '') !== (publicado.atualizadoEm || '');
+  const publicar = async () => {
+    setEnviando(true);
+    try { await api.publicar(); setPedido(Date.now()); aviso('Publicação iniciada: em 1 a 3 minutos as páginas e o sitemap estarão atualizados.'); }
+    catch (x) { aviso(x.message); } finally { setEnviando(false); }
+  };
+  const ajuda = 'Atualiza as páginas que o Google lê, o sitemap e os dados estruturados (leva de 1 a 3 minutos). Quem visita o site já vê as alterações na hora.'
+    + (diario ? ' O site também é republicado sozinho uma vez por dia.' : '');
+  const situacao = pedido ? 'publicação em andamento (1 a 3 min)'
+    : naoPublicado ? 'há alterações ainda não publicadas no Google'
+    : publicado ? `publicado em ${fmtDiaHora(new Date(publicado.geradoEm))}` : '';
+  return <>
+    <button type="button" className="adm-btn adm-btn--dark" style={{ fontSize: 12, padding: '8px 14px' }} onClick={publicar} disabled={!pronto || enviando} title={pronto ? ajuda : 'Aguarde o salvamento terminar.'}>
+      {enviando ? 'publicando…' : 'publicar alterações no Google'}
+    </button>
+    {situacao && <span style={{ color: naoPublicado && !pedido ? '#7a4b00' : 'var(--muted-2)' }}>{situacao}</span>}
+  </>;
+}
+
+function IndicadorSalvar({ sessao }) {
   const { salvar, desfazer, podeDesfazer, cms, recarregar, sobrescrever, tentarDeNovo } = useContent();
   const u = cms.meta && cms.meta.atualizadoEm ? new Date(cms.meta.atualizadoEm) : null;
   const ultima = u && !isNaN(u) ? `última alteração: ${num2(u.getDate())}/${num2(u.getMonth() + 1)} às ${num2(u.getHours())}:${num2(u.getMinutes())}` : '';
@@ -104,6 +147,7 @@ function IndicadorSalvar() {
       {s === 'erro' && <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8, color: '#b3261e' }}>não salvou — {salvar.erro}<button className="adm-btn" onClick={tentarDeNovo}>tentar de novo</button></span>}
       {podeDesfazer && <button className="adm-btn" style={{ fontSize: 12, padding: '8px 14px' }} onClick={() => desfazer() && aviso('Alteração desfeita.')}>↶ desfazer</button>}
       <span style={{ color: 'var(--muted-2)' }}>{ultima}</span>
+      {sessao.publicar && <Publicar status={s} diario={sessao.publicarDiario} />}
       {s === 'conflito' && (
         <div role="alert" style={{ flexBasis: '100%', background: '#fff4e5', color: '#7a4b00', borderRadius: 12, padding: '12px 14px', display: 'flex', gap: 10, alignItems: 'center', flexWrap: 'wrap', font: "400 13px/1.5 'DM Sans',sans-serif" }}>
           <span style={{ flex: '1 1 220px' }}>O site foi alterado em outro aparelho enquanto você editava.</span>
@@ -140,7 +184,7 @@ function Painel({ wide, sessao, setSessao, sair }) {
       <div style={{ minWidth: 0, display: 'flex', flexDirection: 'column', gap: 16 }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'end', gap: 12, flexWrap: 'wrap' }}>
           <div><h1 style={{ font: "300 clamp(26px,3vw,36px)/1.1 'Outfit',sans-serif", letterSpacing: '-.02em' }}>{atual[1]}</h1><div style={{ font: "400 14px/1.5 'DM Sans',sans-serif", color: 'var(--muted)', marginTop: 4 }}>{atual[2]}</div></div>
-          <IndicadorSalvar />
+          <IndicadorSalvar sessao={sessao} />
         </div>
         {sessao.armazenamento === 'nenhum' && (
           <div role="alert" style={{ background: '#fdecea', color: '#8c1d18', borderRadius: 14, padding: '12px 16px', font: "400 13px/1.5 'DM Sans',sans-serif" }}>
@@ -155,7 +199,21 @@ function Painel({ wide, sessao, setSessao, sair }) {
 
 function Aba({ id, irAba, sessao, setSessao }) {
   const bind = useBind();
+  const { cms, editar } = useContent();
   const i = (k) => bind(['info', k]);
+  // Campo de artigo: quando o artigo já tem página no Google (texto suficiente) ou passa a ter com esta edição e o
+  // endereço ainda não foi salvo, guarda o endereço atual — corrigir o título depois não muda o link já indexado.
+  const bindPost = (n, k) => ({
+    value: (cms.posts[n] || {})[k],
+    set: (v) => editar(d => {
+      const antes = postsDe(d).find(p => p.i === n);
+      d.posts[n][k] = v;
+      if (k === 'slug' || String(d.posts[n].slug || '').trim()) return;
+      const depois = postsDe(d).find(p => p.i === n);
+      if (antes && temTexto(antes)) d.posts[n].slug = antes.slug;
+      else if (depois && temTexto(depois)) d.posts[n].slug = depois.slug;
+    }, `posts.${n}.${k}`),
+  });
   const full = true;
   switch (id) {
     case 'visao': return <Visao irAba={irAba} sessao={sessao} />;
@@ -247,8 +305,8 @@ function Aba({ id, irAba, sessao, setSessao }) {
     </>;
     case 'promocoes': return <BlocoLista chave="promocoes" tituloDe={it => it.titulo} novo={() => ({ tag: '', titulo: 'Nova promoção', texto: '', inicio: '', fim: '', condicoes: '', ativa: true, img: '' })} addLabel="adicionar promoção"
       campos={b => [<Campo key="a" b={b('ativa')} label="Status" tipo="bool" on="ativa no site" off="oculta" />, <Campo key="g" b={b('tag')} label="Etiqueta (ex.: novembro)" />, <Campo key="t" b={b('titulo')} label="Título" full />, <Campo key="x" b={b('texto')} label="Descrição" tipo="area" full />, <Campo key="ini" b={b('inicio')} label="Começa em (opcional)" tipo="date" />, <Campo key="fim" b={b('fim')} label="Termina em" tipo="date" ajuda="Depois dessa data a promoção sai do site sozinha." />, <Campo key="c" b={b('condicoes')} label="Condições" tipo="area" rows={2} full placeholder="Ex.: válida enquanto durarem os estoques; não cumulativa com outras promoções." ajuda="Aparecem junto com a validade. A oferta publicada obriga a loja." />, <Campo key="i" b={b('img')} label="Imagem (opcional)" tipo="img" full />]} />;
-    case 'eventos': return <BlocoLista chave="eventos" tituloDe={it => (it.data ? fmtData(it.data) + ' · ' : '') + it.titulo} novo={() => ({ titulo: 'Novo evento', data: '', hora: '', local: 'na loja', texto: '', img: '' })} addLabel="adicionar evento"
-      campos={b => [<Campo key="t" b={b('titulo')} label="Título" full />, <Campo key="d" b={b('data')} label="Data" tipo="date" />, <Campo key="h" b={b('hora')} label="Horário" placeholder="9h às 13h" />, <Campo key="l" b={b('local')} label="Local" placeholder="na loja" />, <Campo key="x" b={b('texto')} label="Descrição" tipo="area" full />, <Campo key="i" b={b('img')} label="Imagem (opcional)" tipo="img" full />]} />;
+    case 'eventos': return <BlocoLista chave="eventos" tituloDe={it => (it.data ? fmtData(it.data) + ' · ' : '') + it.titulo} novo={() => ({ titulo: 'Novo evento', data: '', hora: '', local: 'na loja', texto: '', gratuito: false, img: '' })} addLabel="adicionar evento"
+      campos={b => [<Campo key="t" b={b('titulo')} label="Título" full />, <Campo key="d" b={b('data')} label="Data" tipo="date" />, <Campo key="h" b={b('hora')} label="Horário" placeholder="9h às 13h" ajuda="Início e fim, ex.: 9h às 13h (o Google mostra os dois)." />, <Campo key="l" b={b('local')} label="Local" placeholder="na loja" ajuda='"na loja" (ou vazio) usa o endereço da ótica.' />, <Campo key="g" b={b('gratuito')} label="Entrada" tipo="bool" on="gratuita" off="não informar" />, <Campo key="x" b={b('texto')} label="Descrição" tipo="area" full />, <Campo key="i" b={b('img')} label="Imagem (opcional)" tipo="img" full />]} />;
     case 'produtos': return <BlocoLista chave="produtos" tituloDe={it => it.nome} novo={() => ({ nome: 'Novo modelo', marca: '', cat: 'grau', img: '', preco: '', destaque: false, selo: 'novo' })} addLabel="adicionar armação"
       campos={b => [<Campo key="n" b={b('nome')} label="Nome do modelo" />, <Campo key="m" b={b('marca')} label="Marca / linha (opcional)" />, <Campo key="c" b={b('cat')} label="Categoria" tipo="select" opcoes={CATEGORIAS.slice(1).map(([v, l]) => ({ v, l }))} />, <Campo key="p" b={b('preco')} label="Preço (opcional)" placeholder="R$ 299,00 à vista (só a armação)" ajuda="Informe o preço à vista da armação; lentes são orçadas à parte." />, <Campo key="d" b={b('destaque')} label="Selo de destaque" tipo="bool" on="com selo" off="sem selo" />, <Campo key="s" b={b('selo')} label="Texto do selo" placeholder="novo" />, <Campo key="i" b={b('img')} label="Foto" tipo="img" full />]} />;
     case 'lentes': return <>
@@ -276,8 +334,9 @@ function Aba({ id, irAba, sessao, setSessao }) {
     </>;
     case 'depoimentos': return <BlocoLista chave="depoimentos" pessoal tituloDe={it => it.nome} novo={() => ({ nome: 'Cliente', item: '', texto: '' })} addLabel="adicionar depoimento"
       campos={b => [<Campo key="n" b={b('nome')} label="Nome do cliente" />, <Campo key="i" b={b('item')} label="O que comprou (opcional, só com autorização)" />, <Campo key="t" b={b('texto')} label="Depoimento" tipo="area" full />]} />;
-    case 'posts': return <BlocoLista chave="posts" tituloDe={it => it.titulo} novo={() => ({ tag: 'dicas', data: fmtData(new Date().toISOString().slice(0, 10)), titulo: 'Novo artigo', resumo: '', conteudo: '', img: '' })} addLabel="adicionar artigo"
-      campos={b => [<Campo key="t" b={b('titulo')} label="Título" full />, <Campo key="g" b={b('tag')} label="Categoria" />, <Campo key="d" b={b('data')} label="Data de publicação" placeholder="30 out 2026" ajuda="No formato 30 out 2026. O tempo de leitura é calculado pelo tamanho do texto." />, <Campo key="r" b={b('resumo')} label="Resumo (aparece na lista)" tipo="area" rows={2} full />, <Campo key="c" b={b('conteudo')} label="Texto completo do artigo" tipo="area" rows={10} full />, <Campo key="i" b={b('img')} label="Imagem" tipo="img" full />]} />;
+    case 'posts': return <BlocoLista chave="posts" tituloDe={it => it.titulo} novo={() => ({ tag: 'dicas', data: fmtData(new Date().toISOString().slice(0, 10)), titulo: 'Novo artigo', resumo: '', conteudo: '', img: '', slug: '' })} addLabel="adicionar artigo" duplicar={it => ({ ...it, slug: '' })}
+      campos={(_, it, i) => { const b = (k) => bindPost(i, k), efetivo = (postsDe(cms).find(p => p.i === i) || {}).slug; return [<Campo key="t" b={b('titulo')} label="Título" full />,
+        <Campo key="s" b={b('slug')} label="Endereço do artigo (slug)" placeholder={efetivo} full ajuda={`Link: /blog/${efetivo}. Preenchido sozinho quando o artigo ganha texto e vai para o Google; depois disso, corrigir o título não muda o link. Mudar este campo muda o link (o antigo deixa de funcionar).`} />, <Campo key="g" b={b('tag')} label="Categoria" />, <Campo key="d" b={b('data')} label="Data de publicação" placeholder="30 out 2026" ajuda="Ex.: 30 out 2026 ou 30/10/2026. O tempo de leitura é calculado pelo tamanho do texto." />, <Campo key="r" b={b('resumo')} label="Resumo (aparece na lista)" tipo="area" rows={2} full />, <Campo key="c" b={b('conteudo')} label="Texto completo do artigo" tipo="area" rows={10} full />, <Campo key="i" b={b('img')} label="Imagem" tipo="img" full />]; }} />;
     case 'config': return <Configuracoes setSessao={setSessao} />;
     default: return null;
   }

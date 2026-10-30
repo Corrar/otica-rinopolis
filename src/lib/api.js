@@ -23,4 +23,5 @@ export const api = {
   historico: () => req('GET', '/api/history'),
   restaurarVersao: (id) => req('POST', '/api/history', { id }),
   limparFotos: (historico) => req('POST', '/api/limpar-fotos', { historico: !!historico }),
+  publicar: () => req('POST', '/api/publicar', {}),
 };

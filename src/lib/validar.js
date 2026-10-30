@@ -1,4 +1,6 @@
 // Endereços aceitos no conteúdo. Usado pelo servidor ao salvar e pelo painel para avisar antes.
+import { LISTAS } from '../content/defaults.js';
+
 const SEGURO = /^[^\s"'<>()\\]+$/;
 
 // Link do Facebook: só https://facebook.com/…, www. ou m.
@@ -34,8 +36,27 @@ export function fotoValida(u) {
   return /^\/(fotos|uploads)\/./.test(s) || /^https:\/\/[a-z0-9-]+\.public\.blob\.vercel-storage\.com\//i.test(s) || /^https:\/\/images\.pexels\.com\//.test(s);
 }
 
+// Nome de cada lista como aparece no painel (para as mensagens).
+const NOME_LISTA = { promocoes: 'promoções', eventos: 'eventos', produtos: 'armações', equipe: 'equipe', depoimentos: 'depoimentos', posts: 'blog', galeria: 'galeria', fechamentos: 'feriados e fechamentos', etapas: 'como funciona', marcos: 'linha do tempo', diferenciais: 'diferenciais', tiposLente: 'tipos de lente', passos: 'como funciona (lentes)', faq: 'perguntas frequentes' };
+
+// Listas do conteúdo (backup importado ou salvamento): cada uma precisa ser lista de itens (objetos), e cada
+// artigo do blog precisa de título em texto. Primeiro problema encontrado (texto pronto para o painel) ou ''.
+export function problemaNasListas(c) {
+  for (const k of LISTAS) {
+    const v = c && c[k];
+    if (v == null) continue;
+    if (!Array.isArray(v)) return `A seção "${NOME_LISTA[k]}" não é uma lista.`;
+    const i = v.findIndex(x => !x || typeof x !== 'object' || Array.isArray(x));
+    if (i >= 0) return `O item ${i + 1} de "${NOME_LISTA[k]}" está em formato inválido.`;
+  }
+  const j = Array.isArray(c && c.posts) ? c.posts.findIndex(p => typeof p.titulo !== 'string') : -1;
+  return j >= 0 ? `O artigo ${j + 1} do blog está sem título.` : '';
+}
+
 // Primeiro problema encontrado no conteúdo (texto pronto para o painel) ou ''.
 export function problemaNoConteudo(c) {
+  const lista = problemaNasListas(c);
+  if (lista) return lista;
   if (!facebookValido(c && c.info && c.info.facebook)) return 'Link do Facebook inválido: use o endereço completo da página (https://www.facebook.com/…).';
   if (!googleValido(c && c.info && c.info.googleAvaliacoes)) return 'Link do Perfil da Empresa no Google inválido: copie o link pelo botão "compartilhar" do perfil (começa com https://).';
   let achado = '';

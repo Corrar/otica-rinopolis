@@ -9,10 +9,13 @@ Links antigos com `#admin`, `#sobre` etc. redirecionam para as URLs novas.
 
 ## SEO (Google)
 - `npm run build` gera, além do app, o **HTML pronto de cada página** (`scripts/prerender.js`): título, descrição, link canônico, Open Graph e dados estruturados (schema.org `Optician` com endereço, horário e WhatsApp; `FAQPage` em lentes; `Event` para eventos; `BlogPosting` nos artigos; `BreadcrumbList`). O Google lê o conteúdo sem precisar executar o JavaScript.
-- Também gera `sitemap.xml`, `robots.txt` (bloqueia `/admin` e `/api/`), `404.html` (com status 404 de verdade) e `app.html` (usada por `/admin` e por artigos criados depois do último deploy).
-- O conteúdo usado no build é o último salvo no painel e vai embutido em cada página: o site abre na hora com ele e confere a versão atual em segundo plano (se o proprietário salvou algo depois do build, a página se atualiza sozinha). Depois de mudanças grandes no painel (artigos novos, textos), faça um **Redeploy** para atualizar as páginas geradas e o sitemap.
+- Também gera `sitemap.xml`, `robots.txt` (bloqueia `/admin` e `/api/`), `404.html` (com status 404 de verdade, inclusive para `/blog/<artigo-inexistente>`), `admin.html` (painel, com `noindex`) e `publicado.json` (versão do conteúdo publicada, lida pelo painel).
+- O conteúdo usado no build é o último salvo no painel e vai embutido em cada página: o site abre na hora com ele e confere a versão atual em segundo plano (se o proprietário salvou algo depois do build, a página se atualiza sozinha).
+- **Publicar no Google**: as páginas prontas, o sitemap e os dados estruturados só mudam com um novo deploy. Com `DEPLOY_HOOK_URL` definido (Vercel → Settings → Git → Deploy Hooks, branch `main`), o painel mostra o botão **"publicar alterações no Google"**, que dispara esse deploy (1 a 3 minutos) e avisa quando há alterações ainda não publicadas. Com `CRON_SECRET` também definido, o site é republicado sozinho uma vez por dia (`crons` do `vercel.json`, 9h17 UTC), para eventos e promoções vencidos saírem do Google. Sem as variáveis, nada é disparado: use **Redeploy** na Vercel.
+- Uma URL por página: `/sobre/`, `/sobre.html` e `/index.html` redirecionam para a forma limpa (na Vercel por `cleanUrls`/`trailingSlash`; no `server.js`, 301).
+- Artigos do blog: o endereço (`/blog/<slug>`) fica salvo quando o artigo ganha texto, e corrigir o título depois não muda o link; pode ser editado no painel. Artigo criado depois do último deploy abre pela 404 até ser publicado (o visitante vê o artigo assim que o site confere o conteúdo atual).
 - Se o armazenamento estiver configurado (`BLOB_READ_WRITE_TOKEN` ou `DATA_DIR`) e não puder ser lido no build, o build **falha** de propósito: a Vercel mantém o deploy anterior em vez de publicar o conteúdo padrão.
-- O endereço do site vem de `SITE_URL` ou do domínio de produção da Vercel; ao ligar um domínio próprio, basta fazer um novo deploy.
+- O endereço do site vem de `SITE_URL` ou do domínio de produção da Vercel e fica fixo no código gerado (canônico, Open Graph e JSON-LD iguais no HTML e na navegação, mesmo abrindo por preview); ao ligar um domínio próprio, faça um novo deploy e configure na Vercel (Settings → Domains) o redirecionamento 308 do `otica-rinopolis.vercel.app` para ele.
 - Títulos e descrições por página ficam em `src/lib/seo.js`; os da home são editáveis no painel (configurações).
 - Artigos do blog só com título ficam fora do Google (`noindex`) até ganharem texto (mín. 300 caracteres).
 
@@ -47,7 +50,8 @@ Sem `ADMIN_PASSWORD`, o `npm run dev` aceita a senha de desenvolvimento definida
 2. Em **Storage**, crie um **Blob Store** e conecte ao projeto (isso cria `BLOB_READ_WRITE_TOKEN`).
 3. Em **Settings → Environment Variables**, defina para Production `SESSION_SECRET` (32+ caracteres aleatórios, ex. `openssl rand -hex 32`) e `ADMIN_PASSWORD` (12+ caracteres aleatórios), ambos como Sensitive. Sem eles, login e sessão respondem "Configuração pendente".
 4. Faça o deploy. As funções em `api/` atendem `/api/*`; conteúdo, fotos e senha ficam no Blob.
-5. Recomendado: em **Firewall**, regra de Rate Limit para `/api/login` (10 por minuto por IP, ação deny); em **Billing**, alerta de uso do Blob (operações avançadas têm cota mensal).
+5. Opcional (recomendado): em **Settings → Git → Deploy Hooks**, crie um hook para a branch `main` e guarde a URL em `DEPLOY_HOOK_URL` (Sensitive, Production); defina também `CRON_SECRET` (16+ caracteres aleatórios) para a republicação diária. Faça um novo deploy.
+6. Recomendado: em **Firewall**, regra de Rate Limit para `/api/login` (10 por minuto por IP, ação deny); em **Billing**, alerta de uso do Blob (operações avançadas têm cota mensal).
 
 ## Publicar em VPS / outro servidor Node
 ```bash
@@ -55,6 +59,7 @@ npm install && npm run build
 SESSION_SECRET=... ADMIN_PASSWORD=... DATA_DIR=/var/lib/odl PORT=3000 npm start
 ```
 Sem `BLOB_READ_WRITE_TOKEN`, tudo é salvo em arquivos em `DATA_DIR` (faça backup dessa pasta).
+As páginas prontas e o sitemap só mudam ao rodar `npm run build` de novo: agende-o uma vez por dia (cron do sistema) e, se quiser o botão "publicar alterações no Google", aponte `DEPLOY_HOOK_URL` para um gatilho de rebuild (ex.: CI).
 `npm start` roda com `NODE_ENV=production`: o servidor não sobe sem `SESSION_SECRET` (32+ caracteres) e não há senha padrão. Atrás de nginx ou outro proxy, defina `TRUST_PROXY=1` (o limite de tentativas passa a usar o IP real do visitante). Os cabeçalhos de segurança são lidos do `vercel.json`.
 
 ## Estrutura

@@ -98,25 +98,43 @@ async function arquivo(req, res, arq, cache) {
   createReadStream(arq).on('error', () => (res.headersSent ? res.destroy() : texto(res, 500, 'Erro no servidor'))).pipe(res);
 }
 
+// Forma limpa do endereço, como na Vercel (cleanUrls, sem barra final): /sobre/, /sobre.html, /index e /index.html
+// viram /sobre e /. Barras repetidas no início viram uma só (//outro-site não vira redirecionamento para fora).
+function formaLimpa(p) {
+  let s = p.replace(/^\/+/, '/').replace(/\/+$/, '').replace(/\.html$/, '');
+  if (s === '/index' || s.endsWith('/index')) s = s.slice(0, -'index'.length).replace(/\/+$/, '');
+  return s || '/';
+}
+
 async function atender(req, res) {
-  let pathname;
-  try { pathname = new URL(req.url, 'http://local').pathname; } catch { return texto(res, 400, 'Requisição inválida'); }
-  const limpo = pathname.length > 1 ? pathname.replace(/\/+$/, '') : pathname;
+  let url;
+  try { url = new URL(req.url, 'http://local'); } catch { return texto(res, 400, 'Requisição inválida'); }
+  const { pathname } = url;
+  if (pathname.startsWith('/api/')) { aplicarCabecalhos(req, res, pathname.replace(/\/+$/, '')); return handleApi(req, res); }
+  if (pathname.startsWith('/uploads/')) { aplicarCabecalhos(req, res, pathname); return serveUpload(req, res); }
+  const limpo = formaLimpa(pathname);
   aplicarCabecalhos(req, res, limpo);
-  if (pathname.startsWith('/api/')) return handleApi(req, res);
-  if (pathname.startsWith('/uploads/')) return serveUpload(req, res);
+  // Uma URL por página: as outras formas redirecionam (301) para a limpa, mantendo a query string.
+  if (limpo !== pathname && (req.method === 'GET' || req.method === 'HEAD')) {
+    res.statusCode = 301;
+    res.setHeader('Location', limpo + url.search);
+    return res.end();
+  }
   let decodificado;
   try { decodificado = decodeURIComponent(limpo); } catch { return texto(res, 400, 'Requisição inválida'); }
   if (decodificado.includes('\0')) return texto(res, 400, 'Requisição inválida');
   const alvo = path.join(DIST, path.normalize(decodificado).replace(/^(\.\.[/\\])+/, ''));
   const existe = async (arq) => { try { return arq.startsWith(DIST + path.sep) && (await fs.stat(arq)).isFile(); } catch { return false; } };
+  const naoEncontrada = () => { res.statusCode = 404; return arquivo(req, res, path.join(DIST, '404.html'), 'no-cache'); };
+  // /404 é só a página de erro (nunca com status 200).
+  if (limpo === '/404') return naoEncontrada();
   // Cache: /assets (nome com hash), /fotos, logo e og-image vêm do vercel.json; o resto revalida em 5 min.
   if (await existe(alvo)) return arquivo(req, res, alvo, limpo.startsWith('/assets/') ? 'public, max-age=31536000, immutable' : 'public, max-age=300');
-  // Páginas geradas no build (/sobre → sobre.html); /admin e artigos novos do blog abrem o app; o resto é 404.
+  // Páginas geradas no build (/ → index.html, /sobre → sobre.html, /blog/x → blog/x.html, /admin → admin.html).
+  if (limpo === '/') return arquivo(req, res, path.join(DIST, 'index.html'), 'no-cache');
   if (await existe(alvo + '.html')) return arquivo(req, res, alvo + '.html', 'no-cache');
-  if (limpo === '/' || limpo === '/admin' || limpo.startsWith('/blog/')) return arquivo(req, res, path.join(DIST, limpo === '/' ? 'index.html' : 'app.html'), 'no-cache');
-  res.statusCode = 404;
-  return arquivo(req, res, path.join(DIST, '404.html'), 'no-cache');
+  // O resto (inclusive /blog/<artigo-inexistente>) é 404 de verdade.
+  return naoEncontrada();
 }
 
 // Prepara as versões brotli dos textos em segundo plano ao iniciar: a primeira visita não espera a compressão.

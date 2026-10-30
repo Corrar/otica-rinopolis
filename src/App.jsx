@@ -4,7 +4,7 @@ import { Footer, Header, MobileMenu, NovaAba, PromoBar, ScrollExtras, useLargura
 import { limparCache, useContent, useSite } from './state/content.jsx';
 import { rota, useHashLegado, usePath } from './lib/router.js';
 import { useToast } from './lib/toast.js';
-import { absolutoUrl, metaPagina } from './lib/seo.js';
+import { absolutoUrl, jsonLd, metaPagina, SITE } from './lib/seo.js';
 import { PADRAO } from './content/defaults.js';
 import { whatsapp } from './lib/util.js';
 import { animarEntradaHeader, useAnimacoesPagina } from './lib/anim-lazy.js';
@@ -21,8 +21,9 @@ import Acessibilidade from './pages/Acessibilidade.jsx';
 
 const Admin = lazy(() => import('./admin/Admin.jsx'));
 
-// Mantém título, descrição, link canônico e Open Graph de acordo com a página
-// (o HTML gerado no build já vem com essas tags; aqui elas acompanham a navegação).
+// Mantém título, descrição, link canônico, Open Graph e dados estruturados de acordo com a página
+// (o HTML gerado no build já vem com essas tags; aqui elas acompanham a navegação). Os endereços usam o endereço
+// oficial (SITE), como no HTML gerado — aberto por preview ou outro domínio, o canônico não muda.
 function Seo({ r }) {
   const { cms } = useSite();
   useEffect(() => {
@@ -33,20 +34,28 @@ function Seo({ r }) {
       if (valor == null || valor === '') { document.head.querySelector(sel)?.remove(); return; }
       tag(sel, () => { const el = document.createElement('meta'); el.setAttribute(attr, nome); return el; }).setAttribute('content', valor);
     };
-    const url = location.origin + m.caminho;
+    const url = SITE + m.caminho;
     document.title = m.titulo;
     meta('name', 'description', m.descricao);
     meta('name', 'robots', m.noindex ? 'noindex' : null);
     meta('property', 'og:title', m.titulo);
     meta('property', 'og:description', m.descricao);
-    meta('property', 'og:url', url);
+    meta('property', 'og:url', m.noindex ? null : url);
     meta('property', 'og:type', m.tipo);
-    meta('property', 'og:image', absolutoUrl(m.imagem, location.origin));
+    meta('property', 'og:image', absolutoUrl(m.imagem, SITE));
     meta('name', 'twitter:title', m.titulo);
     meta('name', 'twitter:description', m.descricao);
-    meta('name', 'twitter:image', absolutoUrl(m.imagem, location.origin));
+    meta('name', 'twitter:image', absolutoUrl(m.imagem, SITE));
     if (m.noindex) document.head.querySelector('link[rel="canonical"]')?.remove();
     else tag('link[rel="canonical"]', () => Object.assign(document.createElement('link'), { rel: 'canonical' })).href = url;
+    // Dados estruturados da página atual: os da anterior saem (o FAQ de /lentes não fica em /contato nem no painel).
+    document.head.querySelectorAll('script[type="application/ld+json"]').forEach(el => el.remove());
+    for (const bloco of jsonLd(r, cms, SITE)) {
+      const el = document.createElement('script');
+      el.type = 'application/ld+json';
+      el.textContent = JSON.stringify(bloco);
+      document.head.appendChild(el);
+    }
   }, [r.page, r.slug, cms]); // eslint-disable-line react-hooks/exhaustive-deps
   return null;
 }

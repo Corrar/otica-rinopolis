@@ -3,6 +3,7 @@ import { api } from '../lib/api.js';
 import { aviso } from '../lib/toast.js';
 import { lerImagem, num2 } from '../lib/util.js';
 import { PADRAO } from '../content/defaults.js';
+import { problemaNasListas } from '../lib/validar.js';
 import { useContent } from '../state/content.jsx';
 
 const card = 'adm-card';
@@ -87,7 +88,10 @@ export function Configuracoes({ setSessao }) {
     const r = new FileReader();
     r.onload = async () => {
       let dados; try { dados = JSON.parse(r.result); } catch { return aviso('Arquivo inválido.'); }
-      if (!dados || typeof dados !== 'object' || !dados.info) return aviso('Esse arquivo não parece um backup do site.');
+      if (!dados || typeof dados !== 'object' || Array.isArray(dados) || !dados.info || typeof dados.info !== 'object') return aviso('Esse arquivo não parece um backup do site.');
+      // Itens soltos ou nulos nas listas, ou artigo sem título, deixariam páginas em branco: o backup é recusado.
+      const problema = problemaNasListas(dados);
+      if (problema) return aviso('Backup não importado: ' + problema);
       if (!confirm('Importar este backup substitui o conteúdo atual do site. Continuar?')) return;
       setOcupado('importar');
       try { await enviarFotosEmbutidas(dados, setOcupado); substituir(dados); aviso('Backup importado.'); }

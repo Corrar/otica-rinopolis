@@ -101,13 +101,13 @@ export function lerImagem(file, max = 1600) {
   });
 }
 
-// Eventos de hoje em diante, do mais próximo ao mais distante.
+// Eventos de hoje em diante, do mais próximo ao mais distante (sem título não aparecem).
 export function eventosFuturos(cms) {
   const hoje = new Date(); hoje.setHours(0, 0, 0, 0);
   return (cms.eventos || []).map(e => {
-    const dt = e.data ? new Date(e.data + 'T12:00:00') : null; const ok = dt && !isNaN(dt);
+    const ok = isoValida(e.data), dt = ok ? new Date(e.data + 'T12:00:00') : null;
     return { ...e, _t: ok ? dt.getTime() : Infinity, dia: ok ? num2(dt.getDate()) : '—', mes: ok ? MESES[dt.getMonth()] : '', passado: ok && dt < hoje };
-  }).filter(e => !e.passado).sort((a, b) => a._t - b._t);
+  }).filter(e => !e.passado && texto(e.titulo).trim()).sort((a, b) => a._t - b._t);
 }
 
 // Promoções ativas e dentro da validade (início e fim opcionais, AAAA-MM-DD, horário de Brasília).
@@ -117,12 +117,27 @@ export const promosAtivas = (cms, hojeIso = agoraBrasilia().iso) => (cms.promoco
 // Tempo de leitura pelo tamanho do texto (cerca de 200 palavras por minuto).
 export const tempoLeitura = (texto) => `${Math.max(1, Math.round(String(texto || '').split(/\s+/).filter(Boolean).length / 200))} min`;
 
-// Artigos com endereço próprio (/blog/<slug>); títulos repetidos recebem sufixo.
+// Data AAAA-MM-DD que existe no calendário (sem 31/02 ou mês 13).
+export function isoValida(s) {
+  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(s || '').trim());
+  if (!m) return false;
+  const d = new Date(Date.UTC(+m[1], +m[2] - 1, +m[3]));
+  return d.getUTCFullYear() === +m[1] && d.getUTCMonth() === +m[2] - 1 && d.getUTCDate() === +m[3];
+}
+
+// Texto de um campo do conteúdo: número vira texto; vazio, nulo ou objeto vira ''.
+export const texto = (v) => (v == null || typeof v === 'object' ? '' : String(v));
+
+// Artigos com endereço próprio (/blog/<slug>). O endereço salvo no painel (slug) vale primeiro e não muda quando
+// o título é corrigido; sem ele, vem do título. Endereços repetidos ganham -2, -3… (os salvos são reservados antes).
 export function postsDe(cms) {
-  const vistos = {};
-  return (cms.posts || []).map((x, i) => {
-    let slug = slugify(x.titulo); if (vistos[slug]) slug += '-' + (i + 1); vistos[slug] = true;
-    const conteudo = x.conteudo || x.resumo || '';
-    return { ...x, i, slug, conteudo, leitura: tempoLeitura(conteudo) };
+  const posts = (cms.posts || []).map((x, i) => [x, i]).filter(([x]) => x && typeof x === 'object' && !Array.isArray(x)).map(([x, i]) => {
+    const conteudo = texto(x.conteudo) || texto(x.resumo);
+    return { ...x, i, titulo: texto(x.titulo), resumo: texto(x.resumo), tag: texto(x.tag), data: texto(x.data), img: texto(x.img), conteudo, leitura: tempoLeitura(conteudo) };
   });
+  const vistos = new Set();
+  const unico = (base) => { let slug = base, n = 2; while (vistos.has(slug)) slug = base + '-' + n++; vistos.add(slug); return slug; };
+  posts.forEach(p => { p.slug = texto(p.slug).trim() ? unico(slugify(p.slug)) : ''; });
+  posts.forEach(p => { if (!p.slug) p.slug = unico(slugify(p.titulo)); });
+  return posts;
 }

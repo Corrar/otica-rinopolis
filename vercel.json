@@ -3,13 +3,12 @@
   "framework": "vite",
   "cleanUrls": true,
   "trailingSlash": false,
-  "rewrites": [
-    { "source": "/admin", "destination": "/app" },
-    { "source": "/blog/:slug", "destination": "/app" }
-  ],
   "functions": {
     "api/limpar-fotos.js": { "maxDuration": 60 }
   },
+  "crons": [
+    { "path": "/api/cron-publicar", "schedule": "17 9 * * *" }
+  ],
   "headers": [
     {
       "source": "/(.*)",
@@ -22,10 +21,6 @@
         { "key": "Strict-Transport-Security", "value": "max-age=63072000; includeSubDomains" },
         { "key": "Cross-Origin-Opener-Policy", "value": "same-origin" }
       ]
-    },
-    {
-      "source": "/app",
-      "headers": [{ "key": "X-Robots-Tag", "value": "noindex" }]
     },
     {
       "source": "/admin",

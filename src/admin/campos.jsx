@@ -93,7 +93,9 @@ export function BlocoInfo({ titulo, desc, children }) {
 
 // Lista editável: adicionar, duplicar, reordenar e remover itens.
 // pessoal: itens com dados de pessoas (equipe, depoimentos) — ao remover, explica como apagar do histórico.
-export function BlocoLista({ chave, titulo, desc, tituloDe, novo, addLabel, campos, pessoal }) {
+// duplicar: ajusta a cópia (ex.: artigo duplicado não herda o endereço do original).
+// campos(bind, item, índice) devolve os campos de cada item.
+export function BlocoLista({ chave, titulo, desc, tituloDe, novo, addLabel, campos, pessoal, duplicar = (it) => it }) {
   const { cms, editar } = useContent();
   const bind = useBind();
   const itens = cms[chave] || [];
@@ -108,13 +110,13 @@ export function BlocoLista({ chave, titulo, desc, tituloDe, novo, addLabel, camp
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 12 }}>
             <div style={{ font: "500 16px 'Outfit',sans-serif", minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{tituloDe(it) || `item ${i + 1}`}</div>
             <div style={{ display: 'flex', gap: 6, flex: 'none' }}>
-              <button className="adm-ic" style={{ width: 'auto', padding: '0 12px', borderRadius: 999, font: "500 12px 'DM Sans',sans-serif" }} onClick={() => mexer(a => a.splice(i + 1, 0, structuredClone(it)))}>duplicar</button>
+              <button className="adm-ic" style={{ width: 'auto', padding: '0 12px', borderRadius: 999, font: "500 12px 'DM Sans',sans-serif" }} onClick={() => mexer(a => a.splice(i + 1, 0, duplicar(structuredClone(it))))}>duplicar</button>
               <button className="adm-ic" aria-label="Mover para cima" disabled={i === 0} onClick={() => mexer(a => { [a[i - 1], a[i]] = [a[i], a[i - 1]]; })}>↑</button>
               <button className="adm-ic" aria-label="Mover para baixo" disabled={i === itens.length - 1} onClick={() => mexer(a => { [a[i + 1], a[i]] = [a[i], a[i + 1]]; })}>↓</button>
               <button className="adm-ic" aria-label="Remover" style={{ color: '#b3261e' }} onClick={() => { if (confirm(pessoal ? 'Remover do site? O item ainda fica guardado no histórico de versões. Para apagar de vez (inclusive a foto), use depois "apagar histórico e fotos antigas" em configurações.' : 'Remover este item?')) mexer(a => a.splice(i, 1)); }}><Ic n="trash" s={15} /></button>
             </div>
           </div>
-          <Grade>{campos((k) => bind([chave, i, k]), it)}</Grade>
+          <Grade>{campos((k) => bind([chave, i, k]), it, i)}</Grade>
         </div>
       ))}
     </div>

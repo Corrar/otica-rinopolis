@@ -125,21 +125,28 @@ const LISTAS_ANTIGAS = {
 };
 const impressao = (v) => { const s = JSON.stringify(v); let h = 5381; for (let i = 0; i < s.length; i++) h = (h * 33 ^ s.charCodeAt(i)) >>> 0; return h.toString(36); };
 
+// Só valores simples (texto, número, sim/não): um backup ou versão com null, lista ou objeto no lugar de um texto
+// não pode deixar a tela em branco nem quebrar o build.
+const simples = (v) => typeof v === 'string' || typeof v === 'number' || typeof v === 'boolean';
+const ehObjeto = (o) => !!o && typeof o === 'object' && !Array.isArray(o);
+const soSimples = (o) => (ehObjeto(o) ? Object.fromEntries(Object.entries(o).filter(([, v]) => simples(v))) : {});
+
 export function mesclar(s) {
   const base = PADRAO();
-  if (s && typeof s === 'object') {
-    const antigo = !(s.meta && +s.meta.versaoPadrao >= VERSAO_PADRAO);
-    const info = { ...(s.info || {}) };
+  if (ehObjeto(s)) {
+    const antigo = !(ehObjeto(s.meta) && +s.meta.versaoPadrao >= VERSAO_PADRAO);
+    const info = soSimples(s.info);
     if (antigo) Object.entries(PADROES_ANTIGOS).forEach(([k, antigos]) => { if (antigos.includes(info[k])) delete info[k]; });
     base.info = { ...base.info, ...info };
-    base.meta = { ...base.meta, ...(s.meta || {}), versaoPadrao: VERSAO_PADRAO };
-    const fotos = { ...(s.fotos || {}) };
+    base.meta = { ...base.meta, ...soSimples(s.meta), versaoPadrao: VERSAO_PADRAO };
+    const fotos = Object.fromEntries(Object.entries(soSimples(s.fotos)).filter(([, v]) => typeof v === 'string'));
     if (antigo) Object.keys(fotos).forEach(k => { if (ehIlustrativa(fotos[k])) delete fotos[k]; });
     base.fotos = { ...base.fotos, ...fotos };
+    // Listas: só aceita lista, e dela só os itens que são objetos (itens nulos ou soltos são descartados).
     LISTAS.forEach(k => {
       if (!Array.isArray(s[k])) return;
       if (antigo && (LISTAS_ANTIGAS[k] || []).includes(impressao(s[k]))) return;
-      base[k] = s[k];
+      base[k] = s[k].filter(ehObjeto).map(soSimples);
     });
   }
   return base;

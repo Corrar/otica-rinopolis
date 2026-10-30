@@ -1,7 +1,9 @@
 // Depois do build: gera o HTML pronto de cada página pública, com título, descrição, link canônico,
 // Open Graph e dados estruturados próprios — o Google lê tudo sem precisar executar o JavaScript.
-// Também gera sitemap.xml, robots.txt, 404.html e app.html (página "vazia" para rotas não geradas, como /admin).
-// O conteúdo usado é o último salvo no painel (Blob ou ./data), ou o padrão; cada deploy atualiza as páginas.
+// Também gera sitemap.xml, robots.txt, 404.html (endereços sem página, inclusive /blog/<artigo-inexistente>),
+// admin.html (painel, fora do Google) e publicado.json (versão do conteúdo publicada, lida pelo painel).
+// O conteúdo usado é o último salvo no painel (Blob ou ./data), ou o padrão. Cada deploy atualiza as páginas:
+// o botão "publicar alterações no Google" do painel e a republicação diária disparam um deploy (DEPLOY_HOOK_URL).
 // Esse conteúdo vai embutido em cada página (#odl-inicial): o site monta na hora com ele e confere a versão atual
 // em segundo plano. Se o armazenamento estiver configurado e falhar, o build falha (a Vercel mantém o deploy
 // anterior) em vez de publicar o conteúdo padrão por cima do que o proprietário salvou.
@@ -12,9 +14,6 @@ import { getStorage } from '../server/storage.js';
 
 const DIST = path.resolve('dist');
 const SSR = path.resolve('dist-ssr/entry-server.js');
-const SITE = (process.env.SITE_URL
-  || (process.env.VERCEL_PROJECT_PRODUCTION_URL && 'https://' + process.env.VERCEL_PROJECT_PRODUCTION_URL)
-  || 'https://otica-rinopolis.vercel.app').replace(/\/+$/, '');
 
 const esc = (s) => String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 const jsonScript = (o) => `<script type="application/ld+json">${JSON.stringify(o).replace(/</g, '\\u003c')}</script>`;
@@ -47,7 +46,7 @@ function separarPreloads(corpo) {
   return { links, corpo: resto };
 }
 
-function cabecalho(m, blocos) {
+function cabecalho(SITE, m, blocos) {
   const url = SITE + m.caminho;
   const img = m.imagem ? (/^https?:\/\//.test(m.imagem) ? m.imagem : SITE + m.imagem) : '';
   return [
@@ -77,6 +76,8 @@ async function preloadFontes() {
 
 async function main() {
   const ssr = await import(pathToFileURL(SSR).href);
+  // Endereço oficial: o mesmo que foi fixado no código do site (vite.config.js → __SITE__).
+  const SITE = ssr.SITE;
   const salvo = await conteudoSalvo();
   const content = salvo ? salvo.content : null;
   const cms = ssr.mesclar(content);
@@ -90,16 +91,19 @@ async function main() {
     const m = ssr.metaPagina(r, cms);
     const { links, corpo } = separarPreloads(ssr.render(caminho, content));
     return modelo
-      .replace(/<!--seo-->[\s\S]*?<!--\/seo-->/, () => [cabecalho(m, m.noindex ? [] : ssr.jsonLd(r, cms, SITE)), ...links].join('\n    '))
+      .replace(/<!--seo-->[\s\S]*?<!--\/seo-->/, () => [cabecalho(SITE, m, ssr.jsonLd(r, cms, SITE)), ...links].join('\n    '))
       .replace('<div id="root"></div>', () => `<div id="root">${corpo}</div>`)
       .replace(/(\s*)<\/body>/, (_, esp) => '\n    ' + inicial + esp + '</body>');
   };
 
-  // Página "vazia" (só o app) para rotas sem HTML gerado: /admin e artigos novos do blog.
-  await fs.writeFile(path.join(DIST, 'app.html'), modelo.replace(/<!--seo-->|<!--\/seo-->/g, ''));
+  // Painel do proprietário (/admin): só o app, fora do Google. Ele busca o conteúdo atual ao abrir.
+  await fs.writeFile(path.join(DIST, 'admin.html'), modelo.replace(/<!--seo-->[\s\S]*?<!--\/seo-->/, () => `<title>${esc(ssr.metaPagina({ page: 'admin' }, cms).titulo)}</title>\n    <meta name="robots" content="noindex, nofollow" />`));
 
+  // Uma página para cada rota pública e para cada artigo (os curtos com noindex, fora do sitemap).
+  // Artigo criado depois deste build abre pela 404.html (status 404) até a próxima publicação: o site mostra o
+  // artigo assim que confere o conteúdo atual, e o Google só o vê depois de publicado.
   const rotas = ssr.rotasPublicas(cms);
-  for (const r of rotas) {
+  for (const r of ssr.paginasGeradas(cms)) {
     const caminho = ssr.caminhoDe(r.page, r.slug);
     const arq = caminho === '/' ? 'index.html' : caminho.slice(1) + '.html';
     await fs.mkdir(path.dirname(path.join(DIST, arq)), { recursive: true });
@@ -118,9 +122,11 @@ async function main() {
   });
   await fs.writeFile(path.join(DIST, 'sitemap.xml'), `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls.join('\n')}\n</urlset>\n`);
   await fs.writeFile(path.join(DIST, 'robots.txt'), `User-agent: *\nAllow: /\nDisallow: /admin\nDisallow: /api/\n\nSitemap: ${SITE}/sitemap.xml\n`);
+  // Para o painel saber se há alterações ainda não publicadas e quando foi a última publicação.
+  await fs.writeFile(path.join(DIST, 'publicado.json'), JSON.stringify({ versao: salvo ? salvo.version : null, atualizadoEm: cms.meta?.atualizadoEm || '', geradoEm: new Date().toISOString() }) + '\n');
 
   await fs.rm(path.resolve('dist-ssr'), { recursive: true, force: true });
-  console.log(`prerender: ${rotas.length} páginas + 404 geradas para ${SITE} (conteúdo ${salvo ? 'salvo no painel' : 'padrão'})`);
+  console.log(`prerender: ${ssr.paginasGeradas(cms).length} páginas (${rotas.length} no sitemap) + 404 e admin geradas para ${SITE} (conteúdo ${salvo ? 'salvo no painel' : 'padrão'})`);
 }
 
 main().catch((e) => { console.error(e); process.exit(1); });

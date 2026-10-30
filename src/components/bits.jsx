@@ -90,7 +90,7 @@ export function Evento({ ev, comImagem = false }) {
         <div className="min0">
           <h3 className="event__t">{ev.titulo}</h3>
           <div className="t-small" style={{ lineHeight: 1.5, marginBottom: 8 }}>{ev.texto}</div>
-          <div className="event__meta"><Ic n="pin" s={13} />{ev.local}{comImagem && ev.hora ? ` · ${ev.hora}` : ''}</div>
+          <div className="event__meta"><Ic n="pin" s={13} />{ev.local || 'na loja'}{comImagem && ev.hora ? ` · ${ev.hora}` : ''}{ev.gratuito === true ? ' · entrada gratuita' : ''}</div>
         </div>
       </div>
     </div>

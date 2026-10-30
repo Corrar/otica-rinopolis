@@ -20,7 +20,14 @@ const apiLocal = () => ({
   },
 });
 
+// Endereço oficial do site (link canônico, Open Graph, sitemap e dados estruturados): SITE_URL, ou o domínio de
+// produção da Vercel, ou o endereço padrão. Vai fixo no código como __SITE__ (lido em src/lib/seo.js).
+const SITE = (process.env.SITE_URL
+  || (process.env.VERCEL_PROJECT_PRODUCTION_URL && 'https://' + process.env.VERCEL_PROJECT_PRODUCTION_URL)
+  || 'https://otica-rinopolis.vercel.app').replace(/\/+$/, '');
+
 export default defineConfig({
   plugins: [react(), apiLocal(), fotosResponsivas()],
+  define: { __SITE__: JSON.stringify(SITE) },
   server: { watch: { ignored: ['**/data/**'] } },
 });
