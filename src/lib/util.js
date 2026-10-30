@@ -17,20 +17,35 @@ export function agoraBrasilia(now = Date.now()) {
   return { d, iso: `${d.getFullYear()}-${num2(d.getMonth() + 1)}-${num2(d.getDate())}` };
 }
 
+// Horário só vale no formato HH:MM (campo vazio = não informado).
+export const horaValida = (s) => toMin(s) != null;
+
+// Textos do horário: { semana: '8h30 às 18h', sabado: '8h30 às 12h' } — vazios enquanto não houver horário
+// confirmado. Sábado vazio (com os dias úteis preenchidos) = fechado aos sábados.
+export function horarios(info) {
+  const semana = horaValida(info.abreSemana) && horaValida(info.fechaSemana) ? `${fmtH(info.abreSemana)} às ${fmtH(info.fechaSemana)}` : '';
+  const sabado = semana && horaValida(info.abreSabado) && horaValida(info.fechaSabado) ? `${fmtH(info.abreSabado)} às ${fmtH(info.fechaSabado)}` : '';
+  return { semana, sabado };
+}
+
 // "aberto agora" / "fechado · abre ..." a partir dos horários e fechamentos cadastrados.
+// null sem horário dos dias úteis: o site não mostra status (nem "aberto agora" inventado).
 export function statusLoja(info, fechamentos, now) {
+  const aS = toMin(info.abreSemana), fS = toMin(info.fechaSemana);
+  if (aS == null || fS == null) return null;
+  const aB = toMin(info.abreSabado), fB = toMin(info.fechaSabado);
+  const abreSabado = aB != null && fB != null;
   const { d, iso } = agoraBrasilia(now);
   const dia = d.getDay(), min = d.getHours() * 60 + d.getMinutes();
-  const aS = toMin(info.abreSemana) ?? 510, fS = toMin(info.fechaSemana) ?? 1080, aB = toMin(info.abreSabado) ?? 510, fB = toMin(info.fechaSabado) ?? 750;
   const fechHoje = (fechamentos || []).find(x => x.data === iso);
-  const aberto = !fechHoje && ((dia >= 1 && dia <= 5 && min >= aS && min < fS) || (dia === 6 && min >= aB && min < fB));
-  const abreTxt = fmtH(info.abreSemana);
+  const aberto = !fechHoje && ((dia >= 1 && dia <= 5 && min >= aS && min < fS) || (abreSabado && dia === 6 && min >= aB && min < fB));
+  const abreTxt = fmtH(info.abreSemana), segunda = `fechado · abre segunda ${abreTxt}`;
   const texto = fechHoje ? `fechado hoje · ${fechHoje.motivo || 'feriado'}`
     : aberto ? 'aberto agora'
-    : (dia === 0 || (dia === 6 && min >= fB)) ? `fechado · abre segunda ${abreTxt}`
-    : dia === 6 ? `fechado · abre às ${fmtH(info.abreSabado)}`
+    : dia === 0 ? segunda
+    : dia === 6 ? (abreSabado && min < aB ? `fechado · abre às ${fmtH(info.abreSabado)}` : segunda)
     : min < aS ? `fechado · abre às ${abreTxt}`
-    : dia === 5 ? `fechado · abre sábado ${fmtH(info.abreSabado)}`
+    : dia === 5 ? (abreSabado ? `fechado · abre sábado ${fmtH(info.abreSabado)}` : segunda)
     : `fechado · abre amanhã ${abreTxt}`;
   return { aberto, texto, cor: aberto ? '#25D366' : '#c9c6c1', hojeIso: iso };
 }
@@ -80,13 +95,19 @@ export function eventosFuturos(cms) {
   }).filter(e => !e.passado).sort((a, b) => a._t - b._t);
 }
 
-export const promosAtivas = (cms) => (cms.promocoes || []).filter(x => x.ativa !== false);
+// Promoções ativas e dentro da validade (início e fim opcionais, AAAA-MM-DD, horário de Brasília).
+export const promosAtivas = (cms, hojeIso = agoraBrasilia().iso) => (cms.promocoes || [])
+  .filter(x => x.ativa !== false && (!x.inicio || x.inicio <= hojeIso) && (!x.fim || x.fim >= hojeIso));
+
+// Tempo de leitura pelo tamanho do texto (cerca de 200 palavras por minuto).
+export const tempoLeitura = (texto) => `${Math.max(1, Math.round(String(texto || '').split(/\s+/).filter(Boolean).length / 200))} min`;
 
 // Artigos com endereço próprio (/blog/<slug>); títulos repetidos recebem sufixo.
 export function postsDe(cms) {
   const vistos = {};
   return (cms.posts || []).map((x, i) => {
     let slug = slugify(x.titulo); if (vistos[slug]) slug += '-' + (i + 1); vistos[slug] = true;
-    return { ...x, i, slug, conteudo: x.conteudo || x.resumo || '' };
+    const conteudo = x.conteudo || x.resumo || '';
+    return { ...x, i, slug, conteudo, leitura: tempoLeitura(conteudo) };
   });
 }

@@ -9,10 +9,11 @@ const ASSUNTOS = ['Óculos de grau', 'Óculos de sol', 'Lentes de contato', 'Or�
 
 export default function Contato() {
   const site = useSite();
-  const { cms, wa, status, hojeIso, mapaEmbed } = site;
+  const { cms, wa, status, hojeIso, mapaEmbed, horarioSemana } = site;
   const [form, setForm] = useState({ nome: '', assunto: ASSUNTOS[0], msg: '' });
   const set = (k) => (e) => setForm({ ...form, [k]: e.target.value });
-  const fechamentos = (cms.fechamentos || []).filter(x => /^\d{4}-\d{2}-\d{2}$/.test(x.data || '') && x.data >= hojeIso).sort((a, b) => (a.data < b.data ? -1 : 1)).slice(0, 4);
+  // Fechamentos só aparecem junto com o horário de funcionamento (sem horário, o site manda consultar pelo WhatsApp).
+  const fechamentos = !horarioSemana ? [] : (cms.fechamentos || []).filter(x => /^\d{4}-\d{2}-\d{2}$/.test(x.data || '') && x.data >= hojeIso).sort((a, b) => (a.data < b.data ? -1 : 1)).slice(0, 4);
 
   const enviar = (e) => {
     e.preventDefault();
@@ -26,8 +27,8 @@ export default function Contato() {
         <div className="min0">
           <div className="eyebrow" style={{ marginBottom: 20 }}>contato</div>
           <h1 style={{ font: "300 clamp(36px,5vw,60px)/1.05 'Outfit',sans-serif", letterSpacing: '-.02em', marginBottom: 18, textWrap: 'pretty' }}>vamos <span className="b">conversar.</span></h1>
-          <p style={{ font: "400 clamp(15px,1.5vw,17px)/1.6 'DM Sans',sans-serif", color: 'var(--text-2)', marginBottom: 24, maxWidth: 460 }}>Respondemos no WhatsApp em horário comercial. Se preferir, preencha o formulário e abrimos a conversa com sua mensagem pronta.</p>
-          <div style={{ marginBottom: 28 }}><Status st={status} style={{ gap: 8, font: "500 13px 'DM Sans',sans-serif", color: 'var(--ink)' }} /></div>
+          <p style={{ font: "400 clamp(15px,1.5vw,17px)/1.6 'DM Sans',sans-serif", color: 'var(--text-2)', marginBottom: 24, maxWidth: 460 }}>Respondemos no WhatsApp em horário comercial. Se preferir, preencha o formulário e abrimos a conversa com sua mensagem pronta. Para lentes de grau ou de contato, tenha em mãos a receita do seu oftalmologista.</p>
+          {status ? <div style={{ marginBottom: 28 }}><Status st={status} style={{ gap: 8, font: "500 13px 'DM Sans',sans-serif", color: 'var(--ink)' }} /></div> : null}
           {fechamentos.length > 0 && (
             <div style={{ background: 'var(--sand)', borderRadius: 14, padding: '14px 16px', margin: '-12px 0 28px', font: "400 13px/1.6 'DM Sans',sans-serif", color: 'var(--text-2)' }}>
               <div style={{ font: "500 12px 'DM Sans',sans-serif", letterSpacing: '.1em', textTransform: 'uppercase', color: 'var(--muted-2)', marginBottom: 6 }}>próximos fechamentos</div>

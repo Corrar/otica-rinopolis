@@ -1,6 +1,6 @@
 // SEO: título, descrição e dados estruturados (schema.org) de cada página.
 // Usado no navegador (componente Seo) e no build, que gera o HTML pronto de cada página (scripts/prerender.js).
-import { fmtH, lista, MESES, num2, postsDe, eventosFuturos, telefone, whatsapp } from './util.js';
+import { horaValida, horarios, lista, MESES, num2, postsDe, eventosFuturos, telefone, whatsapp } from './util.js';
 
 export const NOME = 'Ótica Digital Look';
 export const PAGINAS_INDEXADAS = ['inicio', 'sobre', 'armacoes', 'lentes', 'convenios', 'blog', 'contato'];
@@ -31,17 +31,20 @@ export function metaPagina(r, cms) {
   const { cidade, uf } = localDe(info);
   const local = `${cidade}/${uf}`;
   const wa = whatsapp(info), tel = telefone(info);
-  const horario = `seg a sex ${fmtH(info.abreSemana)} às ${fmtH(info.fechaSemana)}, sábado ${fmtH(info.abreSabado)} às ${fmtH(info.fechaSabado)}`;
-  const parc = info.parcelas || '10';
+  // Horário e parcelamento só entram nas descrições quando o proprietário informou.
+  const h = horarios(info);
+  const horario = h.semana ? ` Horário: seg a sex ${h.semana}, sábado ${h.sabado || 'fechado'}.` : '';
+  const parc = parseInt(info.parcelas, 10) > 1 ? parseInt(info.parcelas, 10) : 0;
+  const temConvenios = lista(info.convenios).length > 0;
   const base = { caminho: caminhoDe(r.page, r.slug), imagem: '/og-image.jpg', noindex: false, tipo: 'website' };
   switch (r.page) {
     case 'inicio': return { ...base, titulo: info.siteTitulo || `${NOME} | Ótica em ${local}`, descricao: info.siteDescricao };
-    case 'sobre': return { ...base, titulo: `Sobre a ${NOME} | Ótica no centro de ${local}`, descricao: corta(`Conheça a ${NOME}, na ${info.endereco}, ${info.bairroCidade}: atendimento próximo, medição digital das lentes${+info.anos ? ` e mais de ${info.anos} anos de história` : ''}.`), imagem: '/fotos/fachada.jpg' };
-    case 'armacoes': return { ...base, titulo: `Armações de grau e óculos de sol em ${local} | ${NOME}`, descricao: corta(`Armações de grau, óculos de sol, modelos infantis e esportivos no centro de ${cidade}. Monte seu óculos completo com medição digital e até ${parc}x sem juros.`), imagem: '/fotos/vitrine-feminina.jpg' };
-    case 'lentes': return { ...base, titulo: `Lentes de contato em ${local} | ${NOME}`, descricao: corta(`Lentes de contato diárias, mensais, tóricas e multifocais em ${cidade}. Envie sua receita pelo WhatsApp e aprenda a colocar e cuidar com a nossa equipe.`) };
-    case 'convenios': return { ...base, titulo: `Convênios, promoções e pagamento | ${NOME} – ${local}`, descricao: corta(`Convênios aceitos, promoções do mês e eventos da ${NOME} em ${cidade}. Parcele seu óculos completo em até ${parc}x sem juros no cartão.`) };
+    case 'sobre': return { ...base, titulo: `Sobre a ${NOME} | Ótica no centro de ${local}`, descricao: corta(`Conheça a ${NOME}, na ${info.endereco}, ${info.bairroCidade}: atendimento próximo para escolher armação, lentes e óculos de sol${+info.anos ? `, com mais de ${info.anos} anos de história` : ''}.`), imagem: '/fotos/fachada.jpg' };
+    case 'armacoes': return { ...base, titulo: `Armações de grau e óculos de sol em ${local} | ${NOME}`, descricao: corta(`Armações de grau e óculos de sol no centro de ${cidade}. Monte seus óculos completos${parc ? ` em até ${parc}x sem juros` : ''}: veja a vitrine e chame no WhatsApp.`), imagem: '/fotos/vitrine-feminina.jpg' };
+    case 'lentes': return { ...base, titulo: `Lentes de contato em ${local} | ${NOME}`, descricao: corta(`Lentes de contato diárias, mensais, tóricas e multifocais em ${cidade}, somente com receita médica. Envie sua receita pelo WhatsApp e tire suas dúvidas com a nossa equipe.`) };
+    case 'convenios': return { ...base, titulo: `Convênios, promoções e pagamento | ${NOME} – ${local}`, descricao: corta(`${temConvenios ? 'Convênios aceitos, promoções' : 'Promoções'}${lista(info.pagamentos).length ? ', eventos e formas de pagamento' : ' e eventos'} da ${NOME} em ${cidade}.${parc ? ` Parcele seus óculos completos em até ${parc}x sem juros.` : ''}${temConvenios ? '' : ' Pergunte pelo WhatsApp se o seu convênio tem parceria com a ótica.'}`) };
     case 'blog': return { ...base, titulo: `Blog: dicas de lentes, armações e saúde ocular | ${NOME}`, descricao: corta(`Dicas da ${NOME}, ótica no centro de ${cidade}, sobre lentes, armações, lentes de contato e cuidados com os olhos.`) };
-    case 'contato': return { ...base, titulo: `Contato, endereço e horário | ${NOME} – ${local}`, descricao: corta(`${info.endereco}, ${info.bairroCidade}. ${tel ? `Telefone ${tel.fmt}, WhatsApp ${wa.fmt}` : `WhatsApp ${wa.fmt}`}. Horário: ${horario}. Veja o mapa e fale com a gente.`) };
+    case 'contato': return { ...base, titulo: `Contato, endereço e horário | ${NOME} – ${local}`, descricao: corta(`${info.endereco}, ${info.bairroCidade}. ${tel ? `Telefone ${tel.fmt}, WhatsApp ${wa.fmt}` : `WhatsApp ${wa.fmt}`}.${horario} Veja o mapa e fale com a gente.`) };
     case 'post': {
       const p = postsDe(cms).find(x => x.slug === r.slug);
       if (!p) return { ...base, titulo: `Página não encontrada | ${NOME}`, descricao: '', noindex: true };
@@ -54,6 +57,10 @@ export function metaPagina(r, cms) {
 
 const absoluto = (url, site) => (/^https?:\/\//.test(url || '') ? url : site + (url || ''));
 const DIAS = { semana: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'], sabado: ['Saturday'] };
+// Horário de funcionamento para o Google: só os dias com abertura e fechamento no formato HH:MM.
+const horarioOtica = (info) => [[DIAS.semana, info.abreSemana, info.fechaSemana], [DIAS.sabado, info.abreSabado, info.fechaSabado]]
+  .filter(([, abre, fecha]) => horaValida(abre) && horaValida(fecha))
+  .map(([dayOfWeek, abre, fecha]) => ({ '@type': 'OpeningHoursSpecification', dayOfWeek, opens: String(abre).trim().padStart(5, '0'), closes: String(fecha).trim().padStart(5, '0') }));
 
 // Dados da ótica para o Google (perfil de empresa local).
 export function dadosOtica(cms, site) {
@@ -64,23 +71,22 @@ export function dadosOtica(cms, site) {
   const intl = (n) => (n.length >= 10 ? `+55 ${n.slice(0, 2)} ${n.slice(2, -4)}-${n.slice(-4)}` : undefined);
   const ig = String(info.instagram || '').replace(/^@/, '');
   const end = `${info.endereco}, ${info.bairroCidade}, ${info.cep}`;
+  const semana = horaValida(info.abreSemana) && horaValida(info.fechaSemana);
+  const horas = semana ? horarioOtica(info) : [];
   return {
     '@type': 'Optician', '@id': site + '/#otica', name: NOME, url: site + '/',
     description: info.siteDescricao, logo: site + '/logo.png',
     image: [site + '/og-image.jpg', site + '/fotos/fachada.jpg', site + '/fotos/loja-balcao.jpg', site + '/fotos/vitrine-feminina.jpg'],
-    // Telefone principal: o fixo (o mesmo da fachada e do Perfil da Empresa no Google); o WhatsApp entra como contato.
+    // Telefone principal: o fixo (use o mesmo número no Perfil da Empresa no Google); o WhatsApp entra como contato.
     telephone: intl(tel ? tel.digitos : wa),
     contactPoint: intl(wa) ? [{ '@type': 'ContactPoint', contactType: 'customer service', telephone: intl(wa), availableLanguage: 'Portuguese', description: 'WhatsApp' }] : undefined,
-    priceRange: '$$', currenciesAccepted: 'BRL', paymentAccepted: lista(info.pagamentos).join(', ') || undefined,
+    currenciesAccepted: 'BRL', paymentAccepted: lista(info.pagamentos).join(', ') || undefined,
     address: { '@type': 'PostalAddress', streetAddress: bairro ? `${info.endereco} - ${bairro}` : info.endereco, addressLocality: cidade, addressRegion: uf, postalCode: info.cep, addressCountry: 'BR' },
     areaServed: { '@type': 'City', name: `${cidade} - ${uf}` },
     hasMap: 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(end),
     sameAs: [ig && `https://www.instagram.com/${ig}/`, info.facebook].filter(Boolean),
-    openingHoursSpecification: [
-      { '@type': 'OpeningHoursSpecification', dayOfWeek: DIAS.semana, opens: info.abreSemana, closes: info.fechaSemana },
-      { '@type': 'OpeningHoursSpecification', dayOfWeek: DIAS.sabado, opens: info.abreSabado, closes: info.fechaSabado },
-    ],
-    knowsAbout: ['óculos de grau', 'óculos de sol', 'lentes de contato', 'lentes multifocais', 'medição digital'],
+    openingHoursSpecification: horas.length ? horas : undefined,
+    knowsAbout: ['óculos de grau', 'óculos de sol', 'lentes de contato', 'lentes multifocais'],
   };
 }
 

@@ -3,6 +3,7 @@ import { Ic } from './Icons.jsx';
 import { href, onLink } from '../lib/router.js';
 import { useSite } from '../state/content.jsx';
 import { animarMenu } from '../lib/anim.js';
+import { localDe } from '../lib/seo.js';
 
 export const PAGINAS = [['inicio', 'início'], ['sobre', 'sobre'], ['armacoes', 'armações'], ['lentes', 'lentes de contato'], ['convenios', 'convênios'], ['blog', 'blog'], ['contato', 'contato']];
 
@@ -15,13 +16,15 @@ export const useLargura = () => {
 // Link interno (URL real, navegação sem recarregar).
 export const L = ({ to, children, onNav, ...rest }) => <a href={href(to)} onClick={onLink(href(to), onNav)} {...rest}>{children}</a>;
 
-export const Status = ({ st, style, className = 'status' }) => (
-  <span className={className} style={style}><span className="dot" style={{ background: st.cor }} />{st.texto}</span>
-);
+// "aberto agora" / "fechado · abre ..."; nada enquanto o horário não for informado (st null).
+export const Status = ({ st, style, className = 'status' }) => (st
+  ? <span className={className} style={style}><span className="dot" style={{ background: st.cor }} />{st.texto}</span>
+  : null);
 
+// Faixa de aviso: sai do ar sozinha depois de faixaFim (AAAA-MM-DD).
 export function PromoBar() {
-  const { info } = useSite();
-  if (info.faixaAtiva === false || !info.faixaPromo) return null;
+  const { info, hojeIso } = useSite();
+  if (info.faixaAtiva === false || !info.faixaPromo || (info.faixaFim && info.faixaFim < hojeIso)) return null;
   return <div className="promo-bar">{info.faixaPromo} · <L to="convenios">saiba mais</L></div>;
 }
 
@@ -84,12 +87,14 @@ export function MobileMenu({ ativa, fechar, animar, headerRef }) {
 
 export const Footer = forwardRef(function Footer(_, ref) {
   const { info, wa, tel, igLink, mapaLink, status } = useSite();
+  const { cidade, uf } = localDe(info);
+  const cnpj = String(info.cnpj || '').trim();
   return (
     <footer className="footer" ref={ref}>
       <div className="footer__cols">
         <div className="min0">
           <img src="/logo.png" alt="" style={{ height: 88, margin: '-16px 0 6px -12px', display: 'block' }} />
-          <p style={{ font: "400 14px/1.55 'DM Sans',sans-serif", color: 'rgba(255,255,255,.6)', maxWidth: 280, margin: '0 0 16px' }}>Ótica no centro de {info.cidade}, com medição digital e atendimento personalizado.</p>
+          <p style={{ font: "400 14px/1.55 'DM Sans',sans-serif", color: 'rgba(255,255,255,.6)', maxWidth: 280, margin: '0 0 16px' }}>Ótica no centro de {cidade}/{uf}. Não realizamos exames de vista: lentes de grau e de contato somente com receita de médico oftalmologista.</p>
           <div style={{ display: 'flex', gap: 10 }}>
             <a href={wa.link} target="_blank" rel="noopener" aria-label="WhatsApp" className="soc soc--wa"><Ic n="wa" /></a>
             <a href={igLink} target="_blank" rel="noopener" aria-label="Instagram" className="soc"><Ic n="ig" /></a>
@@ -109,7 +114,7 @@ export const Footer = forwardRef(function Footer(_, ref) {
       </div>
       <div className="footer__base" style={{ borderTop: '1px solid rgba(255,255,255,.14)', paddingTop: 18, font: "400 12px 'DM Sans',sans-serif", color: 'rgba(255,255,255,.45)', display: 'flex', justifyContent: 'space-between', gap: 12, flexWrap: 'wrap' }}>
         <span>© {new Date().getFullYear()} ótica digital look</span>
-        <span style={{ display: 'flex', gap: 16, flexWrap: 'wrap' }}><span>CNPJ {info.cnpj}</span><L to="admin" style={{ display: 'inline-flex', alignItems: 'center', gap: 6, color: 'rgba(255,255,255,.55)' }}><Ic n="lock" s={12} />área do proprietário</L></span>
+        <span style={{ display: 'flex', gap: 16, flexWrap: 'wrap' }}>{cnpj && cnpj !== '00.000.000/0001-00' ? <span>CNPJ {cnpj}</span> : null}<L to="admin" style={{ display: 'inline-flex', alignItems: 'center', gap: 6, color: 'rgba(255,255,255,.55)' }}><Ic n="lock" s={12} />área do proprietário</L></span>
       </div>
     </footer>
   );

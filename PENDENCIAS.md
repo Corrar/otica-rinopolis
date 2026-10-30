@@ -20,9 +20,18 @@ Atualizado em 15/10/2026. Site no ar: https://otica-rinopolis.vercel.app
 - Apagar o projeto vazio `otica-digital-look` na Vercel (sobrou de antes do repositório): Settings → General → Delete Project.
 
 ## 4. Conteúdo (pelo painel, depois do item 1)
-- Fotos reais: o site já mostra fotos de exemplo em todos os campos (lista em `FOTOS.md`); trocar pelas reais da loja, da equipe e das armações. A "visão geral" do painel conta quantas de exemplo ainda faltam trocar.
-- Nomes reais da equipe, marcas que trabalha, CNPJ, convênios definitivos.
-- Conferir horários, feriados, promoções, eventos e depoimentos.
+O site só mostra dados confirmados; o que falta fica vazio e a seção some sozinha. A "visão geral" do painel lista as mesmas pendências:
+- Conectar o armazenamento (item 1) e trocar a senha inicial (item 2).
+- Informar razão social, CNPJ e e-mail (identificação da loja e canal de privacidade).
+- Informar o horário de funcionamento (sem ele o site mostra "consulte o horário pelo WhatsApp" e não mostra "aberto agora"); conferir os feriados e fechamentos sugeridos (Natal e Ano Novo).
+- Formas de pagamento e número de parcelas sem juros (só o que a loja pratica; crediário "sujeito a análise de crédito").
+- Marcas que a loja revende (só os nomes, em texto).
+- Fotos reais das armações (hoje a vitrine mostra as fotos gerais da loja) e, se quiser, fotos para a capa e o card de lentes de contato e para os artigos do blog (sem foto aparece a arte da marca).
+- História e ano de fundação (linha do tempo e contador "anos de história" ficam ocultos até lá).
+- Link do Perfil da Empresa no Google (ativa o link "avaliações no Google" na home).
+- Revisar as datas do blog (data de publicação; hoje todas estão em 30 out 2026).
+- Opcionais: convênios (só parceiros com acordo escrito e autorização para usar o nome) e equipe (só pessoas reais, com autorização de uso de imagem).
+- Promoções, eventos e depoimentos: só reais, com validade e condições (promoções) e autorização por escrito (depoimentos). Não anunciar exame de vista, triagem ou aferição de pressão ocular.
 
 ## 5. Google (SEO local) — o que só o dono pode fazer
 - **Perfil da Empresa no Google** (google.com/business): é o que mais pesa para aparecer em "ótica em Rinópolis" e no mapa. Cadastrar/reivindicar a Ótica Digital Look com o mesmo nome, endereço (R. Prof. Sud Menucci, 228 – Centro) e telefone do site, categoria "Ótica", horário, fotos da loja e o link do site. Pedir avaliações aos clientes.

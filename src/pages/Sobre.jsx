@@ -1,10 +1,13 @@
-import { BtnWa, Foto, Img } from '../components/bits.jsx';
+import { ArteMarca, BtnWa, Foto, Img } from '../components/bits.jsx';
 import { useSite } from '../state/content.jsx';
 import { gradeEquilibrada, numerar } from '../lib/util.js';
+import { localDe } from '../lib/seo.js';
 
 export default function Sobre() {
   const { cms, info, wa } = useSite();
   const galeria = (cms.galeria || []).filter(g => g.img);
+  const marcos = cms.marcos || [], diferenciais = cms.diferenciais || [];
+  const { cidade } = localDe(info);
   return (
     <div data-screen-label="Sobre">
       <section data-hero className="dark hero"><div>
@@ -16,30 +19,34 @@ export default function Sobre() {
         <Foto img={cms.fotos.equipe} rotulo="fachada, equipe ou fundadores" alt={`Ótica Digital Look na ${info.endereco}, ${info.bairroCidade}`} ratio="4/5" />
         <div className="min0">
           <h2 className="h-sub" style={{ marginBottom: 18 }}>nossa história</h2>
-          <p style={{ font: "400 clamp(15px,1.5vw,17px)/1.65 'DM Sans',sans-serif", color: 'var(--text-2)', marginBottom: 32, whiteSpace: 'pre-line' }}>{info.sobreTexto}</p>
-          <div style={{ borderTop: '1px solid var(--line)' }}>
-            {(cms.marcos || []).map((m, i) => (
-              <div key={i} style={{ display: 'grid', gridTemplateColumns: '64px 1fr', gap: 16, padding: '16px 0', borderBottom: '1px solid var(--line)' }}>
-                <div style={{ font: "400 19px 'Outfit',sans-serif" }}>{m.ano}</div>
-                <div style={{ font: "400 15px/1.5 'DM Sans',sans-serif", color: 'var(--text-2)' }}>{m.texto}</div>
-              </div>
-            ))}
-          </div>
+          <p style={{ font: "400 clamp(15px,1.5vw,17px)/1.65 'DM Sans',sans-serif", color: 'var(--text-2)', marginBottom: marcos.length ? 32 : 0, whiteSpace: 'pre-line' }}>{info.sobreTexto}</p>
+          {marcos.length > 0 && (
+            <div style={{ borderTop: '1px solid var(--line)' }}>
+              {marcos.map((m, i) => (
+                <div key={i} style={{ display: 'grid', gridTemplateColumns: '64px 1fr', gap: 16, padding: '16px 0', borderBottom: '1px solid var(--line)' }}>
+                  <div style={{ font: "400 19px 'Outfit',sans-serif" }}>{m.ano}</div>
+                  <div style={{ font: "400 15px/1.5 'DM Sans',sans-serif", color: 'var(--text-2)' }}>{m.texto}</div>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </section>
 
-      <section data-reveal className="px" style={{ paddingBottom: 'clamp(40px,6vw,80px)' }}>
-        <h2 className="h-sub" style={{ marginBottom: 28 }}>por que a <span className="b">digital look</span></h2>
-        <div data-grid className={`grid${gradeEquilibrada(cms.diferenciais)}`} style={{ '--min': '220px', '--gap': '16px' }}>
-          {numerar(cms.diferenciais).map(d => (
-            <div key={d.n} className="card-sand">
-              <div className="t-n" style={{ marginBottom: 24 }}>{d.n}</div>
-              <div className="t-card">{d.titulo}</div>
-              <div className="t-small">{d.texto}</div>
-            </div>
-          ))}
-        </div>
-      </section>
+      {diferenciais.length > 0 && (
+        <section data-reveal className="px" style={{ paddingBottom: 'clamp(40px,6vw,80px)' }}>
+          <h2 className="h-sub" style={{ marginBottom: 28 }}>por que a <span className="b">digital look</span></h2>
+          <div data-grid className={`grid${gradeEquilibrada(diferenciais)}`} style={{ '--min': '220px', '--gap': '16px' }}>
+            {numerar(diferenciais).map(d => (
+              <div key={d.n} className="card-sand">
+                <div className="t-n" style={{ marginBottom: 24 }}>{d.n}</div>
+                <div className="t-card">{d.titulo}</div>
+                <div className="t-small">{d.texto}</div>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
 
       {cms.equipe.length > 0 && (
         <section data-reveal className="px" style={{ paddingBottom: 'clamp(40px,6vw,80px)' }}>
@@ -47,7 +54,7 @@ export default function Sobre() {
           <div data-grid className="grid grid--2m" style={{ '--min': '200px' }}>
             {cms.equipe.map((e, i) => (
               <div key={i}>
-                <div className="ph" style={{ aspectRatio: '1', borderRadius: 18, marginBottom: 12 }}>{e.img ? <Img src={e.img} alt={`${e.nome} — ${e.cargo}`} /> : 'foto'}</div>
+                <div className="ph" style={{ aspectRatio: '1', borderRadius: 18, marginBottom: 12 }}>{e.img ? <Img src={e.img} alt={`${e.nome} — ${e.cargo}`} /> : <ArteMarca />}</div>
                 <div style={{ font: "500 18px 'Outfit',sans-serif" }}>{e.nome}</div>
                 <div style={{ font: "400 14px 'DM Sans',sans-serif", color: 'var(--muted)' }}>{e.cargo}</div>
               </div>
@@ -62,7 +69,7 @@ export default function Sobre() {
           <div data-grid className="grid grid--fill grid--2m" style={{ '--min': '220px', '--gap': '14px' }}>
             {galeria.map((g, i) => (
               <figure key={i} style={{ borderRadius: 16, overflow: 'hidden', background: 'var(--ph)', position: 'relative', aspectRatio: '1' }}>
-                <img src={g.img} alt={g.legenda ? `${g.legenda} — Ótica Digital Look, ${info.cidadeNome}` : 'foto da loja'} loading="lazy" decoding="async" onError={e => { e.currentTarget.style.visibility = 'hidden'; }} style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
+                <img src={g.img} alt={g.legenda ? `${g.legenda} — Ótica Digital Look, ${cidade}` : 'foto da loja'} loading="lazy" decoding="async" onError={e => { e.currentTarget.style.visibility = 'hidden'; }} style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
                 {g.legenda ? <figcaption style={{ position: 'absolute', left: 0, right: 0, bottom: 0, padding: '28px 14px 12px', background: 'linear-gradient(transparent,rgba(0,0,0,.6))', color: '#fff', font: "500 13px 'DM Sans',sans-serif" }}>{g.legenda}</figcaption> : null}
               </figure>
             ))}

@@ -4,6 +4,9 @@ const SEGURO = /^[^\s"'<>()\\]+$/;
 // Link do Facebook: só https://facebook.com/…, www. ou m.
 export const facebookValido = (u) => !u || /^https:\/\/((www|m)\.)?facebook\.com\/[^\s"'<>\\]+$/i.test(String(u).trim());
 
+// Link do Perfil da Empresa no Google (avaliações): só endereços do Google (g.page, maps.app.goo.gl, google.com/maps…).
+export const googleValido = (u) => !u || /^https:\/\/((www\.)?google\.com(\.br)?\/(maps|search)|maps\.google\.com(\.br)?\/|g\.page\/|maps\.app\.goo\.gl\/|goo\.gl\/maps\/|share\.google\/|g\.co\/kgs\/|search\.google\.com\/local\/)[^\s"'<>\\]*$/i.test(String(u).trim());
+
 // Fotos: vazias, do próprio site (/fotos/, /uploads/) ou enviadas pelo painel ao Vercel Blob.
 // images.pexels.com: fotos de exemplo antigas (legado) — o painel avisa para trocar.
 export function fotoValida(u) {
@@ -16,6 +19,7 @@ export function fotoValida(u) {
 // Primeiro problema encontrado no conteúdo (texto pronto para o painel) ou ''.
 export function problemaNoConteudo(c) {
   if (!facebookValido(c && c.info && c.info.facebook)) return 'Link do Facebook inválido: use o endereço completo da página (https://www.facebook.com/…).';
+  if (!googleValido(c && c.info && c.info.googleAvaliacoes)) return 'Link do Perfil da Empresa no Google inválido: copie o link pelo botão "compartilhar" do perfil (começa com https://).';
   let achado = '';
   const andar = (v, caminho) => {
     if (achado) return;

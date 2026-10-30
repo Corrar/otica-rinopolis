@@ -3,7 +3,8 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { mesclar } from '../content/defaults.js';
 import { api } from '../lib/api.js';
-import { agoraBrasilia, statusLoja, telefone, whatsapp, fmtH, lista } from '../lib/util.js';
+import { googleValido } from '../lib/validar.js';
+import { agoraBrasilia, statusLoja, telefone, whatsapp, horarios, lista } from '../lib/util.js';
 
 const CACHE_KEY = 'odl-cache-v1';
 const Ctx = createContext(null);
@@ -125,17 +126,19 @@ export function useSite() {
     const info = cms.info;
     const wa = whatsapp(info);
     const end = `${info.endereco}, ${info.bairroCidade}, ${info.cep}`;
-    // No HTML gerado no build, "aberto agora" ficaria congelado: mostra só o horário.
+    const h = horarios(info);
+    // No HTML gerado no build, "aberto agora" ficaria congelado: mostra só o horário (null sem horário confirmado).
     const st = typeof window === 'undefined'
-      ? { aberto: false, texto: `seg a sex ${fmtH(info.abreSemana)}–${fmtH(info.fechaSemana)} · sáb ${fmtH(info.abreSabado)}–${fmtH(info.fechaSabado)}`, cor: '#c9c6c1', hojeIso: agoraBrasilia(now).iso }
+      ? (h.semana ? { aberto: false, texto: `seg a sex ${h.semana.replace(' às ', '–')} · sáb ${h.sabado ? h.sabado.replace(' às ', '–') : 'fechado'}`, cor: '#c9c6c1' } : null)
       : statusLoja(info, cms.fechamentos, now);
+    // Link das avaliações: só o do Perfil da Empresa informado no painel (uma busca genérica pode cair em outra ótica).
+    const google = String(info.googleAvaliacoes || '').trim();
     return {
-      cms, info, wa, tel: telefone(info), status: st, hojeIso: st.hojeIso,
-      horarioSemana: `${fmtH(info.abreSemana)} às ${fmtH(info.fechaSemana)}`,
-      horarioSabado: `${fmtH(info.abreSabado)} às ${fmtH(info.fechaSabado)}`,
+      cms, info, wa, tel: telefone(info), status: st, hojeIso: agoraBrasilia(now).iso,
+      horarioSemana: h.semana, horarioSabado: h.sabado,
       mapaLink: 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(end),
       mapaEmbed: 'https://www.google.com/maps?q=' + encodeURIComponent(end) + '&output=embed',
-      googleLink: 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent('Ótica Digital Look ' + info.bairroCidade),
+      googleAvaliacoes: google && googleValido(google) ? google : '',
       igLink: 'https://www.instagram.com/' + String(info.instagram || '').replace(/^@/, '') + '/',
       selos: lista(info.selos),
       animar: info.animacoes !== false,

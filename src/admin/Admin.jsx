@@ -7,22 +7,23 @@ import { CATEGORIAS } from '../pages/Armacoes.jsx';
 import { useContent, useSite } from '../state/content.jsx';
 import { api } from '../lib/api.js';
 import { aviso } from '../lib/toast.js';
-import { eventosFuturos, fmtData, lista, num2, promosAtivas } from '../lib/util.js';
-import { ehIlustrativa } from '../content/defaults.js';
-import { facebookValido } from '../lib/validar.js';
+import { eventosFuturos, fmtData, horaValida, lista, num2, promosAtivas } from '../lib/util.js';
+import { dataIso } from '../lib/seo.js';
+import { ehIlustrativa, PADRAO } from '../content/defaults.js';
+import { facebookValido, googleValido } from '../lib/validar.js';
 
 const ABAS = [
   ['visao', 'visão geral', 'Resumo do site e o que ainda falta preencher.', 'inicio'],
   ['info', 'informações', 'Dados da loja, horários, redes e textos gerais.', 'contato'],
-  ['home', 'página inicial', 'Capa, selos, faixa de aviso e "como funciona".', 'inicio'],
+  ['home', 'página inicial', 'Capa, selos, faixa de aviso e "como funciona". Não anuncie exames de vista. Prazo, garantia e gratuidade publicados obrigam a loja.', 'inicio'],
   ['fotos', 'fotos e galeria', 'Imagens das seções fixas e a galeria da loja.', 'sobre'],
-  ['promocoes', 'promoções', 'Aparecem na página de convênios. Desative sem apagar.', 'convenios'],
-  ['eventos', 'eventos', 'Futuros aparecem na home e em convênios; passados somem sozinhos.', 'convenios'],
+  ['promocoes', 'promoções', 'Aparecem na página de convênios. Desative sem apagar. Informe a validade e as condições: a oferta publicada obriga a loja.', 'convenios'],
+  ['eventos', 'eventos', 'Futuros aparecem na home e em convênios; passados somem sozinhos. Não anuncie exame de vista, teste de visão, triagem, aferição de pressão ocular nem médico atendendo na loja.', 'convenios'],
   ['produtos', 'armações', 'Vitrine com filtro por categoria, selo de destaque e preço opcional.', 'armacoes'],
   ['lentes', 'lentes de contato', 'Tipos de lente, passo a passo e perguntas frequentes.', 'lentes'],
-  ['sobre', 'sobre e equipe', 'História, linha do tempo, diferenciais e equipe.', 'sobre'],
-  ['depoimentos', 'depoimentos', 'Avaliações exibidas na home.', 'inicio'],
-  ['posts', 'blog', 'Artigos completos. O primeiro é o destaque.', 'blog'],
+  ['sobre', 'sobre e equipe', 'História, linha do tempo, diferenciais e equipe. Só pessoas reais, com autorização escrita de uso de imagem. Cargo técnico (óptico) só com habilitação.', 'sobre'],
+  ['depoimentos', 'depoimentos', 'Use só depoimentos reais, com autorização por escrito do cliente. Prefira primeiro nome e inicial (ex.: Ana P.) e não informe o problema de visão.', 'inicio'],
+  ['posts', 'blog', 'Artigos completos. O primeiro é o destaque. Conteúdo informativo: oriente a procurar o oftalmologista e não indique lentes de grau.', 'blog'],
   ['config', 'configurações', 'Senha, backup, histórico de versões e acesso.', 'inicio'],
 ];
 
@@ -164,6 +165,7 @@ function Aba({ id, irAba, sessao, setSessao }) {
         <Campo b={i('telefone')} label="Telefone fixo (só números, com DDD; vazio para não mostrar)" placeholder="1835831566" tipo="tel" />
         <Campo b={i('instagram')} label="Instagram (sem @)" />
         <Campo b={i('facebook')} label="Facebook (link completo, opcional)" placeholder="https://www.facebook.com/..." erro={facebookValido(i('facebook').value) ? '' : 'Link inválido: use o endereço completo da página, começando com https://www.facebook.com/ (enquanto isso, as alterações não são salvas).'} />
+        <Campo b={i('googleAvaliacoes')} label="Perfil da Empresa no Google (link, opcional)" placeholder="https://g.page/r/..." ajuda='Link do botão "compartilhar" do perfil. Com ele, a home mostra "avaliações no Google"; vazio, o link não aparece.' erro={googleValido(i('googleAvaliacoes').value) ? '' : 'Link inválido: copie pelo botão "compartilhar" do Perfil da Empresa no Google (enquanto isso, as alterações não são salvas).'} />
         <Campo b={i('endereco')} label="Endereço" />
         <Campo b={i('bairroCidade')} label="Bairro, cidade – UF" />
         <Campo b={i('cep')} label="CEP" />
@@ -171,23 +173,23 @@ function Aba({ id, irAba, sessao, setSessao }) {
         <Campo b={i('cidade')} label="Cidade (rodapé/capa, minúsculas)" placeholder="rinópolis · sp" />
         <Campo b={i('cidadeNome')} label="Nome da cidade (seção mapa)" />
       </BlocoInfo>
-      <BlocoInfo titulo="horário de funcionamento" desc='O site mostra "aberto agora" automaticamente com base nestes horários (horário de Brasília).'>
+      <BlocoInfo titulo="horário de funcionamento" desc='Deixe vazio até confirmar; o site mostra "consulte o horário pelo WhatsApp". Sábado vazio = fechado aos sábados. Com o horário preenchido, o site mostra "aberto agora" automaticamente (horário de Brasília).'>
         <Campo b={i('abreSemana')} label="Seg–sex abre" tipo="time" />
         <Campo b={i('fechaSemana')} label="Seg–sex fecha" tipo="time" />
         <Campo b={i('abreSabado')} label="Sábado abre" tipo="time" />
         <Campo b={i('fechaSabado')} label="Sábado fecha" tipo="time" />
       </BlocoInfo>
-      <BlocoLista chave="fechamentos" titulo="feriados e fechamentos" desc='Nesses dias o site mostra "fechado" e avisa na página de contato.' tituloDe={it => fmtData(it.data) + (it.motivo ? ' · ' + it.motivo : '')} novo={() => ({ data: '', motivo: '' })} addLabel="adicionar fechamento"
+      <BlocoLista chave="fechamentos" titulo="feriados e fechamentos" desc='Nesses dias o site mostra "fechado" e avisa na página de contato (só depois que o horário de funcionamento for preenchido). Confira as datas sugeridas.' tituloDe={it => fmtData(it.data) + (it.motivo ? ' · ' + it.motivo : '')} novo={() => ({ data: '', motivo: '' })} addLabel="adicionar fechamento"
         campos={b => [<Campo key="d" b={b('data')} label="Data" tipo="date" />, <Campo key="m" b={b('motivo')} label="Motivo" placeholder="Natal" />]} />
       <BlocoInfo titulo="mensagens do WhatsApp">
         <Campo b={i('msgWhats')} label='Mensagem padrão ao clicar em "falar no WhatsApp"' tipo="area" rows={2} full={full} />
         <Campo b={i('msgReceita')} label='Mensagem ao clicar em "enviar receita"' tipo="area" rows={2} full={full} />
       </BlocoInfo>
       <BlocoInfo titulo="listas">
-        <Campo b={i('convenios')} label="Convênios aceitos (separados por vírgula)" tipo="area" rows={2} full={full} />
-        <Campo b={i('marcas')} label="Marcas (vírgula)" tipo="area" rows={2} full={full} />
-        <Campo b={i('pagamentos')} label="Formas de pagamento (vírgula)" tipo="area" rows={2} full={full} />
-        <Campo b={i('parcelas')} label="Parcelas sem juros (número)" tipo="number" />
+        <Campo b={i('convenios')} label="Convênios aceitos (separados por vírgula)" tipo="area" rows={2} full={full} ajuda="Só parceiros com acordo escrito e autorização para usar o nome. Vazio, o site pede para perguntar pelo WhatsApp." />
+        <Campo b={i('marcas')} label="Marcas que revende (vírgula)" tipo="area" rows={2} full={full} ajuda="Só os nomes, em texto (sem logotipos). Vazio, a seção não aparece." />
+        <Campo b={i('pagamentos')} label="Formas de pagamento (vírgula)" tipo="area" rows={2} full={full} ajuda='Informe só o que pratica. Desconto à vista: informe o percentual. Crediário: escreva "sujeito a análise de crédito".' />
+        <Campo b={i('parcelas')} label="Parcelas sem juros (número)" tipo="number" ajuda='Vazio ou 1 = o site não fala em parcelamento.' />
       </BlocoInfo>
       <BlocoInfo titulo="busca e redes (SEO)">
         <Campo b={i('siteTitulo')} label="Título do site (aba do navegador / Google)" full={full} />
@@ -199,12 +201,18 @@ function Aba({ id, irAba, sessao, setSessao }) {
         <Campo b={i('heroLinha1')} label="Título – linha 1" />
         <Campo b={i('heroLinha2')} label="Título – linha 2" />
         <Campo b={i('heroDestaque')} label="Título – destaque (negrito)" />
-        <Campo b={i('heroTexto')} label="Subtítulo" tipo="area" rows={2} full={full} />
-        <Campo b={i('selos')} label="Selos abaixo dos botões (vírgula)" full={full} />
+        <Campo b={i('heroTexto')} label="Subtítulo" tipo="area" rows={2} full={full} ajuda="Não anuncie exames de vista. Prazo, garantia e gratuidade publicados obrigam a loja." />
+        <Campo b={i('selos')} label="Selos abaixo dos botões (vírgula)" full={full} ajuda="Também passam na faixa rolante. Não anuncie exames; prazo, garantia e gratuidade publicados obrigam a loja." />
+      </BlocoInfo>
+      <BlocoInfo titulo="destaques sobre a foto da capa (computador)" desc="Vazios não aparecem.">
+        <Campo b={i('capaCardTitulo')} label="Card branco – título" placeholder="orçamento pelo WhatsApp" />
+        <Campo b={i('capaCardTexto')} label="Card branco – texto" placeholder="envie a foto da sua receita" />
+        <Campo b={i('capaSelo')} label="Selo verde (opcional)" placeholder="ex.: atendimento pelo WhatsApp" ajuda="Não prometa prazo de resposta que a loja não consegue cumprir." />
       </BlocoInfo>
       <BlocoInfo titulo="faixa de aviso no topo">
         <Campo b={i('faixaAtiva')} label="Exibir faixa" tipo="bool" on="exibindo" off="oculta" />
-        <Campo b={i('faixaPromo')} label="Texto da faixa" full={full} />
+        <Campo b={i('faixaFim')} label="Sai do ar depois de (opcional)" tipo="date" />
+        <Campo b={i('faixaPromo')} label="Texto da faixa" full={full} ajuda="Inclua a validade. Ex.: válida de … a … ou enquanto durarem os estoques; não cumulativa com outras promoções." />
       </BlocoInfo>
       <BlocoInfo titulo="comportamento do site">
         <Campo b={i('botaoFlutuante')} label="Botão flutuante do WhatsApp" tipo="bool" on="exibindo" off="oculto" />
@@ -213,7 +221,9 @@ function Aba({ id, irAba, sessao, setSessao }) {
       <BlocoInfo titulo='resumo "sobre" na home'>
         <Campo b={i('sobreTitulo')} label="Título" full={full} />
         <Campo b={i('sobreResumo')} label="Resumo" tipo="area" rows={2} full={full} />
-        <Campo b={i('anos')} label="Anos de história (número)" tipo="number" />
+        <Campo b={i('anos')} label="Anos de história (número)" tipo="number" ajuda="Vazio = o contador não aparece." />
+        <Campo b={i('destaqueNumero')} label="Número de destaque (opcional)" placeholder="ex.: 2 mil" ajuda="Só números que a loja comprova. Vazio = não aparece." />
+        <Campo b={i('destaqueRotulo')} label="Legenda do número" placeholder="ex.: clientes atendidos" />
       </BlocoInfo>
       <BlocoLista chave="etapas" titulo="como funciona" desc="Passo a passo exibido na home." tituloDe={it => it.titulo} novo={() => ({ titulo: 'nova etapa', texto: '' })} addLabel="adicionar etapa"
         campos={b => [<Campo key="t" b={b('titulo')} label="Título" />, <Campo key="x" b={b('texto')} label="Texto" tipo="area" rows={2} full />]} />
@@ -231,15 +241,18 @@ function Aba({ id, irAba, sessao, setSessao }) {
       <BlocoLista chave="galeria" titulo="galeria da loja" desc='Aparece na página "sobre". Fotos do espaço, vitrines e bastidores.' tituloDe={it => it.legenda || 'foto'} novo={() => ({ img: '', legenda: '' })} addLabel="adicionar foto"
         campos={b => [<Campo key="i" b={b('img')} label="Foto" tipo="img" />, <Campo key="l" b={b('legenda')} label="Legenda (opcional)" />]} />
     </>;
-    case 'promocoes': return <BlocoLista chave="promocoes" tituloDe={it => it.titulo} novo={() => ({ tag: 'novo', titulo: 'Nova promoção', texto: '', ativa: true, img: '' })} addLabel="adicionar promoção"
-      campos={b => [<Campo key="a" b={b('ativa')} label="Status" tipo="bool" on="ativa no site" off="oculta" />, <Campo key="g" b={b('tag')} label="Etiqueta (ex.: outubro)" />, <Campo key="t" b={b('titulo')} label="Título" full />, <Campo key="x" b={b('texto')} label="Descrição" tipo="area" full />, <Campo key="i" b={b('img')} label="Imagem (opcional)" tipo="img" full />]} />;
+    case 'promocoes': return <BlocoLista chave="promocoes" tituloDe={it => it.titulo} novo={() => ({ tag: '', titulo: 'Nova promoção', texto: '', inicio: '', fim: '', condicoes: '', ativa: true, img: '' })} addLabel="adicionar promoção"
+      campos={b => [<Campo key="a" b={b('ativa')} label="Status" tipo="bool" on="ativa no site" off="oculta" />, <Campo key="g" b={b('tag')} label="Etiqueta (ex.: novembro)" />, <Campo key="t" b={b('titulo')} label="Título" full />, <Campo key="x" b={b('texto')} label="Descrição" tipo="area" full />, <Campo key="ini" b={b('inicio')} label="Começa em (opcional)" tipo="date" />, <Campo key="fim" b={b('fim')} label="Termina em" tipo="date" ajuda="Depois dessa data a promoção sai do site sozinha." />, <Campo key="c" b={b('condicoes')} label="Condições" tipo="area" rows={2} full placeholder="Ex.: válida enquanto durarem os estoques; não cumulativa com outras promoções." ajuda="Aparecem junto com a validade. A oferta publicada obriga a loja." />, <Campo key="i" b={b('img')} label="Imagem (opcional)" tipo="img" full />]} />;
     case 'eventos': return <BlocoLista chave="eventos" tituloDe={it => (it.data ? fmtData(it.data) + ' · ' : '') + it.titulo} novo={() => ({ titulo: 'Novo evento', data: '', hora: '', local: 'na loja', texto: '', img: '' })} addLabel="adicionar evento"
       campos={b => [<Campo key="t" b={b('titulo')} label="Título" full />, <Campo key="d" b={b('data')} label="Data" tipo="date" />, <Campo key="h" b={b('hora')} label="Horário" placeholder="9h às 13h" />, <Campo key="l" b={b('local')} label="Local" placeholder="na loja" />, <Campo key="x" b={b('texto')} label="Descrição" tipo="area" full />, <Campo key="i" b={b('img')} label="Imagem (opcional)" tipo="img" full />]} />;
     case 'produtos': return <BlocoLista chave="produtos" tituloDe={it => it.nome} novo={() => ({ nome: 'Novo modelo', marca: '', cat: 'grau', img: '', preco: '', destaque: false, selo: 'novo' })} addLabel="adicionar armação"
-      campos={b => [<Campo key="n" b={b('nome')} label="Nome do modelo" />, <Campo key="m" b={b('marca')} label="Marca / linha" />, <Campo key="c" b={b('cat')} label="Categoria" tipo="select" opcoes={CATEGORIAS.slice(1).map(([v, l]) => ({ v, l }))} />, <Campo key="p" b={b('preco')} label="Preço (opcional)" placeholder="a partir de R$ 299" />, <Campo key="d" b={b('destaque')} label="Selo de destaque" tipo="bool" on="com selo" off="sem selo" />, <Campo key="s" b={b('selo')} label="Texto do selo" placeholder="novo" />, <Campo key="i" b={b('img')} label="Foto" tipo="img" full />]} />;
+      campos={b => [<Campo key="n" b={b('nome')} label="Nome do modelo" />, <Campo key="m" b={b('marca')} label="Marca / linha (opcional)" />, <Campo key="c" b={b('cat')} label="Categoria" tipo="select" opcoes={CATEGORIAS.slice(1).map(([v, l]) => ({ v, l }))} />, <Campo key="p" b={b('preco')} label="Preço (opcional)" placeholder="R$ 299,00 à vista (só a armação)" ajuda="Informe o preço à vista da armação; lentes são orçadas à parte." />, <Campo key="d" b={b('destaque')} label="Selo de destaque" tipo="bool" on="com selo" off="sem selo" />, <Campo key="s" b={b('selo')} label="Texto do selo" placeholder="novo" />, <Campo key="i" b={b('img')} label="Foto" tipo="img" full />]} />;
     case 'lentes': return <>
+      <BlocoInfo titulo="capa da página">
+        <Campo b={i('lentesTexto')} label="Texto da capa" tipo="area" rows={3} full={full} ajuda='Mantenha "somente com receita de médico oftalmologista". A ótica não indica nem escolhe lentes de grau.' />
+      </BlocoInfo>
       <BlocoLista chave="tiposLente" titulo="tipos de lente" tituloDe={it => it.nome} novo={() => ({ nome: 'novo tipo', texto: '', ideal: '' })} addLabel="adicionar tipo"
-        campos={b => [<Campo key="n" b={b('nome')} label="Nome" />, <Campo key="i" b={b('ideal')} label="Indicação (ex.: ideal para uso diário)" />, <Campo key="t" b={b('texto')} label="Descrição" tipo="area" rows={2} full />]} />
+        campos={b => [<Campo key="n" b={b('nome')} label="Nome" />, <Campo key="i" b={b('ideal')} label="Tipo de descarte / observação (ex.: descarte diário)" />, <Campo key="t" b={b('texto')} label="Descrição" tipo="area" rows={2} full />]} />
       <BlocoLista chave="passos" titulo="como funciona (lentes)" tituloDe={it => it.titulo} novo={() => ({ titulo: 'novo passo', texto: '' })} addLabel="adicionar passo"
         campos={b => [<Campo key="t" b={b('titulo')} label="Título" />, <Campo key="x" b={b('texto')} label="Texto" tipo="area" rows={2} full />]} />
       <BlocoLista chave="faq" titulo="perguntas frequentes" tituloDe={it => it.p} novo={() => ({ p: 'Nova pergunta?', r: '' })} addLabel="adicionar pergunta"
@@ -255,33 +268,44 @@ function Aba({ id, irAba, sessao, setSessao }) {
       <BlocoLista chave="diferenciais" titulo="por que a digital look" tituloDe={it => it.titulo} novo={() => ({ titulo: 'novo diferencial', texto: '' })} addLabel="adicionar diferencial"
         campos={b => [<Campo key="t" b={b('titulo')} label="Título" />, <Campo key="x" b={b('texto')} label="Texto" tipo="area" rows={2} full />]} />
       <BlocoLista chave="equipe" pessoal titulo="equipe" tituloDe={it => it.nome} novo={() => ({ nome: 'Nome', cargo: 'Cargo', img: '' })} addLabel="adicionar pessoa"
-        campos={b => [<Campo key="n" b={b('nome')} label="Nome" />, <Campo key="c" b={b('cargo')} label="Cargo" />, <Campo key="i" b={b('img')} label="Foto" tipo="img" full />]} />
+        campos={b => [<Campo key="n" b={b('nome')} label="Nome" ajuda="Só pessoas reais, com autorização escrita de uso de imagem." />, <Campo key="c" b={b('cargo')} label="Cargo" ajuda="Cargo técnico (óptico) só com habilitação." />, <Campo key="i" b={b('img')} label="Foto" tipo="img" full />]} />
     </>;
     case 'depoimentos': return <BlocoLista chave="depoimentos" pessoal tituloDe={it => it.nome} novo={() => ({ nome: 'Cliente', item: '', texto: '' })} addLabel="adicionar depoimento"
-      campos={b => [<Campo key="n" b={b('nome')} label="Nome do cliente" />, <Campo key="i" b={b('item')} label="O que comprou" />, <Campo key="t" b={b('texto')} label="Depoimento" tipo="area" full />]} />;
-    case 'posts': return <BlocoLista chave="posts" tituloDe={it => it.titulo} novo={() => ({ tag: 'dicas', data: fmtData(new Date().toISOString().slice(0, 10)), leitura: '3 min', titulo: 'Novo artigo', resumo: '', conteudo: '', img: '' })} addLabel="adicionar artigo"
-      campos={b => [<Campo key="t" b={b('titulo')} label="Título" full />, <Campo key="g" b={b('tag')} label="Categoria" />, <Campo key="d" b={b('data')} label="Data (texto)" placeholder="08 out 2026" />, <Campo key="l" b={b('leitura')} label="Tempo de leitura" placeholder="4 min" />, <Campo key="r" b={b('resumo')} label="Resumo (aparece na lista)" tipo="area" rows={2} full />, <Campo key="c" b={b('conteudo')} label="Texto completo do artigo" tipo="area" rows={10} full />, <Campo key="i" b={b('img')} label="Imagem" tipo="img" full />]} />;
+      campos={b => [<Campo key="n" b={b('nome')} label="Nome do cliente" />, <Campo key="i" b={b('item')} label="O que comprou (opcional, só com autorização)" />, <Campo key="t" b={b('texto')} label="Depoimento" tipo="area" full />]} />;
+    case 'posts': return <BlocoLista chave="posts" tituloDe={it => it.titulo} novo={() => ({ tag: 'dicas', data: fmtData(new Date().toISOString().slice(0, 10)), titulo: 'Novo artigo', resumo: '', conteudo: '', img: '' })} addLabel="adicionar artigo"
+      campos={b => [<Campo key="t" b={b('titulo')} label="Título" full />, <Campo key="g" b={b('tag')} label="Categoria" />, <Campo key="d" b={b('data')} label="Data de publicação" placeholder="30 out 2026" ajuda="No formato 30 out 2026. O tempo de leitura é calculado pelo tamanho do texto." />, <Campo key="r" b={b('resumo')} label="Resumo (aparece na lista)" tipo="area" rows={2} full />, <Campo key="c" b={b('conteudo')} label="Texto completo do artigo" tipo="area" rows={10} full />, <Campo key="i" b={b('img')} label="Imagem" tipo="img" full />]} />;
     case 'config': return <Configuracoes setSessao={setSessao} />;
     default: return null;
   }
 }
 
 function Visao({ irAba, sessao }) {
-  const { cms, info, status, wa } = useSite();
-  const promos = promosAtivas(cms).length, futuros = eventosFuturos(cms).length;
+  const { cms, info, status, wa, hojeIso } = useSite();
+  const promos = promosAtivas(cms, hojeIso).length, futuros = eventosFuturos(cms).length;
   const fotosFixas = Object.values(cms.fotos), fotosOk = fotosFixas.filter(Boolean).length;
   const fotosTotal = fotosOk + (cms.galeria || []).filter(g => g.img).length + cms.produtos.filter(x => x.img).length;
   const ilustrativas = [...fotosFixas, ...['galeria', 'produtos', 'equipe', 'promocoes', 'eventos', 'posts'].flatMap(k => (cms[k] || []).map(x => x.img))].filter(ehIlustrativa).length;
+  const cnpj = String(info.cnpj || '').trim();
+  const marcas = lista(info.marcas);
+  const vitrinePadrao = JSON.stringify(cms.produtos) === JSON.stringify(PADRAO().produtos);
+  const datasOk = (cms.posts || []).every(p => { const d = dataIso(p.data); return d && d <= hojeIso; });
+  // [feito, texto, aba, opcional]: o que ainda falta para entregar o site com dados reais.
   const pend = [
+    [sessao.armazenamento !== 'nenhum', sessao.armazenamento !== 'nenhum' ? 'Armazenamento conectado' : 'Conectar o armazenamento (as alterações não estão sendo salvas)', 'config'],
+    [!sessao.senhaInicial, 'Trocar a senha inicial', 'config'],
+    [!!(info.razaoSocial && cnpj && cnpj !== '00.000.000/0001-00' && info.email), 'Informar razão social, CNPJ e e-mail (privacidade)', 'info'],
+    [horaValida(info.abreSemana) && horaValida(info.fechaSemana), 'Informar o horário de funcionamento', 'info'],
+    [lista(info.pagamentos).length > 0, 'Formas de pagamento e parcelas', 'info'],
+    [marcas.length > 0 && !marcas.some(m => /^marca \d+$/i.test(m)), 'Marcas que trabalha', 'info'],
     [fotosOk === fotosFixas.length, fotosOk === fotosFixas.length ? 'Todas as fotos das seções enviadas' : `Enviar fotos das seções (${fotosOk} de ${fotosFixas.length})`, 'fotos'],
+    [!vitrinePadrao && cms.produtos.some(x => x.img), vitrinePadrao ? 'Fotos reais das armações (a vitrine ainda mostra as fotos gerais da loja)' : 'Fotos reais das armações', 'produtos'],
     [!ilustrativas, ilustrativas ? `Trocar fotos de exemplo (banco de imagens) por fotos reais (${ilustrativas})` : 'Sem fotos de exemplo no site', 'fotos'],
-    [!cms.equipe.some(e => /nome sobrenome/i.test(e.nome)), 'Preencher nomes reais da equipe', 'sobre'],
-    [!/^Marca \d/.test(lista(info.marcas)[0] || ''), 'Informar as marcas que trabalha', 'info'],
-    [info.cnpj !== '00.000.000/0001-00', 'Informar o CNPJ', 'info'],
-    [cms.produtos.some(x => x.img), 'Adicionar fotos das armações', 'produtos'],
-    [futuros > 0, futuros > 0 ? 'Há eventos futuros publicados' : 'Nenhum evento futuro cadastrado', 'eventos'],
-    [promos > 0, promos > 0 ? 'Há promoções ativas' : 'Nenhuma promoção ativa', 'promocoes'],
-  ].map(([ok, texto, tab]) => ({ ok, texto, tab })).sort((a, b) => a.ok - b.ok);
+    [parseInt(info.anos, 10) > 0 || (cms.marcos || []).length > 0, 'História e ano de fundação', 'sobre'],
+    [!!info.googleAvaliacoes, 'Link do Perfil da Empresa no Google', 'info'],
+    [datasOk, datasOk ? 'Datas do blog válidas' : 'Revisar datas do blog (data de publicação, ex.: 30 out 2026)', 'posts'],
+    [lista(info.convenios).length > 0, 'Convênios', 'info', true],
+    [(cms.equipe || []).length > 0, 'Equipe', 'sobre', true],
+  ].map(([ok, texto, tab, opcional = false]) => ({ ok, texto, tab, opcional })).sort((a, b) => (a.ok - b.ok) || (a.opcional - b.opcional));
   const stats = [['promoções ativas', promos, 'promocoes'], ['eventos futuros', futuros, 'eventos'], ['armações', cms.produtos.length, 'produtos'], ['artigos', cms.posts.length, 'posts'], ['fotos enviadas', fotosTotal, 'fotos']];
   const atalhos = [['nova promoção', 'promocoes'], ['novo evento', 'eventos'], ['nova armação', 'produtos'], ['novo artigo', 'posts'], ['trocar foto da capa', 'fotos'], ['alterar horário', 'info']];
   const card = { background: '#fff', borderRadius: 20, padding: 'clamp(18px,2.5vw,28px)', boxShadow: '0 2px 12px rgba(0,0,0,.04)' };
@@ -299,8 +323,8 @@ function Visao({ irAba, sessao }) {
         <div style={{ font: "400 13px/1.5 'DM Sans',sans-serif", color: 'var(--muted)', marginBottom: 14 }}>O que ainda falta para o site ficar 100%.</div>
         {pend.map(p => (
           <button key={p.texto} onClick={() => irAba(p.tab)} style={{ display: 'flex', alignItems: 'center', gap: 12, textAlign: 'left', background: 'none', border: 0, borderTop: '1px solid rgba(0,0,0,.08)', padding: '12px 0', font: "400 14px/1.4 'DM Sans',sans-serif", color: 'var(--ink)', width: '100%' }}>
-            <span style={{ width: 22, height: 22, borderRadius: '50%', background: p.ok ? 'var(--wa)' : '#c9c6c1', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', flex: 'none' }}><Ic n="check" s={12} /></span>
-            <span style={{ flex: 1, minWidth: 0 }}>{p.texto}</span><Ic n="arrow" s={14} style={{ opacity: .4 }} />
+            <span style={{ width: 22, height: 22, borderRadius: '50%', background: p.ok ? 'var(--wa)' : p.opcional ? '#fff' : '#c9c6c1', border: !p.ok && p.opcional ? '1px dashed #c9c6c1' : 0, color: p.ok || !p.opcional ? '#fff' : '#c9c6c1', display: 'flex', alignItems: 'center', justifyContent: 'center', flex: 'none' }}><Ic n="check" s={12} /></span>
+            <span style={{ flex: 1, minWidth: 0 }}>{p.texto}{p.opcional ? <span style={{ color: 'var(--muted-2)' }}> (opcional)</span> : null}</span><Ic n="arrow" s={14} style={{ opacity: .4 }} />
           </button>
         ))}
       </div>
@@ -311,7 +335,7 @@ function Visao({ irAba, sessao }) {
         </div>
         <div className="dark" style={{ borderRadius: 20, padding: 'clamp(18px,2.5vw,28px)' }}>
           <div style={{ font: "500 16px 'Outfit',sans-serif", marginBottom: 8 }}>status agora</div>
-          <div style={{ marginBottom: 14 }}><Status st={status} style={{ gap: 8, font: "400 14px 'DM Sans',sans-serif", color: 'rgba(255,255,255,.8)' }} /></div>
+          <div style={{ marginBottom: 14 }}>{status ? <Status st={status} style={{ gap: 8, font: "400 14px 'DM Sans',sans-serif", color: 'rgba(255,255,255,.8)' }} /> : <span style={{ font: "400 14px 'DM Sans',sans-serif", color: 'rgba(255,255,255,.8)' }}>horário não informado — o site mostra "consulte o horário pelo WhatsApp"</span>}</div>
           <div style={{ font: "400 13px/1.6 'DM Sans',sans-serif", color: 'rgba(255,255,255,.6)' }}>WhatsApp {wa.fmt}<br />{info.endereco} · {info.bairroCidade}<br />Armazenamento: {sessao.armazenamento === 'blob' ? 'nuvem (Vercel Blob)' : sessao.armazenamento === 'nenhum' ? 'não configurado — conecte um Blob Store' : 'arquivos no servidor'}</div>
         </div>
       </div>

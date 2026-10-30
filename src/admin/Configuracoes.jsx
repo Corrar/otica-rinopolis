@@ -96,7 +96,7 @@ export function Configuracoes({ setSessao }) {
     r.readAsText(f);
   };
 
-  const restaurarPadrao = () => { if (confirm('Isso troca todo o conteúdo pelo padrão de exemplo (fotos enviadas deixam de aparecer). Você pode voltar pelo histórico de versões. Continuar?')) { substituir(PADRAO()); aviso('Conteúdo padrão restaurado.'); } };
+  const restaurarPadrao = () => { if (confirm('Isso troca todo o conteúdo pelo conteúdo padrão do site (o que você preencheu e as fotos enviadas deixam de aparecer). Você pode voltar pelo histórico de versões. Continuar?')) { substituir(PADRAO()); aviso('Conteúdo padrão restaurado.'); } };
 
   const restaurarVersao = async (v) => {
     if (!confirm(`Voltar o site para a versão de ${fmtQuando(v.at)}? A versão atual continua no histórico.`)) return;
