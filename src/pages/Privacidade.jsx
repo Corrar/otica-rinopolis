@@ -131,7 +131,7 @@ export default function Privacidade() {
       <Secao id="retencao" n="07" titulo="por quanto tempo guardamos">
         <p>Guardamos os dados só pelo tempo necessário para cada finalidade:</p>
         <Tabela legenda="Prazos de guarda" cab={['dado', 'prazo']} linhas={RETENCAO} />
-        <p>Depois desses prazos, os dados são apagados ou anonimizados. Podemos guardá-los por mais tempo apenas quando a lei exigir ou para a defesa de direitos em processo (LGPD, art. 16). Quando alguém revoga a autorização de uso de imagem ou de depoimento, retiramos o conteúdo do site e apagamos as cópias guardadas no histórico do painel.</p>
+        <p>Depois desses prazos, os dados são apagados ou anonimizados. Podemos guardá-los por mais tempo apenas quando a lei exigir ou para a defesa de direitos em processo (LGPD, art. 16). Quando alguém revoga a autorização de uso de imagem ou de depoimento, retiramos o conteúdo do site e apagamos as cópias guardadas no histórico do painel e nas versões anteriores do site mantidas pela hospedagem.</p>
       </Secao>
 
       <Secao id="cookies" n="08" titulo="cookies e armazenamento no navegador">

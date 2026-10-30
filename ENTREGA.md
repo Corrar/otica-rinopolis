@@ -7,6 +7,8 @@ Para o proprietário da Ótica Digital Look · atualizado em 30/10/2026
 
 Este guia explica, sem termos técnicos, o que o site tem, como entrar no painel, o que ainda falta preencher e os cuidados do dia a dia. Guarde-o junto com os documentos da loja. Os detalhes técnicos, para quem cuida da hospedagem, estão no `README.md` e no `PENDENCIAS.md`.
 
+> **Antes de começar:** este guia descreve a versão nova do site. Enquanto o responsável técnico não publicar essa versão, o endereço acima ainda mostra a versão antiga, com textos de exemplo do projeto de design (como um CNPJ fictício e depoimentos inventados). Só divulgue o site e só entre no painel depois que ele avisar que a versão nova está no ar.
+
 ## Índice
 1. [O que foi feito](#1-o-que-foi-feito)
 2. [Primeiro acesso ao painel e troca da senha](#2-primeiro-acesso-ao-painel-e-troca-da-senha)
@@ -37,18 +39,18 @@ O site tem estas páginas:
 | Convênios | `/convenios` | convênios, formas de pagamento, promoções e eventos que você cadastrar; sem eles, o convite para consultar pelo WhatsApp, o Instagram e o pedido de orçamento pela receita |
 | Blog | `/blog` | artigos com dicas (5 prontos) |
 | Contato | `/contato` | endereço, telefones, mapa e formulário que abre o WhatsApp |
-| Política de Privacidade | `/politica-de-privacidade` | como a loja cuida dos dados dos clientes (LGPD) |
+| Política de Privacidade | `/politica-de-privacidade` | como a loja cuida dos dados dos clientes, conforme a LGPD (Lei Geral de Proteção de Dados) |
 | Termos de Uso | `/termos-de-uso` | regras do site e direitos do consumidor |
-| Acessibilidade | `/acessibilidade` | recursos de acessibilidade e canal para relatar dificuldades |
+| Acessibilidade | `/acessibilidade` | recursos de acessibilidade e canal para relatar dificuldades; o link fica no rodapé de todas as páginas, com o símbolo internacional de acessibilidade, como pede a Lei Brasileira de Inclusão |
 
 O que o site oferece:
 
 - **Você mesmo edita.** Pelo painel, do celular ou do computador, você muda textos, fotos, horário, promoções, eventos, armações, artigos do blog e muito mais, sem precisar de programador.
-- **Só informação verdadeira.** O site foi entregue apenas com dados confirmados: endereço, WhatsApp, telefone fixo, Instagram e 8 fotos reais da loja. O conteúdo de exemplo que veio do projeto de design foi retirado: horário, convênios, "10x sem juros", marcas, equipe, depoimentos, promoções e um evento com "aferição de pressão ocular", que ótica não pode anunciar. O que ainda não foi informado fica escondido: a seção some sozinha e volta quando você preencher. (Na página de convênios, enquanto não houver convênios, formas de pagamento, promoções nem eventos, aparece no lugar um convite para consultar pelo WhatsApp e acompanhar o Instagram.)
+- **Só informação verdadeira.** Os dados da loja publicados são só os confirmados: endereço, WhatsApp, telefone fixo, Instagram e 8 fotos reais. Os textos gerais (capa, "como funciona", diferenciais, página de lentes de contato e artigos do blog) foram escritos para a entrega, de forma neutra, e **precisam da sua revisão** ([seção 4](#antes-de-divulgar-o-site-essencial)): confira se tudo o que eles dizem é como a loja trabalha. O conteúdo de exemplo que veio do projeto de design foi retirado: horário, convênios, "10x sem juros", marcas, equipe, depoimentos, promoções e um evento com "aferição de pressão ocular", que ótica não pode anunciar. O que ainda não foi informado fica escondido: a seção some sozinha e volta quando você preencher. (Na página de convênios, enquanto não houver convênios, formas de pagamento, promoções nem eventos, aparece no lugar um convite para consultar pelo WhatsApp e acompanhar o Instagram.)
 - **Sem foto, sem buraco.** Onde ainda não há foto real, aparece um desenho com o olho do logo, nas cores do site.
 - **Pronto para o Google.** Cada página já sai pronta para o Google ler, com título, descrição, mapa do site (sitemap) e os dados da loja num formato que o Google entende: endereço, telefones e, quando você informar, o horário.
 - **Privacidade.** O site não usa rastreadores nem anúncios. O mapa do Google só carrega se o visitante tocar em "mostrar mapa". O formulário de contato não grava nada: ele só abre o WhatsApp com a mensagem pronta. Há um aviso sobre o uso da foto da receita.
-- **Rápido e acessível.** Abre rápido no celular, funciona com teclado e com leitor de tela e respeita quem prefere menos animação.
+- **Rápido e acessível.** Abre rápido no celular, funciona com teclado e com leitor de tela e respeita quem prefere menos animação. O rodapé tem o símbolo de acessibilidade, que leva à página de acessibilidade.
 - **Seguro.** O painel tem uma senha que só você vai saber, limite de tentativas, histórico de versões e backup.
 
 ## 2. Primeiro acesso ao painel e troca da senha
@@ -61,14 +63,14 @@ Passo a passo:
 2. Digite a senha inicial e toque em **entrar**.
 3. Aparece a tela **"crie a sua senha"**. Ela é obrigatória: o painel não deixa editar nada antes.
    - Em "senha inicial", digite de novo a senha que você usou para entrar.
-   - Em "nova senha", crie a sua, com **pelo menos 10 caracteres**. Uma frase curta, de 3 ou 4 palavras que só você conheça, é fácil de lembrar e difícil de adivinhar. O painel recusa a senha inicial, senhas com o nome da loja, da cidade, da rua ou o telefone da loja, só números e senhas óbvias, como 1234567890, qwertyuiop ou senha12345. Espaços no começo e no fim não contam.
+   - Em "nova senha", crie a sua, com **pelo menos 10 caracteres**. Uma frase curta, de 3 ou 4 palavras que só você conheça, é fácil de lembrar e difícil de adivinhar. O painel recusa a senha inicial, senhas com o nome da loja (escrito de qualquer jeito: junto ou separado, com ou sem acento, em maiúsculas ou com números no lugar de letras), da cidade, da rua, o CEP ou o telefone da loja, só números e senhas óbvias, como 1234567890, qwertyuiop ou senha12345. Espaços no começo e no fim não contam (nem ao criar, nem ao entrar). Evite também datas e nomes da família.
    - Repita a nova senha em "confirmar" e toque em **salvar e continuar**.
 4. Pronto: o painel abre. A partir daí, **a senha inicial deixa de funcionar e ninguém mais sabe a sua senha, nem o desenvolvedor**.
 
 Dicas:
 
 - Anote a senha num lugar seguro, como um gerenciador de senhas ou um papel guardado na loja. Não mande a senha por WhatsApp nem a deixe numa nota do celular sem bloqueio.
-- **"manter conectado neste aparelho"**: marque só no seu celular ou no seu computador. O aparelho fica conectado por 14 dias; sem marcar, por 12 horas.
+- **"manter conectado neste aparelho"**: marque só no seu celular ou no seu computador. O aparelho fica conectado por 14 dias; sem marcar, por 12 horas. A escolha continua valendo depois de criar ou trocar a senha.
 - Perdeu o celular ou entrou num computador de outra pessoa? Vá em **configurações → sair de todos os aparelhos** e depois troque a senha (configurações → trocar senha).
 - **Esqueceu a senha?** O painel não tem "esqueci minha senha", de propósito: assim ninguém consegue pedir uma senha nova no seu lugar. O responsável técnico consegue zerar o acesso pela hospedagem. Você recebe uma nova senha inicial e cria outra senha.
 
@@ -78,7 +80,7 @@ Dicas:
 
 | Aba | Para quê |
 |---|---|
-| visão geral | resumo do site e a lista de **pendências** (o que ainda falta preencher); toque num item para ir direto ao campo |
+| visão geral | resumo do site e a lista de **pendências** (o que ainda falta preencher); toque num item para abrir a aba onde ele é preenchido e procure o bloco com o nome indicado no checklist da [seção 4](#4-checklist-dados-que-só-você-pode-informar) |
 | informações | contato, endereço, identificação da empresa (razão social, CNPJ, e-mail), horário, feriados, mensagens do WhatsApp, convênios, marcas, pagamentos, Facebook, Perfil do Google |
 | página inicial | capa, selos, faixa de aviso no topo, botão flutuante do WhatsApp, animações, "como funciona" |
 | fotos e galeria | fotos das seções fixas e a galeria da página "sobre" |
@@ -94,18 +96,18 @@ Dicas:
 **Como funciona:**
 
 - **Salva sozinho.** No topo aparece "salvando…" e depois **"salvo"**. Errou? Toque em **↶ desfazer**.
-- Se aparecer **"o site foi alterado em outro aparelho"**, prefira **"carregar versão mais nova"**. A opção "manter as minhas alterações" apaga o que foi feito no outro aparelho.
+- Se aparecer **"o site foi alterado em outro aparelho"**, prefira **"carregar versão mais nova"**. Atenção: com ela, as alterações que você acabou de fazer **neste** aparelho são descartadas; anote-as antes e refaça depois. A opção "manter as minhas alterações" faz o contrário: apaga o que foi feito no outro aparelho.
 - **"ver no site"** (no menu do painel) abre a página que você está editando.
 - **Seções vazias somem do site.** Exemplo: sem marcas cadastradas, a seção de marcas não aparece.
 - Cada campo tem uma ajuda curta dizendo o que pode e o que não pode ser publicado. Leia antes de preencher. As regras principais:
   - **não anuncie** exame de vista, teste de visão, triagem, aferição de pressão ocular nem médico atendendo na loja: ótica não pode (Decretos 20.931/1932 e 24.492/1934);
-  - **o que é publicado vira compromisso.** Prazo, garantia, desconto e serviço grátis anunciados obrigam a loja (Código de Defesa do Consumidor, arts. 30 e 35). Publique só o que a loja consegue cumprir sempre, com validade e condições;
+  - **o que é publicado vira compromisso.** Prazo, garantia, desconto e serviço grátis anunciados obrigam a loja (Código de Defesa do Consumidor, o CDC, arts. 30 e 35). Publique só o que a loja consegue cumprir sempre, com validade e condições;
   - **pessoas** (equipe e clientes) só com autorização por escrito (modelo no [anexo](#anexo-modelo-de-autorização-de-uso-de-imagem-e-depoimento));
   - **preço:** informe o preço à vista da armação; as lentes são orçadas à parte.
 
 **Fotos:**
 
-- Aceita JPG, PNG ou WebP. O painel diminui a foto sozinho antes de enviar. Prefira fotos na horizontal, bem iluminadas e sem pessoas reconhecíveis (ou com autorização delas).
+- Aceita JPG, PNG ou WebP. O painel diminui a foto sozinho antes de enviar (imagem com fundo transparente fica com fundo branco). Prefira fotos na horizontal, bem iluminadas e sem pessoas reconhecíveis (ou com autorização delas).
 - **Toda foto enviada pelo painel fica pública na internet.** Nunca envie foto de receita, de documento, de tela com dados de cliente ou de criança sem autorização dos responsáveis.
 - "remover foto" tira a foto do site. Para apagá-la de vez da hospedagem, siga o passo a passo da [seção 8](#retirar-alguém-do-site-de-vez).
 
@@ -118,10 +120,16 @@ A aba **visão geral → pendências** do painel mostra boa parte desta lista e 
 - [ ] **Trocar a senha inicial** ([seção 2](#2-primeiro-acesso-ao-painel-e-troca-da-senha)).
 - [ ] **Razão social e CNPJ** (informações → identificação da empresa). Copie como está no cartão CNPJ, que pode ser consultado em solucoes.receita.fazenda.gov.br/servicos/cnpjreva. Eles aparecem no rodapé e nas páginas de privacidade e de termos. A pesquisa na internet não encontrou o CNPJ da loja. Atenção: a "Agência Digital Look'N Feel Ltda" (Brasília/DF, CNPJ 15.385.063/0001-80) é outra empresa, sem relação com a ótica.
 - [ ] **E-mail de contato e de privacidade** (informações → identificação da empresa). A LGPD exige um canal para os clientes pedirem informações sobre os próprios dados. Use um e-mail da loja que alguém confira toda semana (pode ser um Gmail criado para isso) e defina quem na loja vai cuidar desses pedidos.
-- [ ] **Horário de funcionamento** (informações → horário de funcionamento). Enquanto estiver vazio, o site mostra "consulte o horário pelo WhatsApp". Com o horário preenchido, aparece "aberto agora" ou "fechado" automaticamente. Sábado vazio significa fechado aos sábados. Se a loja fecha para almoço, avise o responsável técnico: hoje o painel tem só abertura e fechamento.
+- [ ] **Horário de funcionamento** (informações → horário de funcionamento). Enquanto estiver vazio, o site mostra "consulte o horário pelo WhatsApp". Com o horário preenchido, aparece "aberto agora" ou "fechado" automaticamente. Sábado vazio significa fechado aos sábados. O domingo aparece sempre como fechado, e todos os dias de segunda a sexta usam o mesmo horário. Se a loja fecha para almoço, abre aos domingos ou tem horário diferente em algum dia, avise o responsável técnico: hoje o painel tem só abertura e fechamento de segunda a sexta e de sábado.
 - [ ] **Feriados e fechamentos** (informações → feriados e fechamentos). Já há duas sugestões para conferir: Natal (25/12/2026) e Ano Novo (01/01/2027). Acrescente os feriados de Rinópolis e outros dias em que a loja fecha.
 - [ ] **Formas de pagamento e parcelas** (informações → listas). Só o que a loja pratica de verdade. Desconto à vista: informe o percentual. Crediário: escreva "sujeito a análise de crédito". Se o crediário consulta SPC ou Serasa, avise o responsável técnico, porque a Política de Privacidade precisa citar isso.
 - [ ] **Lentes de contato** (lentes de contato → texto da capa e tipos de lente). Confirme que a loja vende lentes de contato, sempre com receita de oftalmologista, e cadastre em "tipos de lente" só os tipos que vende de verdade (por exemplo: diárias, mensais, tóricas, multifocais). Enquanto a lista estiver vazia, a seção não aparece e o site não cita nenhum tipo específico, nem no Google. O que for publicado vira oferta: o cliente pode exigir o que estiver anunciado.
+- [ ] **Revisar os textos escritos na entrega.** Eles foram escritos de forma neutra, mas descrevem como a loja atende, e o que está no site vira compromisso. Leia e corrija pelo painel o que não for verdade:
+  - página inicial → capa, selos e "como funciona" (hoje diz, por exemplo, que você prova os modelos na loja, que o prazo das lentes é informado no orçamento e que, na retirada, a loja confere os óculos com o cliente e explica os cuidados);
+  - sobre e equipe → textos da loja e diferenciais (por exemplo, "envie a foto da sua receita e receba as opções de lentes e valores" pelo WhatsApp);
+  - lentes de contato → texto da capa, passo a passo ("mostramos as marcas e modelos disponíveis", "explicamos como guardar e higienizar as lentes") e perguntas frequentes;
+  - blog → os 5 artigos (dicas gerais; vários terminam com "na loja, tiramos suas dúvidas").
+  Dois textos não ficam no painel e só citam o que já foi confirmado: o card "lentes de contato" da página inicial ("Somente com receita médica") e a descrição da página de lentes no Google. Se quiser mudá-los, avise o responsável técnico.
 - [ ] **Aviso da receita no WhatsApp** ([seção 8](#whatsapp-e-receitas)): configure a mensagem de saudação e a resposta rápida com o aviso sobre a foto da receita. A Política de Privacidade conta com esse aviso para quem manda a receita direto pelo WhatsApp.
 - [ ] **Datas dos artigos do blog** (blog → cada artigo → data de publicação). Hoje todas estão em 30 out 2026. Use a data real em que o site for publicado.
 - [ ] **Revisão das páginas legais por um advogado** ([seção 9](#9-páginas-legais-revisão-por-advogado-antes-de-divulgar)).
@@ -135,7 +143,7 @@ A pesquisa na internet achou estes itens. Nada disso foi colocado no site sem a 
 - [ ] **Catálogo trinta.shop (confirmar):** https://trinta.shop/oticadigitallook traz o endereço "Rua Professor Sud Menucci, 228, centro, Rinópolis SP / Santópolis do Aguapeí SP", com pedidos pelo WhatsApp. Ele está ativo? Usa o WhatsApp (18) 99763-7896? Se sim, o responsável técnico pode colocar um link "ver catálogo" no site. Se não, desative o catálogo para não confundir os clientes nem o Google.
 - [ ] **Santópolis do Aguapeí (confirmar):** a loja atende ou entrega em Santópolis do Aguapeí, ou tem uma segunda loja lá? Se sim, avise: hoje o site informa ao Google que a loja atende Rinópolis.
 - [ ] **Comarca (confirmar com o advogado):** há indícios de que Rinópolis pertence à Comarca de Tupã/SP. Os Termos de Uso citam hoje só "o foro do domicílio do consumidor"; o advogado decide se acrescenta a comarca.
-- **Homônimo:** a Ótica Visão Rinópolis fica na mesma rua (R. Prof. Sud Menucci, 185, telefone (18) 3583-1358). Cuidado para não confundir os perfis no Google e em diretórios de empresas.
+- **Outra ótica na mesma rua:** a Ótica Visão Rinópolis fica no nº 185 da R. Prof. Sud Menucci (telefone (18) 3583-1358). É outra loja, com outro nome. Cuidado para não confundir os perfis no Google e em diretórios de empresas.
 
 ### Já confirmado: manter igual em todo lugar
 
@@ -151,7 +159,7 @@ Use exatamente a mesma grafia no site, no Google, no Instagram e no Facebook: is
 - [ ] **Fotos que faltam** (fotos e galeria): capa de lentes de contato e card "lentes de contato"; no blog, os artigos sem imagem. Sem foto, aparece a arte da marca.
 - [ ] **Link do Perfil da Empresa no Google** (informações), depois de criar o perfil ([seção 7](#71-perfil-da-empresa-no-google-o-mais-importante)). Ativa o link "avaliações no Google" na página inicial.
 - [ ] **Medição digital:** a loja tem equipamento de medição digital (centragem e altura)? Qual? Se tiver, dá para citar na página inicial (selos ou destaques da capa), por exemplo "centragem medida digitalmente — não é exame de vista". Não use números que não possam ser comprovados, como "0,1 mm" ou "100%".
-- [ ] **Serviços e promessas:** prazo de entrega das lentes, laboratório parceiro, garantia além da legal, ajuste e limpeza grátis (inclusive de óculos comprados em outro lugar). Só publique o que a loja cumpre sempre. Garantia extra só com termo escrito entregue na compra (Código de Defesa do Consumidor, art. 50). Hoje o site não promete ajuste, prazo de entrega nem aviso de "óculos prontos"; se a loja faz, inclua em página inicial → como funciona. Se a loja faz ajuste e limpeza grátis, uma sugestão de texto: "Ajustamos hastes e plaquetas e limpamos seus óculos sem custo, mesmo que não tenham sido comprados aqui. Peças de reposição são cobradas à parte."
+- [ ] **Serviços e promessas:** prazo de entrega das lentes, laboratório parceiro, garantia além da legal, ajuste e limpeza grátis (inclusive de óculos comprados em outro lugar). Só publique o que a loja cumpre sempre. Garantia extra só com termo escrito entregue na compra (Código de Defesa do Consumidor, art. 50). Hoje o site não promete ajuste, prazo fixo de entrega nem aviso de "óculos prontos": diz só que o prazo é informado no orçamento e que, na retirada, a loja confere os óculos com o cliente e explica os cuidados. Se a loja faz mais que isso, inclua em página inicial → como funciona. Se a loja faz ajuste e limpeza grátis, uma sugestão de texto: "Ajustamos hastes e plaquetas e limpamos seus óculos sem custo, mesmo que não tenham sido comprados aqui. Peças de reposição são cobradas à parte."
 
 ### Opcional
 
@@ -164,7 +172,7 @@ Use exatamente a mesma grafia no site, no Google, no Instagram e no Facebook: is
 
 - [ ] **Prazos de guarda:** por quanto tempo guardar receitas de vendas, conversas de orçamento e documentos fiscais. A Política de Privacidade usa como exemplo 90 dias (orçamento que não virou venda) e 5 anos (vendas e documentos fiscais). Se os prazos forem outros, avise para o texto ser ajustado.
 - [ ] **Registros de acesso ao site** (Marco Civil da Internet, art. 15): decidir se a loja precisa guardá-los ([seção 8](#organização)).
-- [ ] **Porte para a LGPD** (Resolução CD/ANPD nº 2/2022, arts. 2º a 4º): confirmar se a loja se enquadra como agente de tratamento de pequeno porte (por exemplo, microempresa ou empresa de pequeno porte, sem fazer parte de grupo econômico acima desse limite) e se o tratamento de dados não é de alto risco — a ótica trata receitas, que são dados de saúde, inclusive de crianças. Se tudo isso se confirmar, a Política de Privacidade pode dizer que a loja dispensa o encarregado de dados (DPO) e usar o prazo em dobro. Se não, é preciso indicar um encarregado e publicar o nome e o contato dele (LGPD, art. 41). Hoje a política não afirma o porte: só indica o canal de atendimento.
+- [ ] **Porte para a LGPD** (Resolução CD/ANPD nº 2/2022, arts. 2º a 4º; a ANPD é a Autoridade Nacional de Proteção de Dados, o órgão do governo que fiscaliza a LGPD): confirmar se a loja se enquadra como agente de tratamento de pequeno porte (por exemplo, microempresa ou empresa de pequeno porte, sem fazer parte de grupo econômico acima desse limite) e se o tratamento de dados não é de alto risco — a ótica trata receitas, que são dados de saúde, inclusive de crianças. Se tudo isso se confirmar, a Política de Privacidade pode dizer que a loja dispensa o encarregado de dados (DPO) e usar o prazo em dobro. Se não, é preciso indicar um encarregado e publicar o nome e o contato dele (LGPD, art. 41). Hoje a política não afirma o porte: só indica o canal de atendimento.
 
 ## 5. Publicar as alterações no Google
 
@@ -269,16 +277,17 @@ Por exemplo, um funcionário que saiu ou um cliente que retirou o depoimento:
 1. No painel, remova a pessoa (sobre e equipe) ou o depoimento.
 2. Em **configurações → privacidade e limpeza**, toque em **apagar histórico e fotos antigas**. Isso apaga as versões antigas do histórico e as fotos que não aparecem mais no site, e não dá para desfazer. Fotos enviadas na última hora ficam guardadas; se for o caso, repita mais tarde. Exporte um backup novo logo depois.
 3. Publique as alterações no Google ([seção 5](#5-publicar-as-alterações-no-google)).
-4. Apague os backups antigos (arquivos `.json`) que ainda tenham a pessoa.
+4. Peça ao responsável técnico para **apagar as versões antigas do site guardadas na hospedagem** que ainda tenham o nome, a foto ou o depoimento da pessoa. A cada publicação, a hospedagem guarda uma cópia do site daquele dia. Essas cópias já ficam fechadas ao público (só a equipe técnica, com login, consegue abri-las), mas a Política de Privacidade promete apagá-las.
+5. Apague os backups antigos (arquivos `.json`) que ainda tenham a pessoa.
 
 O Google pode levar alguns dias para atualizar o que mostra na busca.
 
 ### Organização
 
-- **Registro das operações de tratamento** (LGPD, art. 37): uma planilha simples dizendo quais dados a loja guarda, para quê, onde, quem acessa e por quanto tempo. A ANPD tem um modelo simplificado para pequenas empresas (gov.br/anpd). Preencha com o advogado.
+- **Registro das operações de tratamento** (LGPD, art. 37): uma planilha simples dizendo quais dados a loja guarda, para quê, onde, quem acessa e por quanto tempo. A ANPD (Autoridade Nacional de Proteção de Dados) tem um modelo simplificado para pequenas empresas (gov.br/anpd). Preencha com o advogado.
 - **Registros de acesso ao site:** o Marco Civil da Internet (art. 15) obriga certos sites com fins comerciais a guardar por 6 meses os registros de acesso. Hoje o site depende dos registros da hospedagem, guardados por pouco tempo. Decida com o advogado se a loja precisa guardá-los e como.
 - **Quem trata dados para a loja** (laboratório, contador, desenvolvedor e hospedagem): peça cláusula de sigilo e de segurança no contrato.
-- **Incidente** (celular da loja roubado, WhatsApp clonado, senha do painel vazada): troque as senhas, use "sair de todos os aparelhos" no painel, avise o responsável técnico e fale com o advogado no mesmo dia. Se houver risco para os clientes, a lei manda comunicar a ANPD e as pessoas afetadas em poucos dias úteis.
+- **Incidente** (celular da loja roubado, WhatsApp clonado, senha do painel vazada): troque as senhas, use "sair de todos os aparelhos" no painel, avise o responsável técnico e fale com o advogado no mesmo dia. Se houver risco para os clientes, a lei manda comunicar a ANPD e as pessoas afetadas em até 3 dias úteis (Resolução CD/ANPD nº 15/2024). Se a loja se enquadrar como agente de tratamento de pequeno porte ([seção 4](#com-o-contador-ou-o-advogado)), o prazo é o dobro (6 dias úteis; Resolução CD/ANPD nº 2/2022). Confirme com o advogado.
 
 ## 9. Páginas legais: revisão por advogado antes de divulgar
 
@@ -294,7 +303,7 @@ O site tem **Política de Privacidade**, **Termos de Uso** e **Acessibilidade**,
   - transferência internacional para a hospedagem (Vercel, nos Estados Unidos): a política se apoia nas garantias do contrato com o fornecedor (LGPD, art. 33, II). Conferir se o contrato da Vercel atende à Resolução CD/ANPD nº 19/2024 (cláusulas-padrão da ANPD) ou se é preciso outro mecanismo;
   - prazo de resposta aos pedidos dos clientes (15 dias);
   - crediário com consulta a SPC ou Serasa e envio de promoções por WhatsApp, se a loja fizer;
-  - Termos de Uso: foro (hoje, o do domicílio do consumidor, conforme o CDC, art. 101, I; a comarca pode ser acrescentada), direito de arrependimento em lentes feitas sob medida e vendidas à distância, e garantia contratual (termo escrito);
+  - Termos de Uso: foro (hoje, o do domicílio do consumidor, conforme o Código de Defesa do Consumidor, art. 101, I; a comarca pode ser acrescentada), direito de arrependimento em lentes feitas sob medida e vendidas à distância, e garantia contratual (termo escrito);
   - guarda de registros de acesso (Marco Civil, art. 15).
 - Revise de novo quando a loja mudar algo importante: começar a vender no crediário, trocar de laboratório, enviar promoções por WhatsApp ou incluir um serviço novo no site.
 
@@ -316,6 +325,7 @@ Hoje as duas contas são do desenvolvedor: a equipe `corrars-projects` na Vercel
 3. **Repositório privado.** Hoje o repositório do GitHub é público. A recomendação é torná-lo privado, porque o histórico guarda versões antigas do projeto.
 4. **Armazenamento em São Paulo.** Se um novo armazenamento for criado (por exemplo, na transferência para a conta da loja), escolha a região São Paulo (gru1), mais perto dos clientes. A região não pode ser mudada depois.
 5. **Alerta de gastos.** Na Vercel (Billing), ligue um alerta de uso para não ter surpresas.
+6. **Versões antigas do site.** A cada publicação, a Vercel guarda uma cópia do site daquele momento, num endereço próprio. A proteção dessas cópias já foi ligada (opção "Standard Protection"): só quem é da equipe, com login, consegue abri-las; o endereço oficial do site continua aberto a todos. Depois que a versão nova estiver no ar, o responsável técnico vai apagar as 8 cópias antigas que ainda têm o conteúdo de exemplo. **Nunca use "Instant Rollback" (voltar para uma versão antiga) na Vercel** sem falar com ele: isso pode pôr de volta no ar textos antigos ou dados de pessoas que pediram para sair do site.
 
 **Custos previstos:** o plano da hospedagem (Pro) e, se você quiser, o domínio próprio ([seção 11](#11-domínio-próprio-opcional)). O site não usa outros serviços pagos.
 
@@ -335,6 +345,7 @@ Hoje o endereço é `otica-rinopolis.vercel.app`: é gratuito e funciona normalm
 - O painel mostra "Configuração pendente", "armazenamento não configurado" ou "não salvou" por mais de um dia.
 - Esqueceu a senha ou suspeita de invasão.
 - Ligar a publicação automática, colocar o domínio próprio, transferir as contas ou verificar o site no Search Console.
+- Alguém pediu para sair do site (é preciso apagar as versões antigas guardadas na hospedagem, [seção 8](#retirar-alguém-do-site-de-vez)).
 
 ---
 

@@ -8,36 +8,38 @@ Vite + React 19 + GSAP/ScrollTrigger, com **área do proprietário com backend r
 - **`FOTOS.md`** — fotos do conteúdo padrão.
 
 ## Páginas
-`/` início · `/sobre` · `/armacoes` (filtros) · `/lentes` (FAQ) · `/convenios` (promoções, eventos, convênios) · `/blog` · `/blog/<artigo>` · `/contato` (formulário → WhatsApp) · `/politica-de-privacidade` · `/termos-de-uso` · `/acessibilidade` · `/admin` (área do proprietário).
+`/` início · `/sobre` · `/armacoes` (filtros) · `/lentes` (FAQ) · `/convenios` (promoções, eventos, convênios e pagamentos; sem nenhum deles, um bloco para consultar convênio/pagamento e pedir orçamento pelo WhatsApp e o Instagram) · `/blog` · `/blog/<artigo>` · `/contato` (formulário → WhatsApp) · `/politica-de-privacidade` · `/termos-de-uso` · `/acessibilidade` · `/admin` (área do proprietário).
 Links antigos com `#admin`, `#sobre` etc. redirecionam para as URLs novas. Endereço sem página (inclusive `/blog/<artigo-inexistente>`) responde 404.
 
 ## Variáveis de ambiente
-Modelo em `.env.example`. **Nunca escreva senhas ou segredos em arquivos do repositório**: na Vercel, cadastre como *Sensitive* em Settings → Environment Variables. Mudanças de variável só valem para um **novo deploy** (Redeploy).
+Modelo em `.env.example`. **Arquivos `.env` não são lidos automaticamente** (o projeto não usa dotenv): fora da Vercel, exporte as variáveis no shell ou use `node --env-file=.env server.js` (Node 20.6+); na Vercel, cadastre em Settings → Environment Variables. **Nunca escreva senhas ou segredos em arquivos do repositório**: na Vercel, cadastre como *Sensitive* em Settings → Environment Variables. Mudanças de variável só valem para um **novo deploy** (Redeploy).
 
 | Variável | Obrigatória? | Para quê |
 |---|---|---|
 | `ADMIN_PASSWORD` | **sim, em produção** (12+ caracteres aleatórios) | Senha inicial do painel. Só vale até o proprietário criar a senha dele no primeiro acesso; depois deixa de funcionar. Sem ela, login responde "Configuração pendente" (não existe senha padrão em produção). |
 | `SESSION_SECRET` | **sim, em produção** (32+ caracteres, ex.: `openssl rand -hex 32`) | Assina o cookie da sessão. Trocar o valor desconecta todos. Sem ela, `npm start` não sobe e, na Vercel, login e sessão respondem "Configuração pendente". |
-| `BLOB_READ_WRITE_TOKEN` | **sim, na Vercel** (criada ao conectar o Blob Store) | Armazenamento do conteúdo, das fotos enviadas e do hash da senha. Conectado só ao ambiente Production: previews ficam sem armazenamento (o painel avisa e não salva — esperado). |
+| `BLOB_READ_WRITE_TOKEN` | **sim, na Vercel** (criada ao conectar o Blob Store) | Armazenamento do conteúdo, das fotos enviadas e do hash da senha. Conectado só ao ambiente Production. Previews ficam sem armazenamento e sem senha inicial (`ADMIN_PASSWORD` só existe em Production, então o login responde "Configuração pendente") — esperado. Hoje está como *Encrypted* (a Vercel aponta "readable-secret"): recriar como *Sensitive* (`PENDENCIAS.md`, seção 1). |
 | `SITE_URL` | não | Endereço oficial (canônico, sitemap, Open Graph, JSON-LD). Sem ela: domínio de produção da Vercel (`VERCEL_PROJECT_PRODUCTION_URL`) ou `https://otica-rinopolis.vercel.app`. |
 | `DEPLOY_HOOK_URL` | não (recomendada) | URL do Deploy Hook da Vercel (branch `main`). Liga o botão "publicar alterações no Google" do painel. Quem tem a URL dispara deploys. |
 | `CRON_SECRET` | não | 16+ caracteres. Com `DEPLOY_HOOK_URL`, liga a republicação diária (`crons` do `vercel.json`, 9h17 UTC). |
-| `DATA_DIR`, `PORT`, `TRUST_PROXY` | só fora da Vercel | Pasta dos dados no modo arquivos, porta do `server.js` e `TRUST_PROXY=1` atrás de nginx/proxy. |
+| `DATA_DIR`, `PORT`, `TRUST_PROXY` | só fora da Vercel | Pasta dos dados no modo arquivos (**a mesma no `npm run build` e no `npm start`**: o build lê dela o conteúdo publicado), porta do `server.js` e `TRUST_PROXY=1` atrás de nginx/proxy. |
 
 `NODE_ENV`: `npm start` usa `production`; `npm run dev` usa `development` (único caso com senha de desenvolvimento, ver "Rodar localmente").
 
 ## Publicação
 Roteiro na ordem que não expõe o painel nem publica conteúdo fictício (checklist com o estado de cada item em `PENDENCIAS.md`):
+0. **Deployment Protection em Standard Protection** (Settings → Deployment Protection → Vercel Authentication; na API, `ssoProtection.deploymentType = "prod_deployment_urls_and_all_previews"`) — **já configurada**. O domínio de produção (`otica-rinopolis.vercel.app`, `otica-rinopolis-corrars-projects.vercel.app`), o cron e o Deploy Hook continuam públicos; as URLs próprias de cada deploy (`otica-rinopolis-<hash>-corrars-projects.vercel.app`, de produção e de preview) só abrem com login na equipe. Nada no código depende dessas URLs (`vite.config.js` usa `SITE_URL` ou `VERCEL_PROJECT_PRODUCTION_URL`; o prerender lê o Blob direto).
 1. `ADMIN_PASSWORD` e `SESSION_SECRET` definidos em Production **antes** do deploy (com o Blob conectado, quem souber a senha edita o site).
 2. `npm run build` local e conferir que o HTML gerado não tem restos do conteúdo de exemplo (o comando deve listar **0** arquivos em todas as linhas):
    ```bash
-   for t in 'Aferição' '00.000.000' 'Marca 1' 'Nome Sobrenome' 'Unimed' '10x sem juros' 'medição digital' 'Outubro:' '"@type":"Event"' 'pexels' 'tóricas' 'multifocais' 'pequeno porte' 'horário comercial'; do
+   for t in 'Aferição' '00.000.000' 'Marca 1' 'Nome Sobrenome' 'Ana Paula' 'Unimed' '10x sem juros' 'medição digital' 'Outubro:' '"@type":"Event"' 'pexels' 'tóricas' 'multifocais' 'pequeno porte' 'horário comercial'; do
      echo "$t: $(grep -l -- "$t" dist/*.html dist/blog/*.html | wc -l)"; done
    ```
 3. Merge na `main` → a Vercel publica sozinha (cada push na `main` gera um deploy de produção).
-4. Em Deployments, conferir que Production é do último commit. Entrar em `/admin` com a senha inicial e, no mesmo navegador, abrir `/api/session`: deve mostrar `"armazenamento":"blob"` (e `"publicar":true` se o Deploy Hook estiver configurado). **Não crie a senha definitiva**: a tela "crie a sua senha" é do proprietário; use "sair".
-5. Na entrega, o proprietário entra, troca a senha, preenche os dados (`ENTREGA.md`, seção 4), publica e exporta o primeiro backup.
-6. Depois de publicado: PageSpeed Insights e Teste de pesquisa aprimorada do Google (`/`, `/lentes`, um artigo) na URL de produção; Search Console com envio de `/sitemap.xml` (`ENTREGA.md`, seção 7).
+4. Em Deployments, conferir que Production é do último commit. Entrar em `/admin` com a senha inicial e, no mesmo navegador, abrir `/api/session`: deve mostrar `"armazenamento":"blob"` (e `"publicar":true` se o Deploy Hook estiver configurado). **Não crie a senha definitiva**: a tela "crie a sua senha" é do proprietário; use "sair". Conferir também que a senha de desenvolvimento antiga é recusada e que a home de produção não tem mais nenhum termo do grep acima (nem `openingHoursSpecification` sem horário informado, nem `fonts.googleapis.com`).
+5. **Apagar os deploys de produção anteriores à limpeza de conteúdo** (os 8 de antes de 30/10/2026, de `gr8x4tux7` a `oxu7qs1c0`; lista em `PENDENCIAS.md`, seção 2): Deployments → ⋯ → Delete, ou `vercel remove <url> --scope corrars-projects --safe=false`. Eles guardam o conteúdo de exemplo (CNPJ fictício, depoimentos inventados, "10x sem juros", evento de "aferição de pressão ocular"). Com a Standard Protection já não abrem para o público, mas dois são candidatos a **Instant Rollback**, que poria esse conteúdo de volta no domínio: até apagá-los, ninguém faz rollback nem Redeploy deles (o Redeploy de um deploy antigo roda o código antigo do painel com as variáveis atuais, gravando no Blob real).
+6. Na entrega, o proprietário entra, troca a senha, preenche os dados (`ENTREGA.md`, seção 4), publica e exporta o primeiro backup.
+7. Depois de publicado: PageSpeed Insights e Teste de pesquisa aprimorada do Google (`/`, `/lentes`, um artigo) na URL de produção; Search Console com envio de `/sitemap.xml` (`ENTREGA.md`, seção 7). Pedir reindexação de `/`, `/convenios`, `/sobre` e `/contato`; se o Google ainda mostrar o CNPJ fictício ou o evento antigo, usar "Remover conteúdo desatualizado".
 
 **Publicar alterações (botão do painel).** Visitantes veem o que é salvo no painel em 1 a 2 minutos (cache do CDN de 60 s), mas as páginas prontas, o sitemap e o JSON-LD só mudam com um novo deploy. Com `DEPLOY_HOOK_URL`, o painel mostra **"publicar alterações no Google"**, que dispara esse deploy (1 a 3 minutos), avisa quando há alterações ainda não publicadas e mostra quando foi a última publicação (lê `/publicado.json`). O botão nunca é chamado pelo salvamento automático e aceita um pedido por minuto. Com `CRON_SECRET`, o site também é republicado uma vez por dia (eventos e promoções vencidos saem do Google). Sem as variáveis, nada é disparado: use **Redeploy** na Vercel.
 
@@ -47,6 +49,7 @@ Para criar o Deploy Hook: Vercel → Settings → Git → Deploy Hooks → nome 
 - `/politica-de-privacidade` (`src/pages/Privacidade.jsx`), `/termos-de-uso` (`src/pages/Termos.jsx`) e `/acessibilidade` (`src/pages/Acessibilidade.jsx`), com os blocos comuns em `src/components/Legal.jsx`. Links no rodapé, no sitemap (prioridade 0.2) e com trilha de navegação no JSON-LD.
 - **Texto fixo no código**, não editável pelo painel (para não ser apagado por engano). Os dados do controlador vêm das informações da loja: `razaoSocial`, `cnpj`, `email`, `endereco`, `bairroCidade`, `cep`, `whatsapp`, `telefone`. Sem razão social, aparece o nome fantasia; CNPJ e e-mail só aparecem quando válidos (`src/lib/validar.js`).
 - Ao mudar o texto, atualize `ATUALIZADA` (Privacidade e Termos) ou `REVISADA` (Acessibilidade). A tabela de prazos de guarda é `RETENCAO`, em `Privacidade.jsx` (90 dias e 5 anos são exemplos a confirmar com o contador). Foro: domicílio do consumidor (CDC, art. 101, I), sem comarca.
+- **Símbolo internacional de acessibilidade** no rodapé (Lei Brasileira de Inclusão, art. 63, § 1º): ícone `acess` (`src/components/Icons.jsx`) com o texto "acessibilidade", link para `/acessibilidade` (`src/components/Layout.jsx`).
 - Mudou algo que a política descreve? Atualize-a junto: cookie da sessão (`server/auth.js`), cache local `odl-cache-v1` (`src/state/content.jsx`), serviço de terceiros novo (análise de público, pixel, fontes externas, mapa — também exigem ajuste na CSP do `vercel.json`) ou o prazo de 1 hora do IP de quem erra a senha.
 - **Revisão por advogado antes de divulgar o site**: lista de pontos em `ENTREGA.md`, seção 9.
 
@@ -62,7 +65,8 @@ Para retirar de vez uma pessoa ou um depoimento (ex.: funcionário que saiu, cli
 1. Remover o item no painel.
 2. Configurações → privacidade e limpeza → **apagar histórico e fotos antigas** (`POST /api/limpar-fotos` com `historico: true`: apaga as versões antigas, mantendo só a atual, e as fotos de `uploads/` que nenhuma versão usa; fotos da última hora ficam). "Limpar fotos não usadas" faz só a segunda parte.
 3. **Publicar** (botão do painel ou Redeploy), para o HTML pronto e o sitemap deixarem de ter o item.
-4. Apagar os backups antigos (`.json`) que ainda tenham o item.
+4. Na Vercel, **apagar os deploys de produção anteriores a essa publicação** (Deployments → ⋯ → Delete), porque cada deploy guarda o conteúdo da época no HTML (`#odl-inicial` e o corpo pré-renderizado, `scripts/prerender.js`), e a republicação diária cria um por dia. Com a Standard Protection eles só abrem para quem é da equipe, mas continuam guardados até serem apagados (e podem voltar por Instant Rollback). A Política de Privacidade promete apagar essas cópias.
+5. Apagar os backups antigos (`.json`) que ainda tenham o item.
 
 ## Recuperar o acesso (senha esquecida)
 Não há "esqueci minha senha". Quem administra a hospedagem:
@@ -74,7 +78,7 @@ Não há "esqueci minha senha". Quem administra a hospedagem:
 - `npm run build` gera, além do app, o **HTML pronto de cada página** (`scripts/prerender.js`): título, descrição, link canônico, Open Graph e dados estruturados (schema.org `Optician` com endereço, telefones e, quando informados, horário, razão social, CNPJ, e-mail e formas de pagamento; `FAQPage` em lentes; `Event` para eventos futuros; `BlogPosting` nos artigos; `BreadcrumbList`). O Google lê o conteúdo sem precisar executar o JavaScript.
 - Também gera `sitemap.xml`, `robots.txt` (bloqueia `/admin` e `/api/`), `404.html` (servida com status 404), `admin.html` (painel, com `noindex`) e `publicado.json` (versão do conteúdo publicada, lida pelo painel).
 - O conteúdo usado no build é o último salvo no painel e vai embutido em cada página: o site abre na hora com ele e confere a versão atual em segundo plano.
-- Se o armazenamento estiver configurado (`BLOB_READ_WRITE_TOKEN` ou `DATA_DIR`) e não puder ser lido no build, o build **falha** de propósito: a Vercel mantém o deploy anterior em vez de publicar o conteúdo padrão.
+- Se o armazenamento estiver configurado **no próprio build** (`BLOB_READ_WRITE_TOKEN` ou `DATA_DIR`) e não puder ser lido, o build **falha** de propósito: a Vercel mantém o deploy anterior em vez de publicar o conteúdo padrão. Uma pasta `DATA_DIR` vazia (ou o `./data` do clone, quando `DATA_DIR` não é passada ao build) não dá erro: o build publica o conteúdo padrão.
 - Uma URL por página: `/sobre/`, `/sobre.html` e `/index.html` redirecionam para a forma limpa (na Vercel por `cleanUrls`/`trailingSlash`; no `server.js`, 301).
 - O endereço do site fica fixo no código gerado (`__SITE__`, definido em `vite.config.js`): canônico, Open Graph e JSON-LD iguais no HTML e na navegação, mesmo abrindo por preview. Ao ligar um domínio próprio: Settings → Domains, novo deploy e redirecionamento 308 do `otica-rinopolis.vercel.app` para o domínio.
 - Títulos e descrições por página ficam em `src/lib/seo.js`; os da home são editáveis no painel (informações → busca e redes).
@@ -104,16 +108,18 @@ ADMIN_PASSWORD='uma-senha-local' npm run dev   # http://localhost:5173 — API e
 ```
 Sem `ADMIN_PASSWORD`, o `npm run dev` aceita a senha de desenvolvimento definida em `server/auth.js` (só com `NODE_ENV=development`; nunca em produção, e o painel não aceita usá-la como senha definitiva). Sem `SESSION_SECRET`, fora de produção, a sessão usa uma chave temporária (cai ao reiniciar). Node 24 (o mesmo da Vercel: `engines` no `package.json` e Settings → Build and Deployment → Node.js Version 24.x).
 
-Para testar o build: `npm run build && PORT=3000 node server.js` (sem `NODE_ENV=production` o servidor avisa que está em modo de desenvolvimento).
+Para testar o build: `npm run build && ADMIN_PASSWORD='uma-senha-local' PORT=3000 node server.js` (sem `NODE_ENV=production` o servidor avisa que está em modo de desenvolvimento; sem `ADMIN_PASSWORD` o login responde "Configuração pendente", porque a senha de desenvolvimento só vale no `npm run dev`). Para testar como em produção: `NODE_ENV=production ADMIN_PASSWORD='12-ou-mais-caracteres' SESSION_SECRET="$(openssl rand -hex 32)" DATA_DIR=/tmp/odl PORT=3000 node server.js`.
 
 ## Produção (situação atual)
 - Site: https://otica-rinopolis.vercel.app — projeto Vercel `otica-rinopolis` (equipe `corrars-projects`, funções em São Paulo, `gru1`), ligado ao repositório `Corrar/otica-rinopolis`: cada push na `main` publica automaticamente.
-- Variáveis em Production: `ADMIN_PASSWORD`, `SESSION_SECRET` e `BLOB_READ_WRITE_TOKEN` (Blob Store conectado só a Production). Para testar o painel em preview, crie um segundo Blob Store conectado só a Preview.
+- Variáveis: `ADMIN_PASSWORD` (Sensitive, só Production), `SESSION_SECRET` (Sensitive, Production e Preview) e `BLOB_READ_WRITE_TOKEN` (Blob Store conectado só a Production; ainda *Encrypted*, recriar como Sensitive). Para testar o painel em preview, crie um segundo Blob Store conectado só a Preview **e** defina `ADMIN_PASSWORD` (outro valor, Sensitive) no ambiente Preview.
+- Deployment Protection: **Standard Protection** (conferido em 30/10/2026). A produção ainda serve o deploy antigo (`dpl_JEJJ…`, commit `d73634c`, com o conteúdo de exemplo e o código antigo do painel) até o merge desta branch; depois do merge, apagar os deploys antigos (seção "Publicação", passo 5).
 - **Titularidade e plano**: as contas Vercel e GitHub são do desenvolvedor. O plano Hobby da Vercel é só para uso pessoal não comercial; o site de uma loja deve ficar no **Pro**. Transferência das contas ou contrato de operador (LGPD, art. 39): `ENTREGA.md`, seção 10.
 
 ## Publicar na Vercel (do zero)
 1. Importe o repositório na Vercel (framework: Vite — já configurado em `vercel.json`). Em Settings → Functions, escolha a região São Paulo (`gru1`).
-2. Em **Storage**, crie um **Blob Store** com acesso **Public** (o código grava com `access: 'public'`) e região **São Paulo (`gru1`)** — a região não muda depois. Conecte ao projeto **só no ambiente Production** (isso cria `BLOB_READ_WRITE_TOKEN`).
+2. Em **Storage**, crie um **Blob Store** com acesso **Public** (o código grava com `access: 'public'`) e região **São Paulo (`gru1`)** — a região não muda depois. Conecte ao projeto **só no ambiente Production**, marcando a variável como **Sensitive** (isso cria `BLOB_READ_WRITE_TOKEN`).
+   Em **Settings → Deployment Protection → Vercel Authentication**, escolha **Standard Protection** (fecha as URLs próprias de cada deploy; o domínio de produção continua público).
 3. Em **Settings → Environment Variables**, defina para Production `SESSION_SECRET` e `ADMIN_PASSWORD` (Sensitive). Sem eles, login e sessão respondem "Configuração pendente".
 4. Faça o deploy. As funções em `api/` atendem `/api/*`; conteúdo, fotos e senha ficam no Blob.
 5. Recomendado: Deploy Hook em `DEPLOY_HOOK_URL` e `CRON_SECRET` (seção "Publicação"); novo deploy.
@@ -121,11 +127,12 @@ Para testar o build: `npm run build && PORT=3000 node server.js` (sem `NODE_ENV=
 
 ## Publicar em VPS / outro servidor Node
 ```bash
+export DATA_DIR=/var/lib/odl          # a mesma pasta para o build e para o servidor
 npm install && npm run build
-SESSION_SECRET=... ADMIN_PASSWORD=... DATA_DIR=/var/lib/odl PORT=3000 npm start
+SESSION_SECRET=... ADMIN_PASSWORD=... PORT=3000 npm start
 ```
 Sem `BLOB_READ_WRITE_TOKEN`, tudo é salvo em arquivos em `DATA_DIR` (faça backup dessa pasta).
-As páginas prontas e o sitemap só mudam ao rodar `npm run build` de novo: agende-o uma vez por dia (cron do sistema) e, se quiser o botão "publicar alterações no Google", aponte `DEPLOY_HOOK_URL` para um gatilho de rebuild (ex.: CI).
+As páginas prontas e o sitemap só mudam ao rodar `npm run build` de novo: agende-o uma vez por dia no cron do sistema, **sempre com o mesmo `DATA_DIR` do `npm start`** (ex.: `30 4 * * * cd /caminho/do/site && DATA_DIR=/var/lib/odl npm run build`). Sem `DATA_DIR`, o build lê `./data` (vazio) e publica o conteúdo padrão por cima do que foi salvo no painel. E, se quiser o botão "publicar alterações no Google", aponte `DEPLOY_HOOK_URL` para um gatilho de rebuild (ex.: CI).
 `npm start` roda com `NODE_ENV=production`: o servidor não sobe sem `SESSION_SECRET` (32+ caracteres) e não há senha padrão. Atrás de nginx ou outro proxy, defina `TRUST_PROXY=1` (o limite de tentativas passa a usar o IP real do visitante). Os cabeçalhos de segurança e de cache são lidos do `vercel.json`.
 
 ## Estrutura
@@ -134,7 +141,7 @@ As páginas prontas e o sitemap só mudam ao rodar `npm run build` de novo: agen
 - `src/components/` — `Layout.jsx` (cabeçalho, menu, rodapé), `bits.jsx` (fotos responsivas, `ArteMarca`, contato, mapa por clique, avisos), `Legal.jsx` (blocos das páginas legais), `Icons.jsx`.
 - `src/admin/` — painel (`Admin.jsx`, `Configuracoes.jsx`, `campos.jsx`).
 - `src/state/content.jsx` — conteúdo compartilhado pelo site e pelo painel (carregamento, cache local, salvamento com conflito e desfazer).
-- `src/content/defaults.js` — conteúdo padrão (só dados confirmados) e migração de conteúdo salvo com textos de exemplo antigos.
+- `src/content/defaults.js` — conteúdo padrão (só dados da loja confirmados; textos gerais neutros) e migração de conteúdo salvo com textos de exemplo antigos.
 - `src/lib/` — `seo.js` (títulos, JSON-LD, endereço oficial), `router.js`, `util.js` (horário de Brasília, status da loja, posts), `validar.js` (CNPJ, e-mail, links e fotos aceitos), `anim.js` + `anim-lazy.js` (GSAP sob demanda), `api.js`, `toast.js`.
 - `scripts/prerender.js` (páginas prontas, sitemap, robots, 404, admin, publicado.json) e `scripts/fotos-responsivas.js` (WebP no build).
 - `server/` — API (`router.js`), autenticação (`auth.js`: scrypt + cookie HttpOnly assinado, limite de tentativas, proteção CSRF por cabeçalho), armazenamento (`storage.js`: Vercel Blob ou arquivos) e fotos locais (`static.js`).
@@ -144,4 +151,4 @@ As páginas prontas e o sitemap só mudam ao rodar `npm run build` de novo: agen
 - `project/`, `chats/` — pacote original do Claude Design, só como referência histórica: senhas, textos e dados de lá (conteúdo de exemplo) **não valem** para o site.
 
 ## Conteúdo
-O conteúdo padrão só traz dados confirmados: endereço, telefones, Instagram e as 8 fotos reais da loja. O que o proprietário ainda não informou fica vazio e a seção correspondente some do site sozinha (sem "+0 anos", "CNPJ" solto ou "aberto agora" inventado). A lista do que falta está no painel ("visão geral" → pendências) e, completa e comentada, em `ENTREGA.md`, seção 4.
+O conteúdo padrão só traz dados da loja confirmados: endereço, telefones, Instagram e as 8 fotos reais. Os textos gerais (capa, "como funciona", diferenciais, página de lentes, blog) são neutros, mas foram escritos para a entrega e o proprietário deve revisá-los (`ENTREGA.md`, seção 4). Os tipos de lente de contato começam vazios (lista `tiposLente`, editável no painel; sem itens, a seção some de `/lentes`). A meta descrição de `/lentes` e o `knowsAbout` do JSON-LD (`src/lib/seo.js`) nunca citam tipos específicos. O que o proprietário ainda não informou fica vazio e a seção correspondente some do site sozinha (sem "+0 anos", "CNPJ" solto ou "aberto agora" inventado). A lista do que falta está no painel ("visão geral" → pendências) e, completa e comentada, em `ENTREGA.md`, seção 4.

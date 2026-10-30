@@ -31,7 +31,7 @@ Sem foto (arte da marca): `fotos.lentes` (capa de /lentes), `fotos.cat_lentes` (
 Ficaram de fora as fotos do balcão com o banner da CIA CAP e da mesa de atendimento com o computador (muita informação na imagem, inclusive a tela).
 
 ## Como trocar ou acrescentar fotos
-- **Pelo painel** (proprietário): `/admin` → fotos e galeria, armações, sobre e equipe, promoções, eventos e blog. O painel reduz a foto para até 1600 px e envia como JPEG para o Vercel Blob. A "visão geral" lista as fotos que ainda faltam. Passo a passo em `ENTREGA.md`, seção 3.
+- **Pelo painel** (proprietário): `/admin` → fotos e galeria, armações, sobre e equipe, promoções, eventos e blog. O painel reduz a foto para até 1600 px e envia como JPEG para o Vercel Blob (PNG ou WebP com fundo transparente, como um logotipo, ganha fundo branco na conversão). A "visão geral" lista as fotos que ainda faltam. Passo a passo em `ENTREGA.md`, seção 3.
 - **No código** (só as fotos padrão): substituir o JPEG em `public/fotos/` (de preferência com 1000 a 1600 px de largura) e fazer um novo deploy. No build, cada foto ganha versões WebP de 480, 800 e 1200 px de largura, sem ampliar (`scripts/fotos-responsivas.js`); o site escolhe a versão pelo tamanho da tela e mantém o JPEG de reserva. As versões ficam só em `dist/`, não no repositório.
 
 Regras para qualquer foto nova:
