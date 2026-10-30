@@ -7,19 +7,22 @@
     "dev": "vite",
     "build": "vite build && vite build --ssr src/entry-server.jsx --outDir dist-ssr && node scripts/prerender.js",
     "preview": "vite preview",
-    "start": "node server.js"
+    "start": "NODE_ENV=production node server.js"
   },
   "engines": {
-    "node": ">=18"
+    "node": ">=20"
   },
   "dependencies": {
-    "@vercel/blob": "2.0.0",
+    "@vercel/blob": "2.8.2",
     "gsap": "3.13.0",
     "react": "19.2.0",
     "react-dom": "19.2.0"
   },
   "devDependencies": {
     "@vitejs/plugin-react": "5.0.4",
-    "vite": "7.1.12"
+    "vite": "7.3.7"
+  },
+  "overrides": {
+    "zod": "4.6.7"
   }
 }

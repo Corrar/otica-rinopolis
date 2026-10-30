@@ -15,7 +15,7 @@ export function useBind() {
   return (path) => ({ value: getPath(cms, path), set: (v) => editar(d => setPath(d, path, v), path.join('.')) });
 }
 
-export function Campo({ b, label, tipo = 'text', full, placeholder, rows = 3, opcoes, on = 'ativo', off = 'inativo', ajuda }) {
+export function Campo({ b, label, tipo = 'text', full, placeholder, rows = 3, opcoes, on = 'ativo', off = 'inativo', ajuda, erro }) {
   const col = full ? '1 / -1' : 'auto';
   const v = b.value ?? (tipo === 'bool' ? false : '');
   if (tipo === 'bool') {
@@ -34,8 +34,9 @@ export function Campo({ b, label, tipo = 'text', full, placeholder, rows = 3, op
       <span>{label}</span>
       {tipo === 'area' ? <textarea className="adm-in" rows={rows} value={v} placeholder={placeholder} onChange={e => b.set(e.target.value)} />
         : tipo === 'select' ? <select className="adm-in" value={v} onChange={e => b.set(e.target.value)}>{opcoes.map(o => <option key={o.v} value={o.v}>{o.l}</option>)}</select>
-        : <input className="adm-in" type={tipo} value={v} placeholder={placeholder} onChange={e => b.set(e.target.value)} />}
-      {ajuda ? <span style={{ font: "400 11px/1.4 'DM Sans',sans-serif", color: 'var(--muted-2)' }}>{ajuda}</span> : null}
+        : <input className="adm-in" type={tipo} value={v} placeholder={placeholder} onChange={e => b.set(e.target.value)} aria-invalid={erro ? true : undefined} />}
+      {erro ? <span role="alert" style={{ font: "500 12px/1.4 'DM Sans',sans-serif", color: '#b3261e' }}>{erro}</span>
+        : ajuda ? <span style={{ font: "400 11px/1.4 'DM Sans',sans-serif", color: 'var(--muted-2)' }}>{ajuda}</span> : null}
     </label>
   );
 }
@@ -91,7 +92,8 @@ export function BlocoInfo({ titulo, desc, children }) {
 }
 
 // Lista editável: adicionar, duplicar, reordenar e remover itens.
-export function BlocoLista({ chave, titulo, desc, tituloDe, novo, addLabel, campos }) {
+// pessoal: itens com dados de pessoas (equipe, depoimentos) — ao remover, explica como apagar do histórico.
+export function BlocoLista({ chave, titulo, desc, tituloDe, novo, addLabel, campos, pessoal }) {
   const { cms, editar } = useContent();
   const bind = useBind();
   const itens = cms[chave] || [];
@@ -109,7 +111,7 @@ export function BlocoLista({ chave, titulo, desc, tituloDe, novo, addLabel, camp
               <button className="adm-ic" style={{ width: 'auto', padding: '0 12px', borderRadius: 999, font: "500 12px 'DM Sans',sans-serif" }} onClick={() => mexer(a => a.splice(i + 1, 0, structuredClone(it)))}>duplicar</button>
               <button className="adm-ic" aria-label="Mover para cima" disabled={i === 0} onClick={() => mexer(a => { [a[i - 1], a[i]] = [a[i], a[i - 1]]; })}>↑</button>
               <button className="adm-ic" aria-label="Mover para baixo" disabled={i === itens.length - 1} onClick={() => mexer(a => { [a[i + 1], a[i]] = [a[i], a[i + 1]]; })}>↓</button>
-              <button className="adm-ic" aria-label="Remover" style={{ color: '#b3261e' }} onClick={() => { if (confirm('Remover este item?')) mexer(a => a.splice(i, 1)); }}><Ic n="trash" s={15} /></button>
+              <button className="adm-ic" aria-label="Remover" style={{ color: '#b3261e' }} onClick={() => { if (confirm(pessoal ? 'Remover do site? O item ainda fica guardado no histórico de versões. Para apagar de vez (inclusive a foto), use depois "apagar histórico e fotos antigas" em configurações.' : 'Remover este item?')) mexer(a => a.splice(i, 1)); }}><Ic n="trash" s={15} /></button>
             </div>
           </div>
           <Grade>{campos((k) => bind([chave, i, k]), it)}</Grade>

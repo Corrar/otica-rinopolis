@@ -2,14 +2,19 @@
 
 Atualizado em 15/10/2026. Site no ar: https://otica-rinopolis.vercel.app
 
-## 1. Ligar o armazenamento (bloqueia o painel)
-O painel `/admin` abre, mas **não salva nada** até existir um Blob Store. A integração do Claude com a Vercel não tem permissão para criá-lo (erro 403), então precisa ser feito no painel da Vercel:
-1. Projeto **otica-rinopolis** → **Storage** → **Create** → **Blob** → conectar a este projeto (cria `BLOB_READ_WRITE_TOKEN` sozinho).
-2. **Deployments** → **Redeploy** no deploy mais recente.
-3. Pedir ao Claude para confirmar que o painel passou a salvar (o aviso vermelho no painel some e "status agora" mostra "nuvem (Vercel Blob)").
+## 1. Armazenamento
+- Blob Store conectado **só ao ambiente Production** (`BLOB_READ_WRITE_TOKEN`) — feito. Passa a valer no próximo deploy de produção.
+- Deploys de preview ficam sem armazenamento (o painel avisa e não salva) — esperado. Para testar o painel em preview, criar um segundo Blob Store conectado só a Preview e manter a proteção dos previews ligada.
+- Depois do deploy, conferir que o painel salva ("status agora" mostra "nuvem (Vercel Blob)").
 
 ## 2. Segurança
-- Entrar em `/admin` com a senha inicial `digitallook` e **trocar a senha** (configurações → trocar senha). Até lá, qualquer pessoa que conheça a senha padrão entra.
+- `ADMIN_PASSWORD` (senha inicial, definida em `ADMIN_PASSWORD` na Vercel, Production) — feito. Não existe mais senha padrão em produção: sem a variável, o painel responde "Configuração pendente".
+- Conferir que `SESSION_SECRET` tem pelo menos 32 caracteres (se for menor, login e sessão respondem "Configuração pendente"; gerar outra com `openssl rand -hex 32`).
+- Na entrega: o dono entra em `/admin` com a senha inicial e o painel **obriga a criar uma senha própria** (mín. 10 caracteres) antes de editar. Depois disso, a senha inicial deixa de funcionar e o desenvolvedor não conhece mais a senha.
+- Tornar **privado** o repositório `Corrar/otica-rinopolis`: a senha padrão antiga continua no histórico do git.
+- Vercel → **Firewall**: regra de Rate Limit para `/api/login` (10 por minuto por IP, ação deny).
+- Vercel → **Billing**: alerta de uso do Blob (operações avançadas têm cota mensal; conferir a cota do plano).
+- Exportar um backup do conteúdo por mês (configurações → exportar backup).
 
 ## 3. Limpeza
 - Apagar o projeto vazio `otica-digital-look` na Vercel (sobrou de antes do repositório): Settings → General → Delete Project.
