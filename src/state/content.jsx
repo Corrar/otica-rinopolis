@@ -5,6 +5,7 @@ import { mesclar } from '../content/defaults.js';
 import { api } from '../lib/api.js';
 import { googleValido } from '../lib/validar.js';
 import { agoraBrasilia, empresa, statusLoja, telefone, whatsapp, horarios, lista } from '../lib/util.js';
+import { parteDe } from '../lib/versoes.js';
 
 const CACHE_KEY = 'odl-cache-v1';
 const Ctx = createContext(null);
@@ -26,6 +27,8 @@ export function ContentProvider({ inicial, children }) {
   const atual = useRef(cms); atual.current = cms;
   const undo = useRef([]), ultimaEdicao = useRef({ chave: null, t: 0 });
   const timer = useRef(null), salvando = useRef(false), sujo = useRef(false);
+  // Partes do site editadas desde o último salvamento (resumo da versão no histórico).
+  const partes = useRef(new Set());
 
   const carregar = useCallback(async (fresh) => {
     const r = await api.conteudo(fresh);
@@ -59,13 +62,14 @@ export function ContentProvider({ inicial, children }) {
     salvando.current = true; sujo.current = false;
     setSalvar({ status: 'salvando', erro: '' });
     const conteudo = atual.current;
+    const enviadas = [...partes.current]; partes.current = new Set();
     let parar = false;
     try {
-      const r = await api.salvar(conteudo, versao.current, force);
+      const r = await api.salvar(conteudo, versao.current, force, enviadas);
       versao.current = r.version; gravarCache(conteudo, r.version);
       setSalvar({ status: sujo.current ? 'pendente' : 'salvo', erro: '' });
     } catch (e) {
-      sujo.current = true;
+      sujo.current = true; enviadas.forEach(p => partes.current.add(p));
       // Recusa do servidor (4xx: dado inválido, conflito, sessão): não insiste sozinho; espera nova edição ou "tentar de novo".
       parar = e.status >= 400 && e.status < 500;
       setSalvar({ status: e.status === 409 ? 'conflito' : e.status === 401 ? 'sessao' : 'erro', erro: e.message });
@@ -79,9 +83,11 @@ export function ContentProvider({ inicial, children }) {
   const agendar = useCallback((ms = 2500) => { clearTimeout(timer.current); timer.current = setTimeout(() => enviar(false), ms); }, [enviar]);
 
   // Aplica uma alteração: fn recebe um rascunho (cópia) e pode mutá-lo.
-  // Edições seguidas no mesmo campo viram um único passo de "desfazer".
-  const editar = useCallback((fn, chave) => {
+  // Edições seguidas no mesmo campo (chave) viram um único passo de "desfazer".
+  // parte: parte do site para o resumo da versão (sem ela, vem da chave; sem as duas, "conteúdo todo").
+  const editar = useCallback((fn, chave, parte) => {
     const antes = atual.current;
+    partes.current.add(parte || (chave ? parteDe(chave) : 'tudo'));
     const rasc = structuredClone(antes);
     fn(rasc);
     rasc.meta = { ...(rasc.meta || {}), atualizadoEm: new Date().toISOString() };
@@ -97,7 +103,7 @@ export function ContentProvider({ inicial, children }) {
 
   const desfazer = useCallback(() => {
     const prev = undo.current.pop(); if (!prev) return false;
-    setUndoN(undo.current.length); ultimaEdicao.current = { chave: null, t: 0 };
+    setUndoN(undo.current.length); ultimaEdicao.current = { chave: null, t: 0 }; partes.current.add('desfeito');
     atual.current = prev; setCms(prev); sujo.current = true; setSalvar({ status: 'pendente', erro: '' }); agendar(200);
     return true;
   }, [agendar]);
@@ -108,11 +114,14 @@ export function ContentProvider({ inicial, children }) {
   // Após restaurar uma versão no servidor.
   const aplicarVersao = useCallback((content, version) => {
     const c = mesclar(content); versao.current = version; atual.current = c; setCms(c); gravarCache(content, version);
-    undo.current = []; setUndoN(0); sujo.current = false; setSalvar({ status: 'salvo', erro: '' });
+    undo.current = []; setUndoN(0); sujo.current = false; partes.current = new Set(); setSalvar({ status: 'salvo', erro: '' });
   }, []);
 
+  // Depois de apagar fotos e versões antigas no servidor: um "desfazer" voltaria a apontar para fotos que não existem mais.
+  const limparDesfazer = useCallback(() => { undo.current = []; setUndoN(0); ultimaEdicao.current = { chave: null, t: 0 }; }, []);
+
   const recarregar = useCallback(async () => {
-    clearTimeout(timer.current); sujo.current = false; undo.current = []; setUndoN(0);
+    clearTimeout(timer.current); sujo.current = false; undo.current = []; setUndoN(0); partes.current = new Set();
     await carregar(true); setSalvar({ status: 'ocioso', erro: '' });
   }, [carregar]);
 
@@ -126,7 +135,7 @@ export function ContentProvider({ inicial, children }) {
     return () => window.removeEventListener('beforeunload', f);
   }, []);
 
-  const valor = useMemo(() => ({ cms, now, editar, desfazer, podeDesfazer: undoN > 0, substituir, aplicarVersao, recarregar, sobrescrever, tentarDeNovo, salvar }), [cms, now, editar, desfazer, undoN, substituir, aplicarVersao, recarregar, sobrescrever, tentarDeNovo, salvar]);
+  const valor = useMemo(() => ({ cms, now, editar, desfazer, podeDesfazer: undoN > 0, limparDesfazer, substituir, aplicarVersao, recarregar, sobrescrever, tentarDeNovo, salvar }), [cms, now, editar, desfazer, undoN, limparDesfazer, substituir, aplicarVersao, recarregar, sobrescrever, tentarDeNovo, salvar]);
   return <Ctx.Provider value={valor}>{children}</Ctx.Provider>;
 }
 

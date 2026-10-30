@@ -4,12 +4,14 @@ import { aviso } from '../lib/toast.js';
 import { lerImagem, num2 } from '../lib/util.js';
 import { PADRAO } from '../content/defaults.js';
 import { problemaNasListas } from '../lib/validar.js';
+import { normalizarSenha, problemaNaSenha, SENHA_MAX, SENHA_MIN } from '../lib/senha.js';
+import { nomesDasPartes } from '../lib/versoes.js';
 import { useContent } from '../state/content.jsx';
 
 const card = 'adm-card';
 const tituloCard = { font: "500 16px 'Outfit',sans-serif" };
 const textoCard = { font: "400 14px/1.6 'DM Sans',sans-serif", color: 'var(--muted)' };
-const fmtQuando = (iso) => { const d = new Date(iso); return isNaN(d) ? iso : `${num2(d.getDate())}/${num2(d.getMonth() + 1)}/${d.getFullYear()} às ${num2(d.getHours())}:${num2(d.getMinutes())}`; };
+const fmtQuando = (iso, segundos) => { const d = new Date(iso); return isNaN(d) ? iso : `${num2(d.getDate())}/${num2(d.getMonth() + 1)}/${d.getFullYear()} às ${num2(d.getHours())}:${num2(d.getMinutes())}${segundos ? ':' + num2(d.getSeconds()) : ''}`; };
 
 // Data do último backup exportado neste aparelho (só uma lembrança local).
 const CHAVE_BACKUP = 'odl-ultimo-backup';
@@ -37,7 +39,9 @@ async function enviarFotosEmbutidas(obj, progresso) {
 }
 
 // Troca de senha: usada em configurações e na tela obrigatória do primeiro acesso.
+// Avisa antes de enviar as regras que não dependem do servidor (src/lib/senha.js); o servidor confere tudo de novo.
 export function FormSenha({ inicial, onOk, rotuloBotao = 'salvar senha' }) {
+  const { cms } = useContent();
   const [senhas, setSenhas] = useState({ atual: '', nova: '', conf: '' });
   const [erro, setErro] = useState('');
   const [enviando, setEnviando] = useState(false);
@@ -45,8 +49,9 @@ export function FormSenha({ inicial, onOk, rotuloBotao = 'salvar senha' }) {
 
   const salvar = async (e) => {
     e.preventDefault();
-    if (senhas.nova.trim().length < 10) return setErro('A nova senha precisa de pelo menos 10 caracteres.');
-    if (senhas.nova !== senhas.conf) return setErro('A confirmação não confere com a nova senha.');
+    const problema = problemaNaSenha(senhas.nova, { evitar: [senhas.atual], telefones: [String(cms?.info?.whatsapp || ''), String(cms?.info?.telefone || '')] });
+    if (problema) return setErro(problema);
+    if (normalizarSenha(senhas.nova) !== normalizarSenha(senhas.conf)) return setErro('A confirmação não confere com a nova senha.');
     setEnviando(true);
     try { await api.trocarSenha(senhas.atual, senhas.nova); setSenhas({ atual: '', nova: '', conf: '' }); onOk(); }
     catch (x) { setErro(x.message); } finally { setEnviando(false); }
@@ -56,9 +61,10 @@ export function FormSenha({ inicial, onOk, rotuloBotao = 'salvar senha' }) {
     <form onSubmit={salvar} style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
       <div style={{ display: 'grid', gridTemplateColumns: inicial ? 'minmax(0,1fr)' : 'repeat(auto-fit,minmax(min(100%,200px),1fr))', gap: 12, alignItems: 'end' }}>
         <label className="adm-label">{inicial ? 'senha inicial (a que você usou para entrar)' : 'senha atual'}<input className="adm-in" type="password" autoComplete="current-password" value={senhas.atual} onChange={mudar('atual')} required /></label>
-        <label className="adm-label">nova senha (mín. 10 caracteres)<input className="adm-in" type="password" autoComplete="new-password" minLength={10} maxLength={200} value={senhas.nova} onChange={mudar('nova')} required /></label>
-        <label className="adm-label">confirmar nova senha<input className="adm-in" type="password" autoComplete="new-password" minLength={10} maxLength={200} value={senhas.conf} onChange={mudar('conf')} required /></label>
+        <label className="adm-label">nova senha (mín. {SENHA_MIN} caracteres)<input className="adm-in" type="password" autoComplete="new-password" minLength={SENHA_MIN} maxLength={SENHA_MAX} value={senhas.nova} onChange={mudar('nova')} aria-describedby="dica-senha" required /></label>
+        <label className="adm-label">confirmar nova senha<input className="adm-in" type="password" autoComplete="new-password" minLength={SENHA_MIN} maxLength={SENHA_MAX} value={senhas.conf} onChange={mudar('conf')} required /></label>
       </div>
+      <div id="dica-senha" style={{ font: "400 12px/1.5 'DM Sans',sans-serif", color: 'var(--muted)' }}>Não vale: só números, sequências (1234567890, qwerty), senhas comuns, o nome da loja, da cidade ou o telefone da loja.</div>
       {erro && <div role="alert" style={{ font: "400 13px 'DM Sans',sans-serif", color: '#b3261e' }}>{erro}</div>}
       <button type="submit" disabled={enviando} className="adm-btn adm-btn--dark" style={{ padding: '12px 20px', fontSize: 14, minHeight: 44, width: inicial ? '100%' : 'max-content' }}>{enviando ? 'salvando…' : rotuloBotao}</button>
     </form>
@@ -66,7 +72,7 @@ export function FormSenha({ inicial, onOk, rotuloBotao = 'salvar senha' }) {
 }
 
 export function Configuracoes({ setSessao }) {
-  const { cms, substituir, aplicarVersao, salvar } = useContent();
+  const { cms, substituir, aplicarVersao, salvar, limparDesfazer } = useContent();
   const [ocupado, setOcupado] = useState('');
   const [versoes, setVersoes] = useState(null);
   const [ultimoBackup, setUltimoBackup] = useState(lerUltimoBackup);
@@ -103,7 +109,7 @@ export function Configuracoes({ setSessao }) {
   const restaurarPadrao = () => { if (confirm('Isso troca todo o conteúdo pelo conteúdo padrão do site (o que você preencheu e as fotos enviadas deixam de aparecer). Você pode voltar pelo histórico de versões. Continuar?')) { substituir(PADRAO()); aviso('Conteúdo padrão restaurado.'); } };
 
   const restaurarVersao = async (v) => {
-    if (!confirm(`Voltar o site para a versão de ${fmtQuando(v.at)}? A versão atual continua no histórico.`)) return;
+    if (!confirm(`Voltar o site para a versão de ${fmtQuando(v.at, true)}? A versão atual continua no histórico.`)) return;
     setOcupado('versao');
     try { const r = await api.restaurarVersao(v.id); aplicarVersao(r.content, r.version); aviso('Versão restaurada.'); carregarVersoes(); }
     catch (x) { aviso(x.message); } finally { setOcupado(''); }
@@ -114,6 +120,8 @@ export function Configuracoes({ setSessao }) {
     setOcupado('limpar');
     try {
       const r = await api.limparFotos(historico);
+      // Fotos e versões apagadas não voltam: o "desfazer" deixaria o site apontando para fotos que não existem mais.
+      if (historico || r.fotosApagadas > 0) limparDesfazer();
       const partes = [r.fotosApagadas === 1 ? '1 foto apagada' : `${r.fotosApagadas} fotos apagadas`];
       if (historico) partes.push(r.versoesApagadas === 1 ? '1 versão antiga apagada' : `${r.versoesApagadas} versões antigas apagadas`);
       aviso(partes.join(' · ') + '.');
@@ -139,13 +147,14 @@ export function Configuracoes({ setSessao }) {
 
     <div className={card}>
       <div style={tituloCard}>histórico de versões</div>
-      <div style={textoCard}>Cada salvamento gera uma versão. Guardamos as 300 mais recentes e todas as dos últimos 30 dias — restaure uma se algo der errado.</div>
+      <div style={textoCard}>Cada salvamento gera uma versão, com a hora e as partes do site alteradas. Guardamos as 300 mais recentes e todas as dos últimos 30 dias — restaure uma se algo der errado.</div>
       {versoes === null ? <span className="spinner" style={{ width: 18, height: 18 }} />
         : versoes.length === 0 ? <div style={textoCard}>Nenhuma versão salva ainda — o site está usando o conteúdo padrão.</div>
         : <div style={{ display: 'flex', flexDirection: 'column', maxHeight: 320, overflow: 'auto' }}>
             {versoes.map((v, i) => (
               <div key={v.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, borderTop: '1px solid rgba(0,0,0,.08)', padding: '10px 0', font: "400 14px 'DM Sans',sans-serif" }}>
-                <span>{fmtQuando(v.at)} {i === 0 && <span style={{ font: "500 11px 'DM Sans',sans-serif", background: 'var(--sand)', borderRadius: 999, padding: '3px 8px', marginLeft: 6 }}>atual</span>}</span>
+                <span style={{ minWidth: 0 }}>{fmtQuando(v.at, true)} {i === 0 && <span style={{ font: "500 11px 'DM Sans',sans-serif", background: 'var(--sand)', borderRadius: 999, padding: '3px 8px', marginLeft: 6 }}>atual</span>}
+                  {v.resumo && v.resumo.length ? <span style={{ display: 'block', font: "400 12px/1.4 'DM Sans',sans-serif", color: 'var(--muted)' }}>{nomesDasPartes(v.resumo)}</span> : null}</span>
                 {i > 0 && <button className="adm-btn" disabled={!!ocupado} onClick={() => restaurarVersao(v)}>restaurar</button>}
               </div>
             ))}

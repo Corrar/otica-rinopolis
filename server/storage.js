@@ -1,19 +1,22 @@
 // Persistência do conteúdo, fotos e senha.
 // - Produção (Vercel): Vercel Blob, quando BLOB_READ_WRITE_TOKEN está definido.
 // - Desenvolvimento / VPS: arquivos em DATA_DIR (padrão ./data).
-// Cada salvamento do conteúdo cria uma nova versão imutável (cms/<timestamp>-<rand>.json),
-// o que evita cache desatualizado no CDN e dá histórico para restaurar.
+// Cada salvamento do conteúdo cria uma nova versão imutável (cms/<timestamp>-<rand>[~partes].json),
+// o que evita cache desatualizado no CDN e dá histórico para restaurar. "~promocoes_blog": partes do site
+// editadas naquela versão (resumo mostrado no histórico; ver src/lib/versoes.js).
 // No Blob, um ponteiro de endereço fixo (atual/conteudo.json) indica a versão atual: a leitura
 // pública não precisa listar o Blob (list() é operação avançada, com cota mensal).
 import { randomBytes } from 'node:crypto';
 import { promises as fs } from 'node:fs';
 import path from 'node:path';
+import { resumoDoNome } from '../src/lib/versoes.js';
 
 // Histórico: só apaga versões que estejam além das 300 mais recentes E tenham mais de 30 dias.
 const MANTER_VERSOES = 300;
 const MANTER_DIAS = 30;
 const PONTEIRO = 'atual/conteudo.json';
 const stamp = () => String(Date.now()).padStart(15, '0') + '-' + randomBytes(4).toString('hex');
+const nomeVersao = (resumo) => stamp() + (resumo ? '~' + resumo : '') + '.json';
 const antiga = (at) => Date.now() - new Date(at).getTime() > MANTER_DIAS * 864e5;
 const paraApagar = (todas) => todas.slice(MANTER_VERSOES).filter(v => antiga(v.at));
 
@@ -28,7 +31,7 @@ function blobStorage() {
   };
   const readJson = async (url) => { const r = await fetch(url, { cache: 'no-store' }); if (!r.ok) throw new Error('blob ' + r.status); return r.json(); };
   const apagar = async (urls) => { const { del } = await blob(); for (let i = 0; i < urls.length; i += 500) await del(urls.slice(i, i + 500)); };
-  const listVersions = async () => (await listAll('cms/')).map(b => ({ id: b.pathname, at: b.uploadedAt, size: b.size, url: b.url }));
+  const listVersions = async () => (await listAll('cms/')).map(b => ({ id: b.pathname, at: b.uploadedAt, size: b.size, url: b.url, resumo: resumoDoNome(b.pathname) }));
   // allowOverwrite=false: só cria o ponteiro se ainda não existir (não atropela um salvamento simultâneo).
   const gravarPonteiro = async (v, sobrescrever) => {
     const { put } = await blob();
@@ -41,11 +44,12 @@ function blobStorage() {
     listVersions,
     async readVersion(v) { return readJson(v.url); },
     // anteriores: lista de versões já obtida antes de gravar (evita listar de novo só para podar).
-    async writeVersion(data, anteriores) {
+    // resumo: códigos das partes editadas ('promocoes_blog'), já validados.
+    async writeVersion(data, anteriores, resumo = '') {
       const { put } = await blob();
       const lista = anteriores || await listVersions();
-      const r = await put(`cms/${stamp()}.json`, JSON.stringify(data), { access: 'public', addRandomSuffix: true, contentType: 'application/json', cacheControlMaxAge: 31536000 });
-      const v = { id: r.pathname, at: new Date().toISOString(), url: r.url };
+      const r = await put(`cms/${nomeVersao(resumo)}`, JSON.stringify(data), { access: 'public', addRandomSuffix: true, contentType: 'application/json', cacheControlMaxAge: 31536000 });
+      const v = { id: r.pathname, at: new Date().toISOString(), url: r.url, resumo: resumoDoNome(r.pathname) };
       await gravarPonteiro(v, true);
       const velhas = paraApagar([v, ...lista]).map(x => x.url);
       if (velhas.length) await apagar(velhas).catch(() => {});
@@ -91,19 +95,19 @@ function fileStorage(dir) {
   const listVersions = async () => {
     await ensure(cmsDir);
     const files = (await fs.readdir(cmsDir)).filter(f => f.endsWith('.json')).sort().reverse();
-    return Promise.all(files.map(async f => { const st = await fs.stat(path.join(cmsDir, f)); return { id: 'cms/' + f, at: st.mtime.toISOString(), size: st.size, file: path.join(cmsDir, f) }; }));
+    return Promise.all(files.map(async f => { const st = await fs.stat(path.join(cmsDir, f)); return { id: 'cms/' + f, at: st.mtime.toISOString(), size: st.size, file: path.join(cmsDir, f), resumo: resumoDoNome(f) }; }));
   };
   return {
     kind: 'file', uploadsDir: upDir,
     listVersions,
     async readVersion(v) { return JSON.parse(await fs.readFile(v.file, 'utf8')); },
-    async writeVersion(data) {
+    async writeVersion(data, _anteriores, resumo = '') {
       await ensure(cmsDir);
-      const name = stamp() + '.json';
+      const name = nomeVersao(resumo);
       await fs.writeFile(path.join(cmsDir, name), JSON.stringify(data));
       const files = (await fs.readdir(cmsDir)).filter(f => f.endsWith('.json')).sort().reverse();
       await Promise.all(paraApagar(files.map(f => ({ f, at: dataDoNome(f) }))).map(x => fs.unlink(path.join(cmsDir, x.f)).catch(() => {})));
-      return { id: 'cms/' + name, at: new Date().toISOString() };
+      return { id: 'cms/' + name, at: new Date().toISOString(), resumo: resumoDoNome(name) };
     },
     async lerAtual() { const [v] = await listVersions(); return v ? { id: v.id, at: v.at, content: JSON.parse(await fs.readFile(v.file, 'utf8')) } : null; },
     async readAuth() { try { return JSON.parse(await fs.readFile(authFile, 'utf8')); } catch { return null; } },

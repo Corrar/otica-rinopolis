@@ -5,6 +5,7 @@ import { api } from '../lib/api.js';
 import { aviso } from '../lib/toast.js';
 import { bgOf, lerImagem } from '../lib/util.js';
 import { useContent } from '../state/content.jsx';
+import { parteDe } from '../lib/versoes.js';
 
 const getPath = (o, p) => p.reduce((a, k) => (a == null ? a : a[k]), o);
 const setPath = (o, p, v) => { const last = p[p.length - 1]; const alvo = p.slice(0, -1).reduce((a, k) => a[k], o); alvo[last] = v; };
@@ -99,7 +100,7 @@ export function BlocoLista({ chave, titulo, desc, tituloDe, novo, addLabel, camp
   const { cms, editar } = useContent();
   const bind = useBind();
   const itens = cms[chave] || [];
-  const mexer = (fn) => editar(d => { d[chave] = d[chave] || []; fn(d[chave]); });
+  const mexer = (fn) => editar(d => { d[chave] = d[chave] || []; fn(d[chave]); }, undefined, parteDe(chave));
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
       <CabecalhoBloco titulo={titulo} desc={desc} />

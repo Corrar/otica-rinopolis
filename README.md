@@ -54,7 +54,8 @@ Para criar o Deploy Hook: Vercel → Settings → Git → Deploy Hooks → nome 
 - **Mensal, pelo painel**: configurações → backup dos dados → **exportar backup** (`digital-look-backup-AAAA-MM-DD.json`). Guardar em dois lugares fora do site. O painel lembra há quantos dias foi o último (por aparelho) e avisa depois de 30 dias.
 - O arquivo tem os textos e as **URLs** das fotos (as fotos enviadas são públicas no Blob; para uma cópia completa, baixe-as pelas URLs do arquivo).
 - **Importar backup** substitui o conteúdo atual (aceita também backups do protótipo com fotos embutidas, que são reduzidas e enviadas). **Histórico de versões**: restaurar uma versão anterior (guarda as 300 mais recentes e todas dos últimos 30 dias).
-- No Blob: `cms/` (uma versão imutável por salvamento), `atual/conteudo.json` (ponteiro para a versão atual), `uploads/` (fotos) e `auth/` (hash da senha). No modo arquivos, faça backup da pasta `DATA_DIR` inteira.
+- No Blob: `cms/` (uma versão imutável por salvamento; o nome traz as partes do site alteradas, ex.: `~promocoes_blog`, mostradas no histórico), `atual/conteudo.json` (ponteiro para a versão atual), `uploads/` (fotos) e `auth/` (hash da senha). No modo arquivos, faça backup da pasta `DATA_DIR` inteira.
+- **O arquivo de `auth/` é sensível**: o Blob Store é público (quem tem a URL baixa o arquivo) e ele guarda o salt e o hash scrypt da senha, que permitiriam tentar adivinhá-la fora do site. O endereço tem sufixo aleatório e o site nunca o mostra, mas ele aparece no navegador de arquivos do Blob na Vercel: não compartilhe prints nem a URL desse arquivo. Melhoria futura: guardar o registro da senha num Blob Store **privado** separado.
 
 ## Pedido de eliminação de dados
 Para retirar de vez uma pessoa ou um depoimento (ex.: funcionário que saiu, cliente que revogou a autorização):
@@ -67,7 +68,7 @@ Para retirar de vez uma pessoa ou um depoimento (ex.: funcionário que saiu, cli
 Não há "esqueci minha senha". Quem administra a hospedagem:
 1. Define um **novo** `ADMIN_PASSWORD` aleatório (Production, Sensitive) e faz Redeploy.
 2. Vercel → Storage → Blob Store → apaga os arquivos de `auth/` (modo arquivos: `DATA_DIR/auth.json`). Sessões antigas deixam de valer.
-3. Passa a nova senha inicial ao proprietário **por canal privado** (o login lê o registro atualizado na hora); no primeiro acesso, o painel obriga a criar outra senha.
+3. Passa a nova senha inicial ao proprietário **por canal privado** (o login confere o registro atualizado em até 1 minuto); no primeiro acesso, o painel obriga a criar outra senha.
 
 ## SEO (Google)
 - `npm run build` gera, além do app, o **HTML pronto de cada página** (`scripts/prerender.js`): título, descrição, link canônico, Open Graph e dados estruturados (schema.org `Optician` com endereço, telefones e, quando informados, horário, razão social, CNPJ, e-mail e formas de pagamento; `FAQPage` em lentes; `Event` para eventos futuros; `BlogPosting` nos artigos; `BreadcrumbList`). O Google lê o conteúdo sem precisar executar o JavaScript.
@@ -86,11 +87,14 @@ Não há "esqueci minha senha". Quem administra a hospedagem:
 - Cache: `/assets` (arquivos com hash) por 1 ano; `/fotos` por 7 dias; `logo.png` e `og-image.jpg` por 1 dia. O `server.js` também comprime (brotli/gzip) e responde 304 com ETag.
 
 ## Área do proprietário (`/admin`, ou "área do proprietário" no rodapé)
-- Senha inicial: valor de `ADMIN_PASSWORD`. No primeiro acesso o painel **só deixa trocar a senha** (mín. 10 caracteres, diferente da inicial) antes de qualquer edição; a API recusa edições com a senha inicial. A nova fica salva como hash scrypt e, a partir daí, `ADMIN_PASSWORD` deixa de funcionar — quem configurou o servidor não conhece mais a senha.
+- Senha inicial: valor de `ADMIN_PASSWORD`. No primeiro acesso o painel **só deixa trocar a senha** antes de qualquer edição; a API recusa edições com a senha inicial. A nova fica salva como hash scrypt e, a partir daí, `ADMIN_PASSWORD` deixa de funcionar — quem configurou o servidor não conhece mais a senha.
+- Regras da senha nova (`src/lib/senha.js`, conferidas no servidor e avisadas antes no painel): 10 a 200 caracteres; recusa só números, sequências (`1234567890`, `qwertyuiop`, `1q2w3e4r5t`), repetições, senhas e palavras comuns com complemento fraco (`senha12345`, `brasil2026`), o nome da loja (com ou sem espaço, acento, maiúsculas ou letras trocadas por números), a cidade, a rua, o CEP e os telefones da loja, e a senha inicial ou a atual (sem diferenciar maiúsculas e símbolos).
+- A senha é normalizada do mesmo jeito ao criar, ao entrar e na senha inicial: espaços no começo e no fim não contam e letras acentuadas valem igual em qualquer aparelho (Unicode NFC). Assim, o que é salvo é sempre o que o login confere (um espaço a mais no fim, comum no celular ou ao colar, não tranca o proprietário).
 - Edita informações (inclusive razão social, CNPJ e e-mail), horário e feriados (status "aberto agora" automático, só com horário informado), capa, faixa de aviso com data de fim, fotos e galeria, promoções (com validade e condições), eventos, armações, lentes/FAQ, sobre/equipe, depoimentos e blog. Cada campo traz a orientação do que pode ou não ser publicado.
 - "Visão geral" → pendências: lista o que ainda falta para o site ficar só com dados reais.
 - Salvamento automático no servidor, desfazer, aviso de conflito se outro aparelho editou, histórico de versões com restauração e exportar/importar backup.
-- Sessão: 12 horas, ou 14 dias com "manter conectado"; "sair de todos os aparelhos" encerra todas as sessões. Limite de tentativas de senha por IP e geral.
+- Sessão: 12 horas, ou 14 dias com "manter conectado" (a duração escolhida continua valendo depois de trocar a senha); "sair de todos os aparelhos" encerra todas as sessões. O cookie é assinado (HMAC) e a assinatura é conferida antes de qualquer leitura no Blob: cookie falso não gasta operações do armazenamento.
+- Limite de tentativas de senha (`server/auth.js`, por instância): cada tentativa conta **antes** da conferência, então requisições simultâneas não furam o limite. Por IP: 5 erros bloqueiam por 30 s, dobrando a cada novo erro (até 15 min). Na Vercel o IP vem de `x-real-ip`, que o visitante não consegue forjar. Mais de 30 erros em 10 min, de quaisquer IPs (ataque distribuído), **não** bloqueiam ninguém — para que um atacante não consiga trancar o proprietário fora do painel —, mas cada login passa a esperar até 2 s antes da conferência e o limite por IP cai para 3. O login usa o registro da senha em cache e só relê o Blob quando a senha não confere, no máximo 1 vez por minuto.
 - Liga/desliga botão flutuante do WhatsApp e animações.
 
 ## Rodar localmente
@@ -98,7 +102,7 @@ Não há "esqueci minha senha". Quem administra a hospedagem:
 npm install
 ADMIN_PASSWORD='uma-senha-local' npm run dev   # http://localhost:5173 — API e fotos ficam em ./data
 ```
-Sem `ADMIN_PASSWORD`, o `npm run dev` aceita a senha de desenvolvimento definida em `server/auth.js` (só com `NODE_ENV=development`; nunca em produção, e o painel não aceita usá-la como senha definitiva). Sem `SESSION_SECRET`, fora de produção, a sessão usa uma chave temporária (cai ao reiniciar). Node 20 ou mais novo.
+Sem `ADMIN_PASSWORD`, o `npm run dev` aceita a senha de desenvolvimento definida em `server/auth.js` (só com `NODE_ENV=development`; nunca em produção, e o painel não aceita usá-la como senha definitiva). Sem `SESSION_SECRET`, fora de produção, a sessão usa uma chave temporária (cai ao reiniciar). Node 24 (o mesmo da Vercel: `engines` no `package.json` e Settings → Build and Deployment → Node.js Version 24.x).
 
 Para testar o build: `npm run build && PORT=3000 node server.js` (sem `NODE_ENV=production` o servidor avisa que está em modo de desenvolvimento).
 
@@ -113,7 +117,7 @@ Para testar o build: `npm run build && PORT=3000 node server.js` (sem `NODE_ENV=
 3. Em **Settings → Environment Variables**, defina para Production `SESSION_SECRET` e `ADMIN_PASSWORD` (Sensitive). Sem eles, login e sessão respondem "Configuração pendente".
 4. Faça o deploy. As funções em `api/` atendem `/api/*`; conteúdo, fotos e senha ficam no Blob.
 5. Recomendado: Deploy Hook em `DEPLOY_HOOK_URL` e `CRON_SECRET` (seção "Publicação"); novo deploy.
-6. Recomendado: em **Firewall**, regra de Rate Limit para `/api/login` (10 por minuto por IP, ação deny); em **Billing**, alerta de uso (o Blob tem cota mensal de operações).
+6. Recomendado: em **Firewall**, regras de Rate Limit para `/api/login` (10 por minuto por IP, ação deny) e para `/api/*` (120 por minuto por IP, ação deny); em **Billing**, alerta de uso (o Blob tem cota mensal de operações).
 
 ## Publicar em VPS / outro servidor Node
 ```bash

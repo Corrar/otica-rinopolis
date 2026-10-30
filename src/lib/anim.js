@@ -73,12 +73,20 @@ function animarPagina(root, footer, transicao) {
 }
 
 // Liga as animações da página atual (chamado por useAnimacoesPagina, em anim-lazy.js). Devolve a limpeza.
+// A altura da página pode mudar depois (filtro da vitrine, conteúdo novo vindo da API, fotos carregando): os pontos
+// de início das animações são recalculados a cada mudança de tamanho do body (agrupado num quadro). Sem isso, o
+// rodapé e a última seção, que começam invisíveis, ficariam além do fim da rolagem e nunca apareceriam.
 export function ligarAnimacoesPagina(main, footer, transicao) {
   const ctx = gsap.context(() => animarPagina(main, footer, transicao));
   const raf = requestAnimationFrame(() => ScrollTrigger.refresh());
-  let ativo = true;
+  let ativo = true, quadro = 0;
   if (document.fonts) document.fonts.ready.then(() => { if (ativo) ScrollTrigger.refresh(); });
-  return () => { ativo = false; cancelAnimationFrame(raf); ctx.revert(); };
+  const ro = typeof ResizeObserver === 'undefined' ? null : new ResizeObserver(() => {
+    cancelAnimationFrame(quadro);
+    quadro = requestAnimationFrame(() => { if (ativo) ScrollTrigger.refresh(); });
+  });
+  ro?.observe(document.body);
+  return () => { ativo = false; cancelAnimationFrame(raf); cancelAnimationFrame(quadro); ro?.disconnect(); ctx.revert(); };
 }
 
 export function animarGrade(el) {

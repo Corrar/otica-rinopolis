@@ -18,9 +18,11 @@ let caminhoServidor = '/';
 export const definirCaminhoServidor = (p) => { caminhoServidor = p; };
 export const usePath = () => useSyncExternalStore(assinar, () => location.pathname, () => caminhoServidor);
 
-// Links antigos do protótipo usavam #pagina (ex.: #admin) — redireciona para a URL limpa.
+// Links antigos do protótipo usavam #pagina na raiz (ex.: site.com/#admin) — redireciona para a URL limpa.
+// Só na raiz: em outras páginas o # é uma seção da própria página (ex.: /termos-de-uso#contato).
 export function useHashLegado() {
   useEffect(() => {
+    if (location.pathname !== '/') return;
     const h = location.hash.replace('#', '');
     if (/^(inicio|sobre|armacoes|lentes|convenios|blog|contato|admin)$/.test(h)) navegar(h === 'inicio' ? '/' : '/' + h, { replace: true });
   }, []);

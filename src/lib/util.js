@@ -86,14 +86,18 @@ export function whatsapp(info) {
   };
 }
 
-// Reduz a foto no navegador antes do envio (máx. 1600px, JPEG).
+// Reduz a foto no navegador antes do envio (máx. 1600px, JPEG). O JPEG não tem transparência: áreas transparentes
+// de um PNG ou WebP (ex.: armação recortada) ficam brancas, não pretas. PNG não é mantido porque, em 1600px, pode
+// passar do limite de 3 MB do envio.
 export function lerImagem(file, max = 1600) {
   return new Promise((res, rej) => {
     const img = new Image(); const url = URL.createObjectURL(file);
     img.onload = () => {
       const r = Math.min(1, max / Math.max(img.width, img.height));
       const c = document.createElement('canvas'); c.width = Math.round(img.width * r); c.height = Math.round(img.height * r);
-      c.getContext('2d').drawImage(img, 0, 0, c.width, c.height); URL.revokeObjectURL(url);
+      const g = c.getContext('2d');
+      g.fillStyle = '#fff'; g.fillRect(0, 0, c.width, c.height);
+      g.drawImage(img, 0, 0, c.width, c.height); URL.revokeObjectURL(url);
       res(c.toDataURL('image/jpeg', 0.84));
     };
     img.onerror = () => { URL.revokeObjectURL(url); rej(new Error('imagem inválida')); };

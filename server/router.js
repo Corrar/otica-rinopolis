@@ -2,8 +2,10 @@
 // e pelo servidor de desenvolvimento do Vite. Só depende de req/res do Node.
 import { createHash, timingSafeEqual } from 'node:crypto';
 import { getStorage } from './storage.js';
-import { COOKIE, COOKIE_HTTPS, DIAS_LEMBRAR, bloqueado, conferirSenha, criarToken, encerrarSessoes, limparFalhas, registrarFalha, senhaProibida, sessao, trocarSenha } from './auth.js';
+import { COOKIE, COOKIE_HTTPS, atrasoGeral, bloqueado, conferirSenha, criarToken, encerrarSessoes, limparFalhas, registrarFalha, sessao, trocarSenha } from './auth.js';
 import { problemaNoConteudo } from '../src/lib/validar.js';
+import { normalizarSenha, problemaNaSenha } from '../src/lib/senha.js';
+import { resumoValido } from '../src/lib/versoes.js';
 
 const MAX_CONTEUDO = 2 * 1024 * 1024; // JSON do conteúdo (as fotos ficam fora, como URL)
 const MAX_FOTO = 3 * 1024 * 1024; // em base64 fica abaixo dos 4,5 MB aceitos pelas funções da Vercel
@@ -69,12 +71,16 @@ const tokenDe = (req) => cookies(req)[nomeCookie(req)];
 function cookieSessao(req, valor, maxAge) {
   return `${nomeCookie(req)}=${valor}; Path=/; HttpOnly; SameSite=Strict; Max-Age=${maxAge}${seguro(req) ? '; Secure' : ''}`;
 }
-const entrarComCookie = (req, res, r, dias) => res.setHeader('Set-Cookie', cookieSessao(req, criarToken(r, dias), Math.round(dias * 86400)));
+// lembrar: "manter conectado" (14 dias); senão 12 horas.
+const entrarComCookie = (req, res, r, lembrar) => { const { token, segundos } = criarToken(r, !!lembrar); res.setHeader('Set-Cookie', cookieSessao(req, token, segundos)); };
 
 function fmtEspera(s) { return s > 90 ? `${Math.ceil(s / 60)} min` : `${s}s`; }
-function conferirBloqueio(quem) {
+// Recusa o IP bloqueado e já conta esta tentativa (sem await entre as duas coisas: requisições simultâneas do mesmo
+// IP não passam todas pela verificação). A senha certa desconta (limparFalhas).
+function contarTentativa(quem, opcoes) {
   const espera = bloqueado(quem);
   if (espera) throw new HttpErro(429, `Muitas tentativas. Tente de novo em ${fmtEspera(espera)}.`);
+  registrarFalha(quem, opcoes);
 }
 
 // Cabeçalho próprio: formulários de outros sites não conseguem enviá-lo (proteção CSRF).
@@ -154,7 +160,7 @@ const rotas = {
 
   'PUT /api/content': async (req, res) => {
     await exigirLogin(req);
-    const { content, baseVersion, force } = await lerCorpo(req, MAX_CONTEUDO);
+    const { content, baseVersion, force, resumo } = await lerCorpo(req, MAX_CONTEUDO);
     if (!content || typeof content !== 'object' || Array.isArray(content)) throw new HttpErro(400, 'Conteúdo inválido.');
     if (temDataUrl(content)) throw new HttpErro(400, 'Envie as fotos pelo botão de foto (não embutidas no conteúdo).');
     const problema = problemaNoConteudo(content);
@@ -162,7 +168,7 @@ const rotas = {
     const lista = await getStorage().listVersions();
     const atual = lista[0];
     if (!force && atual && baseVersion !== atual.id) return json(res, 409, { error: 'O conteúdo foi alterado em outro aparelho.', version: atual.id });
-    const v = await getStorage().writeVersion(content, lista);
+    const v = await getStorage().writeVersion(content, lista, resumoValido(resumo));
     guardarConteudo({ content, version: v.id, updatedAt: v.at });
     json(res, 200, { version: v.id, updatedAt: v.at });
   },
@@ -180,12 +186,15 @@ const rotas = {
   'POST /api/login': async (req, res) => {
     exigirCabecalho(req);
     const quem = ip(req);
-    conferirBloqueio(quem);
+    contarTentativa(quem);
     const { senha, lembrar } = await lerCorpo(req, 10_000);
+    // Muitas falhas recentes de vários IPs (ataque distribuído): espera um pouco antes de conferir, sem recusar ninguém.
+    const atraso = atrasoGeral();
+    if (atraso) await new Promise(r => setTimeout(r, atraso));
     const { ok, registro } = await conferirSenha(senha);
-    if (!ok) { registrarFalha(quem); throw new HttpErro(401, 'Senha incorreta. Tente novamente.'); }
+    if (!ok) throw new HttpErro(401, 'Senha incorreta. Tente novamente.');
     limparFalhas(quem);
-    entrarComCookie(req, res, registro, lembrar ? DIAS_LEMBRAR : 0.5);
+    entrarComCookie(req, res, registro, lembrar === true);
     json(res, 200, { logado: true, senhaInicial: registro.inicial });
   },
 
@@ -201,18 +210,20 @@ const rotas = {
   },
 
   'POST /api/password': async (req, res) => {
-    await exigirLogin(req, { permitirInicial: true });
+    const sessaoAtual = await exigirLogin(req, { permitirInicial: true });
     const quem = ip(req);
-    conferirBloqueio(quem);
+    contarTentativa(quem, { geral: false }); // quem já está logado não entra na contagem de ataque distribuído
     const { atual, nova } = await lerCorpo(req, 10_000);
-    if (!(await conferirSenha(atual)).ok) { registrarFalha(quem); throw new HttpErro(400, 'Senha atual incorreta.'); }
+    if (typeof nova !== 'string' || typeof atual !== 'string') throw new HttpErro(400, 'Requisição inválida.');
+    if (!(await conferirSenha(atual, { fresco: true })).ok) throw new HttpErro(400, 'Senha atual incorreta.');
     limparFalhas(quem);
-    const n = typeof nova === 'string' ? nova.trim() : '';
-    if (n.length < 10) throw new HttpErro(400, 'Use ao menos 10 caracteres.');
-    if (n.length > 200) throw new HttpErro(400, 'Use no máximo 200 caracteres.');
-    if (n === String(atual || '').trim() || senhaProibida(n)) throw new HttpErro(400, 'Escolha uma senha nova, diferente da inicial e sem o nome da loja.');
-    const r = await trocarSenha(n);
-    entrarComCookie(req, res, r, 0.5);
+    // A senha é salva com a mesma normalização do login (espaços nas pontas não contam; ver src/lib/senha.js).
+    const info = (await getStorage().lerAtual().catch(() => null))?.content?.info || {};
+    const problema = problemaNaSenha(nova, { evitar: [process.env.ADMIN_PASSWORD || '', atual], telefones: [String(info.whatsapp || ''), String(info.telefone || '')] });
+    if (problema) throw new HttpErro(400, problema);
+    const r = await trocarSenha(normalizarSenha(nova));
+    // Mantém a duração da sessão escolhida no login ("manter conectado" continua valendo 14 dias).
+    entrarComCookie(req, res, r, sessaoAtual.lembrar);
     json(res, 200, { ok: true });
   },
 
@@ -232,7 +243,7 @@ const rotas = {
   'GET /api/history': async (req, res) => {
     await exigirLogin(req, { permitirInicial: true });
     const vs = await getStorage().listVersions();
-    json(res, 200, { versions: vs.map(({ id, at, size }) => ({ id, at, size })) });
+    json(res, 200, { versions: vs.map(({ id, at, size, resumo }) => ({ id, at, size, resumo: resumo || [] })) });
   },
 
   'POST /api/history': async (req, res) => {
@@ -242,7 +253,7 @@ const rotas = {
     const v = lista.find(x => x.id === id);
     if (!v) throw new HttpErro(404, 'Versão não encontrada.');
     const content = await getStorage().readVersion(v);
-    const nova = await getStorage().writeVersion(content, lista);
+    const nova = await getStorage().writeVersion(content, lista, 'restaurada');
     guardarConteudo({ content, version: nova.id, updatedAt: nova.at });
     json(res, 200, { content, version: nova.id, updatedAt: nova.at });
   },

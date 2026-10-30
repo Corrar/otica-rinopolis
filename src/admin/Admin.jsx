@@ -7,7 +7,7 @@ import { CATEGORIAS } from '../pages/Armacoes.jsx';
 import { useContent, useSite } from '../state/content.jsx';
 import { api } from '../lib/api.js';
 import { aviso } from '../lib/toast.js';
-import { empresa, eventosFuturos, fmtData, horaValida, lista, num2, postsDe, promosAtivas } from '../lib/util.js';
+import { agoraBrasilia, empresa, eventosFuturos, fmtData, horaValida, lista, num2, postsDe, promosAtivas } from '../lib/util.js';
 import { dataIso, temTexto } from '../lib/seo.js';
 import { ehIlustrativa, PADRAO } from '../content/defaults.js';
 import { cnpjValido, emailValido, facebookValido, googleValido } from '../lib/validar.js';
@@ -215,6 +215,9 @@ function Aba({ id, irAba, sessao, setSessao }) {
     }, `posts.${n}.${k}`),
   });
   const full = true;
+  const hojeIso = agoraBrasilia().iso;
+  // Situação de cada promoção no site: vencida e ainda não iniciada não aparecem, mesmo com "ativa no site".
+  const situacaoPromo = (it) => (it.ativa === false ? ' · oculta' : it.fim && it.fim < hojeIso ? ' · vencida (fora do site)' : it.inicio && it.inicio > hojeIso ? ' · começa em ' + fmtData(it.inicio) : '');
   switch (id) {
     case 'visao': return <Visao irAba={irAba} sessao={sessao} />;
     case 'info': return <>
@@ -303,9 +306,9 @@ function Aba({ id, irAba, sessao, setSessao }) {
       <BlocoLista chave="galeria" titulo="galeria da loja" desc='Aparece na página "sobre". Fotos do espaço, vitrines e bastidores.' tituloDe={it => it.legenda || 'foto'} novo={() => ({ img: '', legenda: '' })} addLabel="adicionar foto"
         campos={b => [<Campo key="i" b={b('img')} label="Foto" tipo="img" />, <Campo key="l" b={b('legenda')} label="Legenda (opcional)" />]} />
     </>;
-    case 'promocoes': return <BlocoLista chave="promocoes" tituloDe={it => it.titulo} novo={() => ({ tag: '', titulo: 'Nova promoção', texto: '', inicio: '', fim: '', condicoes: '', ativa: true, img: '' })} addLabel="adicionar promoção"
+    case 'promocoes': return <BlocoLista chave="promocoes" tituloDe={it => (it.titulo || 'promoção') + situacaoPromo(it)} novo={() => ({ tag: '', titulo: 'Nova promoção', texto: '', inicio: '', fim: '', condicoes: '', ativa: true, img: '' })} addLabel="adicionar promoção"
       campos={b => [<Campo key="a" b={b('ativa')} label="Status" tipo="bool" on="ativa no site" off="oculta" />, <Campo key="g" b={b('tag')} label="Etiqueta (ex.: novembro)" />, <Campo key="t" b={b('titulo')} label="Título" full />, <Campo key="x" b={b('texto')} label="Descrição" tipo="area" full />, <Campo key="ini" b={b('inicio')} label="Começa em (opcional)" tipo="date" />, <Campo key="fim" b={b('fim')} label="Termina em" tipo="date" ajuda="Depois dessa data a promoção sai do site sozinha." />, <Campo key="c" b={b('condicoes')} label="Condições" tipo="area" rows={2} full placeholder="Ex.: válida enquanto durarem os estoques; não cumulativa com outras promoções." ajuda="Aparecem junto com a validade. A oferta publicada obriga a loja." />, <Campo key="i" b={b('img')} label="Imagem (opcional)" tipo="img" full />]} />;
-    case 'eventos': return <BlocoLista chave="eventos" tituloDe={it => (it.data ? fmtData(it.data) + ' · ' : '') + it.titulo} novo={() => ({ titulo: 'Novo evento', data: '', hora: '', local: 'na loja', texto: '', gratuito: false, img: '' })} addLabel="adicionar evento"
+    case 'eventos': return <BlocoLista chave="eventos" tituloDe={it => (it.data ? fmtData(it.data) + ' · ' : '') + it.titulo + (it.data && it.data < hojeIso ? ' · já passou (fora do site)' : '')} novo={() => ({ titulo: 'Novo evento', data: '', hora: '', local: 'na loja', texto: '', gratuito: false, img: '' })} addLabel="adicionar evento"
       campos={b => [<Campo key="t" b={b('titulo')} label="Título" full />, <Campo key="d" b={b('data')} label="Data" tipo="date" />, <Campo key="h" b={b('hora')} label="Horário" placeholder="9h às 13h" ajuda="Início e fim, ex.: 9h às 13h (o Google mostra os dois)." />, <Campo key="l" b={b('local')} label="Local" placeholder="na loja" ajuda='"na loja" (ou vazio) usa o endereço da ótica.' />, <Campo key="g" b={b('gratuito')} label="Entrada" tipo="bool" on="gratuita" off="não informar" />, <Campo key="x" b={b('texto')} label="Descrição" tipo="area" full />, <Campo key="i" b={b('img')} label="Imagem (opcional)" tipo="img" full />]} />;
     case 'produtos': return <BlocoLista chave="produtos" tituloDe={it => it.nome} novo={() => ({ nome: 'Novo modelo', marca: '', cat: 'grau', img: '', preco: '', destaque: false, selo: 'novo' })} addLabel="adicionar armação"
       campos={b => [<Campo key="n" b={b('nome')} label="Nome do modelo" />, <Campo key="m" b={b('marca')} label="Marca / linha (opcional)" />, <Campo key="c" b={b('cat')} label="Categoria" tipo="select" opcoes={CATEGORIAS.slice(1).map(([v, l]) => ({ v, l }))} />, <Campo key="p" b={b('preco')} label="Preço (opcional)" placeholder="R$ 299,00 à vista (só a armação)" ajuda="Informe o preço à vista da armação; lentes são orçadas à parte." />, <Campo key="d" b={b('destaque')} label="Selo de destaque" tipo="bool" on="com selo" off="sem selo" />, <Campo key="s" b={b('selo')} label="Texto do selo" placeholder="novo" />, <Campo key="i" b={b('img')} label="Foto" tipo="img" full />]} />;
@@ -334,7 +337,7 @@ function Aba({ id, irAba, sessao, setSessao }) {
     </>;
     case 'depoimentos': return <BlocoLista chave="depoimentos" pessoal tituloDe={it => it.nome} novo={() => ({ nome: 'Cliente', item: '', texto: '' })} addLabel="adicionar depoimento"
       campos={b => [<Campo key="n" b={b('nome')} label="Nome do cliente" />, <Campo key="i" b={b('item')} label="O que comprou (opcional, só com autorização)" />, <Campo key="t" b={b('texto')} label="Depoimento" tipo="area" full />]} />;
-    case 'posts': return <BlocoLista chave="posts" tituloDe={it => it.titulo} novo={() => ({ tag: 'dicas', data: fmtData(new Date().toISOString().slice(0, 10)), titulo: 'Novo artigo', resumo: '', conteudo: '', img: '', slug: '' })} addLabel="adicionar artigo" duplicar={it => ({ ...it, slug: '' })}
+    case 'posts': return <BlocoLista chave="posts" tituloDe={it => it.titulo} novo={() => ({ tag: 'dicas', data: fmtData(agoraBrasilia().iso), titulo: 'Novo artigo', resumo: '', conteudo: '', img: '', slug: '' })} addLabel="adicionar artigo" duplicar={it => ({ ...it, slug: '' })}
       campos={(_, it, i) => { const b = (k) => bindPost(i, k), efetivo = (postsDe(cms).find(p => p.i === i) || {}).slug; return [<Campo key="t" b={b('titulo')} label="Título" full />,
         <Campo key="s" b={b('slug')} label="Endereço do artigo (slug)" placeholder={efetivo} full ajuda={`Link: /blog/${efetivo}. Preenchido sozinho quando o artigo ganha texto e vai para o Google; depois disso, corrigir o título não muda o link. Mudar este campo muda o link (o antigo deixa de funcionar).`} />, <Campo key="g" b={b('tag')} label="Categoria" />, <Campo key="d" b={b('data')} label="Data de publicação" placeholder="30 out 2026" ajuda="Ex.: 30 out 2026 ou 30/10/2026. O tempo de leitura é calculado pelo tamanho do texto." />, <Campo key="r" b={b('resumo')} label="Resumo (aparece na lista)" tipo="area" rows={2} full />, <Campo key="c" b={b('conteudo')} label="Texto completo do artigo" tipo="area" rows={10} full />, <Campo key="i" b={b('img')} label="Imagem" tipo="img" full />]; }} />;
     case 'config': return <Configuracoes setSessao={setSessao} />;
@@ -346,7 +349,9 @@ function Visao({ irAba, sessao }) {
   const { cms, info, status, wa, hojeIso } = useSite();
   const promos = promosAtivas(cms, hojeIso).length, futuros = eventosFuturos(cms).length;
   const fotosFixas = Object.values(cms.fotos), fotosOk = fotosFixas.filter(Boolean).length;
-  const fotosTotal = fotosOk + (cms.galeria || []).filter(g => g.img).length + cms.produtos.filter(x => x.img).length;
+  // Só as fotos enviadas pelo painel (as de fábrica, em /fotos/, não contam).
+  const fotosEnviadas = new Set([...fotosFixas, ...['galeria', 'produtos', 'equipe', 'promocoes', 'eventos', 'posts'].flatMap(k => (cms[k] || []).map(x => x && x.img))]
+    .filter(u => typeof u === 'string' && (/^\/uploads\//.test(u) || /^https:\/\/[a-z0-9-]+\.public\.blob\.vercel-storage\.com\//i.test(u)))).size;
   const ilustrativas = [...fotosFixas, ...['galeria', 'produtos', 'equipe', 'promocoes', 'eventos', 'posts'].flatMap(k => (cms[k] || []).map(x => x.img))].filter(ehIlustrativa).length;
   const emp = empresa(info);
   const marcas = lista(info.marcas);
@@ -369,7 +374,7 @@ function Visao({ irAba, sessao }) {
     [lista(info.convenios).length > 0, 'Convênios', 'info', true],
     [(cms.equipe || []).length > 0, 'Equipe', 'sobre', true],
   ].map(([ok, texto, tab, opcional = false]) => ({ ok, texto, tab, opcional })).sort((a, b) => (a.ok - b.ok) || (a.opcional - b.opcional));
-  const stats = [['promoções ativas', promos, 'promocoes'], ['eventos futuros', futuros, 'eventos'], ['armações', cms.produtos.length, 'produtos'], ['artigos', cms.posts.length, 'posts'], ['fotos enviadas', fotosTotal, 'fotos']];
+  const stats = [['promoções ativas', promos, 'promocoes'], ['eventos futuros', futuros, 'eventos'], ['armações', cms.produtos.length, 'produtos'], ['artigos', cms.posts.length, 'posts'], ['fotos enviadas', fotosEnviadas, 'fotos']];
   const atalhos = [['nova promoção', 'promocoes'], ['novo evento', 'eventos'], ['nova armação', 'produtos'], ['novo artigo', 'posts'], ['trocar foto da capa', 'fotos'], ['alterar horário', 'info']];
   const card = { background: '#fff', borderRadius: 20, padding: 'clamp(18px,2.5vw,28px)', boxShadow: '0 2px 12px rgba(0,0,0,.04)' };
   return <>

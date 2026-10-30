@@ -61,7 +61,7 @@ Passo a passo:
 2. Digite a senha inicial e toque em **entrar**.
 3. Aparece a tela **"crie a sua senha"**. Ela é obrigatória: o painel não deixa editar nada antes.
    - Em "senha inicial", digite de novo a senha que você usou para entrar.
-   - Em "nova senha", crie a sua, com **pelo menos 10 caracteres**. Uma frase curta, de 3 ou 4 palavras que só você conheça, é fácil de lembrar e difícil de adivinhar. O painel recusa a senha inicial e senhas com o nome da loja.
+   - Em "nova senha", crie a sua, com **pelo menos 10 caracteres**. Uma frase curta, de 3 ou 4 palavras que só você conheça, é fácil de lembrar e difícil de adivinhar. O painel recusa a senha inicial, senhas com o nome da loja, da cidade, da rua ou o telefone da loja, só números e senhas óbvias, como 1234567890, qwertyuiop ou senha12345. Espaços no começo e no fim não contam.
    - Repita a nova senha em "confirmar" e toque em **salvar e continuar**.
 4. Pronto: o painel abre. A partir daí, **a senha inicial deixa de funcionar e ninguém mais sabe a sua senha, nem o desenvolvedor**.
 

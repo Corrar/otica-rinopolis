@@ -9,7 +9,8 @@ Guia do proprietário (dados a preencher, Google, backup, privacidade, hospedage
 - [ ] Conferir que `SESSION_SECRET` (Production) tem 32+ caracteres; se não, gerar outro (`openssl rand -hex 32`).
 - [ ] `npm run build` sem erros e o grep de conteúdo de exemplo zerado (comando no `README.md`, seção "Publicação").
 - [ ] Recomendado: Deploy Hook (Settings → Git → Deploy Hooks, branch `main`) em `DEPLOY_HOOK_URL` e `CRON_SECRET` (16+), ambos Sensitive em Production. Sem eles o botão "publicar alterações no Google" não aparece e cada publicação precisa de Redeploy manual.
-- [ ] Vercel → Firewall: Rate Limit em `/api/login` (10/min por IP, deny). Vercel → Billing: alerta de uso.
+- [ ] Vercel → Firewall: Rate Limit em `/api/login` (10/min por IP, deny) e em `/api/*` (120/min por IP, deny). Vercel → Billing: alerta de uso.
+- [x] Node.js 24.x em Settings → Build and Deployment, igual ao `engines` do `package.json` (`24.x`: a Vercel não troca sozinha de versão maior).
 
 ## 2. Publicação (nesta ordem)
 1. [ ] Merge na `main` e aguardar o deploy.
