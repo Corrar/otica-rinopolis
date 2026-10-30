@@ -29,6 +29,7 @@ Guia do proprietário (dados a preencher, Google, backup, privacidade, hospedage
 
 ## 4. Código que depende de resposta do proprietário
 - [ ] Páginas legais revisadas pelo advogado: ajustar texto, `RETENCAO` (prazos do contador), foro (se citar comarca) e as datas `ATUALIZADA`/`REVISADA` (`src/pages/Privacidade.jsx`, `Termos.jsx`, `Acessibilidade.jsx`).
+- [ ] Porte para a LGPD (Res. CD/ANPD nº 2/2022, arts. 2º a 4º), confirmado com o contador ou o advogado: só então a Política de Privacidade pode voltar a citar a dispensa de encarregado e o prazo em dobro; se não se enquadrar, publicar o encarregado (LGPD, art. 41) em `src/pages/Privacidade.jsx`.
 - [ ] Crediário com SPC/Serasa ou promoções por WhatsApp: incluir na Política de Privacidade.
 - [ ] Catálogo trinta.shop confirmado: link "ver catálogo" (não há campo no painel).
 - [ ] Atende Santópolis do Aguapeí: incluir em `areaServed` (`src/lib/seo.js`, `dadosOtica`).
@@ -36,7 +37,7 @@ Guia do proprietário (dados a preencher, Google, backup, privacidade, hospedage
 - [ ] Domínio próprio: Settings → Domains, novo deploy (o endereço oficial vem de `SITE_URL` ou do domínio de produção), redirect 308 do `otica-rinopolis.vercel.app`, nova propriedade no Search Console.
 
 ## 5. Conteúdo (pelo painel, pelo proprietário)
-Lista completa e comentada em `ENTREGA.md`, seção 4; o painel mostra as mesmas pendências em "visão geral". Essenciais antes de divulgar: razão social, CNPJ e e-mail; horário e feriados; formas de pagamento; datas do blog; link do Perfil da Empresa no Google; confirmar Facebook e catálogo.
+Lista completa e comentada em `ENTREGA.md`, seção 4; o painel mostra as mesmas pendências em "visão geral". Essenciais antes de divulgar: razão social, CNPJ e e-mail; horário e feriados; formas de pagamento; tipos de lente de contato que a loja vende (a lista padrão está vazia); aviso da receita na saudação do WhatsApp Business (a Política de Privacidade cita esse aviso); datas do blog; link do Perfil da Empresa no Google; confirmar Facebook e catálogo.
 
 ## Referências
 - Repositório `Corrar/otica-rinopolis` (branch `main`; cada push publica). Vercel: equipe `corrars-projects`, projeto `otica-rinopolis`, funções em `gru1`.

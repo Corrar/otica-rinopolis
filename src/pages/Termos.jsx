@@ -28,6 +28,7 @@ const SECOES = [
 export default function Termos() {
   const site = useSite();
   const nome = nomeEmpresa(site.emp);
+  const fb = !!String(site.info.facebook || '').trim();
   return (
     <PaginaLegal rotulo="Termos de Uso" eyebrow="termos de uso" a="termos" b="de uso." data={ATUALIZADA} secoes={SECOES}
       resumo="As regras para usar o site da Ótica Digital Look. Ao navegar por ele, você concorda com estes termos — que não reduzem nenhum dos seus direitos como consumidor.">
@@ -61,7 +62,7 @@ export default function Termos() {
 
       <Secao id="garantias" n="07" titulo="garantias e direito de arrependimento">
         <ul>
-          <li><strong>Garantia legal:</strong> todos os produtos têm a garantia do Código de Defesa do Consumidor — 90 dias para reclamar de defeitos em produtos duráveis, como óculos e armações (art. 26, II), contados da entrega ou, se o defeito estiver oculto, de quando ele aparecer.</li>
+          <li><strong>Garantia legal:</strong> todos os produtos têm a garantia do Código de Defesa do Consumidor: 90 dias para reclamar de defeitos em produtos duráveis, como óculos, armações e lentes de óculos (art. 26, II), e 30 dias para produtos não duráveis, como lentes de contato descartáveis e soluções (art. 26, I), contados da entrega ou, se o defeito estiver oculto, de quando ele aparecer.</li>
           <li><strong>Garantia contratual:</strong> a garantia do fabricante ou da loja, quando houver, complementa a legal e vale nas condições do termo de garantia escrito entregue na compra (art. 50).</li>
           <li><strong>Direito de arrependimento:</strong> se a compra for fechada fora da loja — por exemplo, toda pelo WhatsApp, sem você ir até lá —, você pode desistir em até 7 dias a contar do recebimento do produto, com a devolução dos valores pagos (art. 49).</li>
         </ul>
@@ -77,7 +78,7 @@ export default function Termos() {
       </Secao>
 
       <Secao id="terceiros" n="10" titulo="serviços de terceiros">
-        <p>O site tem links e botões que abrem o WhatsApp, o Instagram, o Facebook e o Google Maps. Esses serviços são de outras empresas e têm termos e políticas próprios. O mapa só é carregado depois que você toca em "mostrar mapa".</p>
+        <p>O site tem links e botões que abrem {fb ? 'o WhatsApp, o Instagram, o Facebook e o Google Maps' : 'o WhatsApp, o Instagram e o Google Maps'}. Esses serviços são de outras empresas e têm termos e políticas próprios. O mapa só é carregado depois que você toca em "mostrar mapa".</p>
       </Secao>
 
       <Secao id="responsabilidade" n="11" titulo="responsabilidade">

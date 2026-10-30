@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Ic } from '../components/Icons.jsx';
 import { L, NovaAba, Status } from '../components/Layout.jsx';
-import { ArteMarca, BtnWa, Evento, Foto, Img, InfoContato, LinkSeta, Mapa, TAM_METADE, TAM_TERCO, Titulo } from '../components/bits.jsx';
+import { ArteMarca, AvisoReceita, BtnWa, Evento, Foto, Img, InfoContato, LinkSeta, Mapa, TAM_METADE, TAM_TERCO, Titulo } from '../components/bits.jsx';
 import { useSite } from '../state/content.jsx';
 import { eventosFuturos, gradeEquilibrada, lista, numerar, postsDe } from '../lib/util.js';
 import { NOME, localDe } from '../lib/seo.js';
@@ -49,13 +49,16 @@ export default function Inicio() {
   const cats = [
     // Fotos dos cards sem texto alternativo: ficam dentro do link, que já tem o nome da categoria.
     { nome: 'armações', desc: 'Para todo tipo de rosto', foto: 'armações em expositor', to: 'armacoes', img: cms.fotos.cat_armacoes },
-    { nome: 'óculos de sol', desc: 'Modelos para o dia a dia', foto: 'óculos de sol', to: 'armacoes', img: cms.fotos.cat_sol },
-    { nome: 'lentes de contato', desc: 'Diárias e mensais, com receita', foto: 'lentes de contato', to: 'lentes', img: cms.fotos.cat_lentes },
+    { nome: 'óculos de sol', desc: 'Modelos para o dia a dia', foto: 'óculos de sol', to: 'armacoes?cat=sol', img: cms.fotos.cat_sol },
+    { nome: 'lentes de contato', desc: 'Somente com receita médica', foto: 'lentes de contato', to: 'lentes', img: cms.fotos.cat_lentes },
   ];
   const marquee = [...selos, 'óculos de grau', 'óculos de sol', 'lentes de contato'];
   const anos = parseInt(info.anos, 10) || 0;
   const parcelas = parseInt(info.parcelas, 10) || 0;
-  const convenios = lista(info.convenios);
+  const convenios = lista(info.convenios), pagamentos = lista(info.pagamentos);
+  // Faixa escura: com convênios, pagamentos ou parcelas informados, leva à página de convênios; sem eles, vira o
+  // atalho de orçamento pela receita (a página de convênios não teria o que mostrar).
+  const temCondicoes = convenios.length > 0 || pagamentos.length > 0 || parcelas > 1;
   const posts = postsDe(cms).slice(0, 3);
   // Número de destaque editável (ex.: "100%"): anima só quando há um número; vazio = não aparece.
   const destaque = String(info.destaqueNumero || '').trim();
@@ -72,7 +75,7 @@ export default function Inicio() {
           <h1 className="h-display" style={{ marginBottom: 24 }}>
             <span className="sr-only">{NOME}, ótica no centro de {cidade}/{uf}: </span>
             <span style={{ display: 'block' }}>{info.heroLinha1}</span>
-            <span style={{ display: 'block' }}><span>{info.heroLinha2}</span> <span className="b">{info.heroDestaque}</span></span>
+            <span style={{ display: 'block' }}><span>{info.heroLinha2}</span> <span className="b" style={{ display: 'inline-block' }}>{info.heroDestaque}</span></span>
           </h1>
           <p style={{ font: "400 clamp(16px,1.6vw,18px)/1.55 'DM Sans',sans-serif", color: 'rgba(255,255,255,.72)', maxWidth: 460, marginBottom: 32 }}>{info.heroTexto}</p>
           <div className="btn-row" style={{ marginBottom: 32 }}>
@@ -139,22 +142,29 @@ export default function Inicio() {
               ) : null}
             </div>
           ) : null}
-          <LinkSeta to="sobre">conheça nossa história</LinkSeta>
+          <LinkSeta to="sobre">{(cms.marcos || []).length ? 'conheça nossa história' : 'conheça a ótica'}</LinkSeta>
         </div>
       </section>
 
       <section data-reveal className="dark split" style={{ '--min': '340px', margin: '0 var(--px-card)', borderRadius: 24, padding: 'clamp(28px,4vw,56px)', gap: 'clamp(28px,4vw,48px)', alignItems: 'center' }}>
         <div className="min0">
-          <div className="eyebrow" style={{ marginBottom: 14 }}>convênios e promoções</div>
+          <div className="eyebrow" style={{ marginBottom: 14 }}>{temCondicoes ? 'convênios e pagamento' : 'orçamento'}</div>
           <h2 style={{ font: "300 clamp(28px,3vw,38px)/1.1 'Outfit',sans-serif", letterSpacing: '-.02em', marginBottom: 14 }}>{parcelas > 1 ? <>parcele em até <span className="b">{parcelas}x sem juros</span></> : <>monte seus <span className="b">óculos completos</span></>}</h2>
-          <p style={{ font: "400 16px/1.55 'DM Sans',sans-serif", color: 'rgba(255,255,255,.7)', marginBottom: 22, maxWidth: 560 }}>Consulte as formas de pagamento e se o seu convênio tem parceria com a ótica. Traga sua receita e monte seus óculos completos.</p>
-          <L to="convenios" className="btn btn--sm btn--light btn--light-plain">ver convênios</L>
+          {temCondicoes ? <>
+            <p style={{ font: "400 16px/1.55 'DM Sans',sans-serif", color: 'rgba(255,255,255,.7)', marginBottom: 22, maxWidth: 560 }}>Consulte as formas de pagamento e se o seu convênio tem parceria com a ótica. Traga sua receita e monte seus óculos completos.</p>
+            <L to="convenios" className="btn btn--sm btn--light btn--light-plain">{convenios.length > 0 ? 'ver convênios' : 'ver formas de pagamento'}</L>
+          </> : <p style={{ font: "400 16px/1.55 'DM Sans',sans-serif", color: 'rgba(255,255,255,.7)', maxWidth: 560 }}>Envie a foto da sua receita pelo WhatsApp e respondemos com as opções de lentes e os valores. Convênios e formas de pagamento também são consultados por lá.</p>}
         </div>
-        {convenios.length > 0 ? (
+        {temCondicoes ? (convenios.length > 0 ? (
           <ul data-grid role="list" className="chips chips--4" aria-label="convênios">
             {convenios.slice(0, 8).map(v => <li key={v} className="chip-box" style={{ borderColor: 'rgba(255,255,255,.18)', color: 'rgba(255,255,255,.65)', fontSize: 12, padding: '0 6px' }}>{v}</li>)}
           </ul>
-        ) : null}
+        ) : null) : (
+          <div className="min0">
+            <BtnWa href={wa.receita} sm descricao="aviso-receita-inicio">enviar receita no WhatsApp</BtnWa>
+            <AvisoReceita id="aviso-receita-inicio" inv />
+          </div>
+        )}
       </section>
 
       {(cms.etapas || []).length > 0 && (
@@ -174,7 +184,7 @@ export default function Inicio() {
 
       {cms.depoimentos.length > 0 && (
         <section data-reveal className="px" style={{ paddingTop: 'clamp(48px,6vw,80px)' }}>
-          <div className="sec-head"><Titulo a="quem já" b="enxerga melhor" />{googleAvaliacoes ? <LinkSeta href={googleAvaliacoes}>avaliações no Google</LinkSeta> : null}</div>
+          <div className="sec-head"><Titulo a="o que dizem" b="nossos clientes" />{googleAvaliacoes ? <LinkSeta href={googleAvaliacoes}>avaliações no Google</LinkSeta> : null}</div>
           <div data-grid className={`grid grid--longo${gradeEquilibrada(cms.depoimentos)}`} style={{ '--gap': '18px' }}>
             {cms.depoimentos.map((d, i) => (
               <figure key={i} style={{ background: 'var(--sand)', borderRadius: 18, padding: '26px 24px', display: 'flex', flexDirection: 'column', gap: 16 }}>

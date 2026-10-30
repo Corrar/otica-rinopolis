@@ -15,10 +15,12 @@ export default function Sobre() {
         <h1 className="h-page" style={{ maxWidth: 820 }}>{info.sobreTitulo}</h1>
       </div></section>
 
-      <section data-reveal className="px split" style={{ '--min': '340px', paddingTop: 'clamp(40px,6vw,80px)', paddingBottom: 'clamp(40px,6vw,80px)', gap: 'clamp(28px,5vw,64px)', alignItems: 'start' }}>
-        <Foto img={cms.fotos.equipe} rotulo="fachada, equipe ou fundadores" alt={`Ótica Digital Look na ${info.endereco}, ${info.bairroCidade}`} ratio="4/5" prioridade tamanhos={TAM_METADE} />
+      <section data-reveal className="px split" style={{ '--min': '340px', paddingTop: 'clamp(40px,6vw,80px)', paddingBottom: 'clamp(40px,6vw,80px)', gap: 'clamp(28px,5vw,64px)', alignItems: marcos.length ? 'start' : 'center' }}>
+        {/* Sem linha do tempo, o texto é curto: foto quadrada e texto centralizado, sem um vazio ao lado da foto. */}
+        <Foto img={cms.fotos.equipe} rotulo="fachada, equipe ou fundadores" alt={`Ótica Digital Look na ${info.endereco}, ${info.bairroCidade}`} ratio={marcos.length ? '4/5' : '1/1'} prioridade tamanhos={TAM_METADE} />
         <div className="min0">
-          <h2 className="h-sub" style={{ marginBottom: 18 }}>nossa história</h2>
+          {/* "nossa história" só com fatos cadastrados (linha do tempo); sem eles, o título não promete uma história. */}
+          <h2 className="h-sub" style={{ marginBottom: 18 }}>{marcos.length ? 'nossa história' : 'a ótica'}</h2>
           <div style={{ font: "400 clamp(15px,1.5vw,17px)/1.65 'DM Sans',sans-serif", color: 'var(--text-2)', marginBottom: marcos.length ? 32 : 0 }}><Paragrafos texto={info.sobreTexto} espaco="1.65em" /></div>
           {marcos.length > 0 && (
             <ol role="list" aria-label="nossa trajetória" style={{ borderTop: '1px solid var(--line)' }}>

@@ -5,17 +5,23 @@ import { useSite } from '../state/content.jsx';
 import { eventosFuturos, lista, promosAtivas } from '../lib/util.js';
 
 const fmtValidade = (iso) => (/^\d{4}-\d{2}-\d{2}$/.test(iso || '') ? iso.split('-').reverse().join('/') : '');
-const aviso = { font: "400 15px 'DM Sans',sans-serif", color: 'var(--muted-2)', padding: '12px 0' };
+const textoCorpo = { font: "400 16px/1.55 'DM Sans',sans-serif", color: 'var(--muted)', maxWidth: 560 };
 
+// Seções só com dados informados no painel. Sem convênios, pagamentos, promoções nem eventos, a página mostra o que é
+// útil de verdade: consultar convênio e pagamento pelo WhatsApp, acompanhar o Instagram e pedir orçamento pela receita.
 export default function Convenios() {
   const { cms, info, wa, igLink, hojeIso } = useSite();
   const promos = promosAtivas(cms, hojeIso), eventos = eventosFuturos(cms);
   const convenios = lista(info.convenios), pagamentos = lista(info.pagamentos);
+  const semNovidades = promos.length === 0 && eventos.length === 0;
+  const msgConsulta = convenios.length > 0
+    ? 'Olá! Gostaria de saber as formas de pagamento da ótica.'
+    : 'Olá! Gostaria de saber se a ótica atende pelo meu convênio e quais são as formas de pagamento.';
   return (
     <div data-screen-label="Convênios">
       <section data-hero className="dark hero"><div>
         <div className="eyebrow" style={{ marginBottom: 20 }}>convênios, promoções e eventos</div>
-        <h1 className="h-page" style={{ maxWidth: 820 }}>seus óculos completos, <span className="b">do jeito que cabem no bolso.</span></h1>
+        <h1 className="h-page" style={{ maxWidth: 820 }}>convênios, promoções e <span className="b">formas de pagamento.</span></h1>
       </div></section>
 
       {promos.length > 0 && (
@@ -26,7 +32,7 @@ export default function Convenios() {
               const validade = fmtValidade(pr.fim);
               return (
                 <div key={i} className="dark" style={{ borderRadius: 24, overflow: 'hidden', display: 'flex', flexDirection: 'column', minHeight: 240 }}>
-                  <div className="ph" style={{ aspectRatio: '16/8', maxHeight: pr.img ? undefined : 240 }}>{pr.img ? <Img src={pr.img} alt="" tom="escuro" prioridade={i === 0} /> : <ArteMarca tom="escuro" />}</div>
+                  <div className="ph" style={{ width: '100%', aspectRatio: '16/8', maxHeight: pr.img ? undefined : 240 }}>{pr.img ? <Img src={pr.img} alt="" tom="escuro" prioridade={i === 0} /> : <ArteMarca tom="escuro" />}</div>
                   <div style={{ padding: 'clamp(24px,3vw,36px)', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', flex: 1, gap: 20 }}>
                     {pr.tag ? <div className="eyebrow" style={{ color: 'rgba(255,255,255,.5)' }}>{pr.tag}</div> : null}
                     <div>
@@ -49,35 +55,41 @@ export default function Convenios() {
         </section>
       )}
 
-      {promos.length === 0 && eventos.length === 0 && (
+      {convenios.length > 0 && (
         <section data-reveal className="px" style={{ paddingTop: 'clamp(40px,6vw,80px)' }}>
-          <h2 className="h-sub" style={{ marginBottom: 12 }}>promoções e <span className="b">eventos</span></h2>
-          <div style={aviso}>Nenhuma promoção ou evento no momento — acompanhe pelo <NovaAba href={igLink} className="u-link">Instagram</NovaAba>.</div>
-        </section>
-      )}
-
-      <section data-reveal className="px" style={{ paddingTop: 'clamp(40px,6vw,80px)', paddingBottom: 'clamp(40px,6vw,80px)' }}>
-        <h2 className="h-sub" style={{ marginBottom: 12 }}>{convenios.length > 0 ? 'convênios aceitos' : 'convênios'}</h2>
-        {convenios.length > 0 ? <>
-          <p style={{ font: "400 16px/1.55 'DM Sans',sans-serif", color: 'var(--muted)', marginBottom: 28, maxWidth: 560 }}>Não achou o seu? Chame no WhatsApp que verificamos para você.</p>
+          <h2 className="h-sub" style={{ marginBottom: 12 }}>convênios aceitos</h2>
+          <p style={{ ...textoCorpo, marginBottom: 28 }}>Não achou o seu? Chame no WhatsApp que verificamos para você.</p>
           <ul data-grid role="list" className="chips chips--5">
             {convenios.map(v => <li key={v} className="chip-box" style={{ height: 68, color: 'var(--text-2)', padding: '0 10px' }}>{v}</li>)}
           </ul>
-        </> : <p style={{ font: "400 16px/1.55 'DM Sans',sans-serif", color: 'var(--muted)', maxWidth: 560 }}>Pergunte pelo <NovaAba href={wa.link} className="u-link">WhatsApp</NovaAba> se o seu convênio tem parceria com a ótica.</p>}
-      </section>
+        </section>
+      )}
 
-      <section data-reveal className="px split" style={{ '--min': '300px', paddingBottom: 'clamp(48px,7vw,88px)', gap: 'clamp(24px,4vw,48px)', alignItems: 'start' }}>
-        {pagamentos.length > 0 && (
-          <div className="min0">
+      {/* Sempre duas colunas: formas de pagamento (ou o convite para consultar convênio e pagamento) e o orçamento. */}
+      <section data-reveal className="px split" style={{ '--min': '300px', paddingTop: 'clamp(40px,6vw,80px)', paddingBottom: 'clamp(48px,7vw,88px)', gap: 'clamp(24px,4vw,48px)', alignItems: 'center' }}>
+        {pagamentos.length > 0 ? (
+          <div className="min0" style={{ alignSelf: 'start' }}>
             <h2 className="h-sub" style={{ marginBottom: 18 }}>formas de pagamento</h2>
             <ul role="list" style={{ display: 'flex', flexDirection: 'column', gap: 12, font: "400 16px/1.5 'DM Sans',sans-serif", color: 'var(--text-2)' }}>
               {pagamentos.map(pg => <li key={pg} style={{ display: 'flex', alignItems: 'center', gap: 12 }}><Ic n="check" s={16} style={{ color: 'var(--ink)' }} />{pg}</li>)}
             </ul>
+            {semNovidades ? <p style={{ ...textoCorpo, fontSize: 15, marginTop: 24 }}>Promoções e eventos são divulgados no <NovaAba href={igLink} className="u-link">Instagram</NovaAba>.</p> : null}
+          </div>
+        ) : (
+          <div className="min0">
+            <h2 className="h-sub" style={{ marginBottom: 14 }}>{convenios.length > 0 ? <>formas de <span className="b">pagamento</span></> : <>convênios e <span className="b">pagamento</span></>}</h2>
+            <p style={{ ...textoCorpo, marginBottom: 24 }}>{convenios.length > 0
+              ? 'Pergunte pelo WhatsApp quais são as formas de pagamento.'
+              : 'Pergunte pelo WhatsApp se o seu convênio tem parceria com a ótica e quais são as formas de pagamento.'}{semNovidades ? ' Promoções e eventos são divulgados no Instagram.' : ''}</p>
+            <div className="btn-row">
+              <BtnWa href={wa.msg(msgConsulta)} variant="dark" sm>{convenios.length > 0 ? 'consultar pagamento' : 'consultar convênio'}</BtnWa>
+              {semNovidades ? <NovaAba href={igLink} className="btn btn--outline"><Ic n="ig" s={16} />ver o Instagram</NovaAba> : null}
+            </div>
           </div>
         )}
         <div style={{ background: 'var(--sand)', borderRadius: 20, padding: 'clamp(24px,3vw,32px)' }}>
           <h3 style={{ font: "500 20px 'Outfit',sans-serif", marginBottom: 10 }}>precisa de orçamento?</h3>
-          <div className="t-body" style={{ marginBottom: 20 }}>Envie a foto da sua receita pelo WhatsApp e respondemos com opções de lentes e valores em horário comercial.</div>
+          <div className="t-body" style={{ marginBottom: 20 }}>Envie a foto da sua receita pelo WhatsApp e respondemos com as opções de lentes e os valores.</div>
           <BtnWa href={wa.receita} variant="dark" sm descricao="aviso-receita-convenios">enviar receita no WhatsApp</BtnWa>
           <AvisoReceita id="aviso-receita-convenios" />
         </div>

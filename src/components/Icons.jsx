@@ -13,6 +13,8 @@ export function IconSprite() {
         <symbol id="ic-lock" viewBox="0 0 24 24"><rect fill="none" stroke="currentColor" strokeWidth="2" x="4" y="10" width="16" height="11" rx="2" /><path fill="none" stroke="currentColor" strokeWidth="2" d="M8 10V7a4 4 0 0 1 8 0v3" /></symbol>
         <symbol id="ic-trash" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3" /></symbol>
         <symbol id="ic-mail" viewBox="0 0 24 24"><rect fill="none" stroke="currentColor" strokeWidth="2" x="3" y="5" width="18" height="14" rx="3" /><path fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" d="m4 7 8 6 8-6" /></symbol>
+        {/* Símbolo de acessibilidade (pessoa de braços abertos num círculo, como o da ONU): link para /acessibilidade no rodapé. */}
+        <symbol id="ic-acess" viewBox="0 0 24 24"><circle fill="none" stroke="currentColor" strokeWidth="1.8" cx="12" cy="12" r="10.2" /><circle fill="currentColor" cx="12" cy="6.6" r="1.7" /><path fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" d="M6.8 9.6l5.2 1.1 5.2-1.1M12 10.7v3.4l-2.6 4.4M12 14.1l2.6 4.4" /></symbol>
         <symbol id="ic-img" viewBox="0 0 24 24"><rect fill="none" stroke="currentColor" strokeWidth="2" x="3" y="4" width="18" height="16" rx="3" /><circle fill="currentColor" cx="9" cy="10" r="1.6" /><path fill="none" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" d="M21 16l-5-5-9 9" /></symbol>
       </defs>
     </svg>

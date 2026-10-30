@@ -142,7 +142,7 @@ export class ErroGeral extends Component {
     return (
       <div className="erro-geral" role="alert">
         <IconSprite />
-        <img src="/logo.png" alt="Ótica Digital Look" width="96" height="96" />
+        <img src="/logo.png" alt="Ótica Digital Look" width="104" height="64" />
         <h1>não foi possível abrir esta página.</h1>
         <p>{info.endereco} · {info.bairroCidade} · {info.cep}</p>
         <div className="btn-row" style={{ justifyContent: 'center' }}>
@@ -159,7 +159,7 @@ export default function App() {
   return (
     <>
       <IconSprite />
-      {cms ? <Site /> : <div className="loading" style={{ minHeight: '100vh', background: 'var(--ink)' }}><img src="/logo.png" alt="ótica digital look" width="120" height="120" style={{ opacity: .9 }} /></div>}
+      {cms ? <Site /> : <div className="loading" style={{ minHeight: '100vh', background: 'var(--ink)' }}><img src="/logo.png" alt="ótica digital look" width="130" height="80" style={{ opacity: .9 }} /></div>}
     </>
   );
 }

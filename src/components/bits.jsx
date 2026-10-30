@@ -72,10 +72,12 @@ export const BtnWa = ({ href, children = 'falar no WhatsApp', variant = 'light',
 export const Paragrafos = ({ texto, espaco = '1em', style }) => String(texto || '').split(/\n{2,}/).map(t => t.trim()).filter(Boolean)
   .map((t, i) => <p key={i} style={{ whiteSpace: 'pre-line', marginTop: i ? espaco : 0, ...style }}>{t}</p>);
 
-// Aviso de privacidade logo abaixo dos botões de enviar receita (dado de saúde; LGPD, arts. 11 e 14).
+// Aviso de privacidade junto de todo botão ou formulário que pede a receita (dado de saúde; LGPD, arts. 11 e 14).
+// Em destaque (caixa com borda, texto escuro): é nele que se apoia o consentimento citado na Política de Privacidade.
 export const AvisoReceita = ({ id, inv = false, style }) => (
   <p id={id} className={`aviso-receita${inv ? ' aviso-receita--inv' : ''}`} style={style}>
-    Ao enviar a foto da receita, você autoriza o uso dela só para preparar o seu orçamento. Se a receita for de uma criança, envie como pai, mãe ou responsável. <L to="politica-de-privacidade">Política de Privacidade</L>.
+    <Ic n="lock" s={15} />
+    <span><strong>A receita é um dado de saúde.</strong> Ao enviar a foto, você autoriza o uso dela só para preparar o seu orçamento e, se comprar, para fazer as suas lentes. Receita de criança: envie como pai, mãe ou responsável. <L to="politica-de-privacidade">Política de Privacidade</L>.</span>
   </p>
 );
 
@@ -84,7 +86,7 @@ export const Titulo = ({ as: T = 'h2', a, b, className = 'h-sec', style }) => <T
 export function Evento({ ev, comImagem = false }) {
   return (
     <div style={{ background: 'var(--sand)', borderRadius: 18, overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
-      {comImagem ? <div className="ph" style={{ aspectRatio: '16/9', maxHeight: ev.img ? undefined : 240 }}>{ev.img ? <Img src={ev.img} alt="" /> : <ArteMarca />}</div> : null}
+      {comImagem ? <div className="ph" style={{ width: '100%', aspectRatio: '16/9', maxHeight: ev.img ? undefined : 240 }}>{ev.img ? <Img src={ev.img} alt="" /> : <ArteMarca />}</div> : null}
       <div className="event" style={{ padding: 22, gridTemplateColumns: comImagem ? '64px 1fr' : undefined, gap: comImagem ? 16 : undefined }}>
         <div className="event__date" style={comImagem ? { paddingRight: 14 } : undefined}><div className="event__dia" style={comImagem ? { fontSize: 32 } : undefined}>{ev.dia}</div><div className="event__mes">{ev.mes}</div></div>
         <div className="min0">
@@ -128,7 +130,7 @@ export function Mapa({ src, link, style }) {
         : (
           <div className="map__fachada">
             <span className="map__pin" aria-hidden="true"><Ic n="pin" s={20} /></span>
-            <p>O mapa é carregado do Google Maps, que pode registrar seu IP e usar cookies.</p>
+            <p>O mapa é carregado do Google Maps (Google, nos Estados Unidos), que pode registrar seu IP e usar cookies. Ele só abre se você tocar em "mostrar mapa".</p>
             <div className="map__acoes">
               <button type="button" className="btn btn--dark btn--sm" onClick={() => setVer(true)}>mostrar mapa</button>
               {link ? <NovaAba href={link} className="u-link">abrir no Google Maps<Ic n="arrow" s={13} /></NovaAba> : null}

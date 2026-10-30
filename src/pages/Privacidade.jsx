@@ -38,8 +38,10 @@ const SECOES = [
 
 export default function Privacidade() {
   const site = useSite();
-  const { emp, wa } = site;
+  const { emp, wa, info } = site;
   const nome = nomeEmpresa(emp);
+  // Facebook só é citado quando a página da loja foi informada no painel.
+  const fb = !!String(info.facebook || '').trim();
   return (
     <PaginaLegal rotulo="Política de Privacidade" eyebrow="privacidade · LGPD" a="política de" b="privacidade." data={ATUALIZADA} secoes={SECOES}
       resumo="Como a Ótica Digital Look cuida dos dados pessoais de quem visita este site e fala com a loja pelo WhatsApp, pelo telefone ou no balcão — em linguagem simples, conforme a Lei Geral de Proteção de Dados (Lei nº 13.709/2018, a LGPD).">
@@ -55,7 +57,7 @@ export default function Privacidade() {
       <Secao id="controlador" n="01" titulo="quem cuida dos seus dados">
         <p>A responsável pelas decisões sobre os seus dados pessoais (a <strong>controladora</strong>, nos termos da LGPD) é a {nome}:</p>
         <Empresa site={site} />
-        <p>Somos um <strong>agente de tratamento de pequeno porte</strong> (Resolução CD/ANPD nº 2/2022). Por isso, não somos obrigados a indicar um encarregado de dados (DPO), mas mantemos um canal direto para você falar sobre os seus dados — veja a seção <a href="#direitos">seus direitos</a>.</p>
+        <p>Para qualquer assunto sobre os seus dados pessoais, fale com a gente pelos canais da seção <a href="#direitos">seus direitos</a>. Esses pedidos são atendidos pelo responsável pela loja.</p>
       </Secao>
 
       <Secao id="abrangencia" n="02" titulo="quando esta política vale">
@@ -69,10 +71,10 @@ export default function Privacidade() {
 
       <Secao id="dados" n="03" titulo="quais dados tratamos e de onde eles vêm">
         <Sub>quando você navega pelo site</Sub>
-        <p>Como em qualquer site, o servidor recebe automaticamente alguns dados técnicos de cada acesso: <strong>endereço IP, data e hora, página visitada, página de origem e tipo de navegador e de aparelho</strong>. Esses registros são gerados pelo provedor de hospedagem (Vercel) e servem para manter o site funcionando e seguro. Não usamos esses dados para identificar você nem para fazer anúncios. O site não tem cadastro de visitantes, ferramentas de análise de público (como o Google Analytics) nem pixels de redes sociais. As fontes e as imagens são carregadas do próprio site.</p>
+        <p>Como em qualquer site, o servidor recebe automaticamente alguns dados técnicos de cada acesso: <strong>endereço IP, data e hora, página visitada, página de origem e tipo de navegador e de aparelho</strong>. Esses registros são gerados pelo provedor de hospedagem (Vercel) e servem para manter o site funcionando e seguro. Não usamos esses dados para identificar você nem para fazer anúncios. O site não tem cadastro de visitantes, ferramentas de análise de público (como o Google Analytics) nem pixels de redes sociais. As fontes e as imagens são carregadas do próprio site ou do armazenamento da Vercel, a mesma empresa de hospedagem.</p>
 
         <Sub>no formulário de contato e nos botões do WhatsApp</Sub>
-        <p>O formulário da página de <L to="contato">contato</L> pede o seu nome, o assunto e uma mensagem. <strong>Esses dados não são enviados nem gravados pelo site</strong>: ao tocar no botão, o seu próprio aparelho abre o WhatsApp (serviço da Meta) com o texto pronto, e você decide se envia. O mesmo acontece com os botões "falar no WhatsApp", "enviar receita" e "consultar" — este último inclui na mensagem o nome do modelo de armação que você estava vendo.</p>
+        <p>O formulário da página de <L to="contato">contato</L> pede o seu nome, o assunto e uma mensagem. <strong>Esses dados não são enviados ao nosso servidor nem gravados pelo site</strong>: ao tocar no botão, o seu próprio aparelho abre o WhatsApp (serviço da Meta) com o texto pronto. Para isso, o texto vai no link do WhatsApp e passa pelos servidores da Meta; ele só chega à loja se você decidir enviar. O mesmo acontece com os botões "falar no WhatsApp", "enviar receita" e "consultar" — este último inclui na mensagem o nome do modelo de armação que você estava vendo.</p>
         <p>Quando você envia a mensagem, recebemos o que você escreveu e o que o próprio WhatsApp mostra, como o seu número de telefone e o nome e a foto do seu perfil.</p>
 
         <Sub>na foto da receita</Sub>
@@ -89,10 +91,11 @@ export default function Privacidade() {
         <p>Só tratamos dados com uma finalidade definida e com uma das bases previstas na LGPD:</p>
         <Tabela legenda="Finalidades e bases legais" cab={['para quê', 'quais dados', 'base legal']} linhas={[
           ['Responder às suas mensagens e preparar orçamentos', 'nome, telefone, mensagem, produto de interesse', 'procedimentos preliminares a um contrato, a seu pedido (art. 7º, V)'],
-          ['Usar a receita no orçamento', 'foto e dados da receita', 'seu consentimento específico e destacado, dado ao enviar a receita depois do aviso (art. 11, I)'],
+          ['Usar a receita no orçamento', 'foto e dados da receita', 'seu consentimento específico para essa finalidade (art. 11, I), dado quando você mesmo nos envia a receita pedindo o orçamento, depois do aviso mostrado junto aos botões e ao formulário do site ou na mensagem automática do WhatsApp'],
           ['Fazer as lentes, conferir a receita e guardar o registro da venda', 'receita e dados da compra', 'obrigação legal ou regulatória (art. 11, II, "a") e exercício regular de direitos, como garantia e defesa em processos (art. 11, II, "d")'],
           ['Vender, entregar e dar garantia aos produtos', 'nome, telefone, produtos comprados', 'execução do contrato de compra (art. 7º, V)'],
           ['Emitir nota fiscal e cumprir obrigações fiscais e do consumidor', 'dados da compra e, quando exigido, CPF', 'cumprimento de obrigação legal (art. 7º, II)'],
+          ['Mostrar o mapa, se você pedir', 'IP e dados do navegador, coletados pelo Google', 'seu consentimento, ao tocar em "mostrar mapa" (art. 7º, I)'],
           ['Manter o site no ar e seguro e evitar fraudes e invasões', 'registros técnicos de acesso e IP', 'legítimo interesse, limitado ao necessário (art. 7º, IX)'],
           ['Publicar fotos da equipe e depoimentos', 'nome, foto e texto do depoimento', 'consentimento, revogável a qualquer momento (art. 7º, I)'],
           ['Enviar novidades e promoções, se você pedir', 'nome e telefone', 'consentimento, que você pode retirar quando quiser (art. 7º, I)'],
@@ -104,7 +107,7 @@ export default function Privacidade() {
         <p>Os seus dados só são compartilhados com quem nos ajuda a prestar o serviço, com quem você mesmo escolheu usar ou quando a lei exige:</p>
         <ul>
           <li><strong>Vercel Inc.</strong> (Estados Unidos): hospedagem do site, rede de entrega de conteúdo e armazenamento do conteúdo e das fotos publicadas. Recebe os registros técnicos de acesso.</li>
-          <li><strong>Meta</strong> (WhatsApp, Instagram e Facebook): quando você escolhe falar com a gente por esses canais. As mensagens seguem também as regras e a política de privacidade da Meta.</li>
+          <li><strong>Meta</strong> ({fb ? 'WhatsApp, Instagram e Facebook' : 'WhatsApp e Instagram'}): quando você escolhe falar com a gente por esses canais. As mensagens seguem também as regras e a política de privacidade da Meta.</li>
           <li><strong>Google</strong> (Google Maps): só se você tocar em "mostrar mapa", "abrir no Google Maps" ou "como chegar".</li>
           <li><strong>Laboratório óptico</strong>: recebe os dados da receita e as medidas necessárias para fabricar as suas lentes.</li>
           <li><strong>Meios de pagamento</strong> (operadoras de cartão, bancos e Pix): processam o pagamento que você escolher.</li>
@@ -119,10 +122,10 @@ export default function Privacidade() {
         <p>Alguns desses serviços guardam ou processam dados fora do Brasil, principalmente nos Estados Unidos:</p>
         <ul>
           <li><strong>Vercel Inc.</strong>, a empresa de hospedagem: as funções do site rodam em São Paulo, mas a empresa e parte da infraestrutura (como a rede de entrega de conteúdo) ficam no exterior;</li>
-          <li><strong>Meta</strong>, quando você usa o WhatsApp, o Instagram ou o Facebook;</li>
+          <li><strong>Meta</strong>, quando você usa o WhatsApp{fb ? ', o Instagram ou o Facebook' : ' ou o Instagram'};</li>
           <li><strong>Google</strong>, somente depois que você toca para abrir o mapa.</li>
         </ul>
-        <p>Essas transferências seguem o art. 33 da LGPD e a Resolução CD/ANPD nº 19/2024. Na hospedagem, elas se apoiam nas garantias de proteção de dados do contrato com o fornecedor (art. 33, II). Quando você escolhe falar pelo WhatsApp ou pelo Instagram, ou abrir o mapa, a transferência é necessária para atender ao seu próprio pedido (art. 33, IX).</p>
+        <p>Essas transferências seguem o art. 33 da LGPD e a Resolução CD/ANPD nº 19/2024. Na hospedagem, elas se apoiam nas garantias de proteção de dados do contrato com o fornecedor (art. 33, II). Quando você escolhe falar pelo WhatsApp ou pelo Instagram, a transferência é necessária para atender ao seu pedido de atendimento ou de orçamento (art. 33, IX, combinado com o art. 7º, V). O mapa do Google só é carregado com o seu consentimento, dado ao tocar em "mostrar mapa" depois do aviso de que o serviço fica no exterior (art. 33, VIII).</p>
       </Secao>
 
       <Secao id="retencao" n="07" titulo="por quanto tempo guardamos">
@@ -135,7 +138,7 @@ export default function Privacidade() {
         <p>Este site <strong>não usa cookies de publicidade, de análise de público ou de redes sociais</strong> — por isso, não mostra aviso de cookies. Nenhum serviço de terceiros é carregado sem que você toque nele. O que existe é:</p>
         <Tabela legenda="Cookies e armazenamento local" cab={['nome', 'tipo', 'para que serve', 'duração']} linhas={[
           [<><code>__Host-odl_session</code> (ou <code>odl_session</code>, sem HTTPS)</>, 'cookie estritamente necessário, só na área do proprietário', 'mantém a loja conectada ao painel de edição; visitantes não recebem este cookie', '12 horas, ou 14 dias com "manter conectado"'],
-          [<code>odl-cache-v1</code>, 'armazenamento local do navegador (localStorage)', 'guarda uma cópia do conteúdo público do site (textos e endereços das fotos) para as páginas abrirem mais rápido; não contém dados pessoais', 'até você limpar os dados do navegador'],
+          [<code>odl-cache-v1</code>, 'armazenamento local do navegador (localStorage)', 'guarda uma cópia do conteúdo público do site (textos e endereços das fotos, inclusive nomes e fotos publicados com autorização) para as páginas abrirem mais rápido; não guarda nenhum dado de quem visita', 'até você limpar os dados do navegador'],
           ['cookies do Google', 'de terceiros, só depois de você tocar em "mostrar mapa"', 'exibir o mapa; o Google pode registrar o seu IP e usar cookies próprios, conforme a política de privacidade dele', 'definida pelo Google'],
         ]} />
         <p>Você pode apagar os cookies e o armazenamento local nas configurações do seu navegador a qualquer momento; o site continua funcionando normalmente.</p>
@@ -165,7 +168,7 @@ export default function Privacidade() {
         </ul>
         <p>Para exercer qualquer desses direitos, ou tirar dúvidas sobre esta política, fale com a gente:</p>
         <Canais site={site} msg="Olá! Quero falar sobre os meus dados pessoais (LGPD)." />
-        <p>Para proteger os seus dados, podemos pedir que você confirme a sua identidade — por exemplo, escrevendo do mesmo número de WhatsApp usado na conversa ou mostrando um documento na loja. Respondemos em até 15 dias (LGPD, art. 19). A lei permite que agentes de pequeno porte usem prazo em dobro (Resolução CD/ANPD nº 2/2022), mas o nosso objetivo é responder bem antes.</p>
+        <p>Para proteger os seus dados, podemos pedir que você confirme a sua identidade — por exemplo, escrevendo do mesmo número de WhatsApp usado na conversa ou mostrando um documento na loja. Respondemos em até 15 dias (LGPD, art. 19).</p>
         <p>Se achar que o seu pedido não foi atendido, você pode apresentar petição à Autoridade Nacional de Proteção de Dados (ANPD), pelo site <NovaAba href="https://www.gov.br/anpd">gov.br/anpd</NovaAba> (art. 18, § 1º), e procurar os órgãos de defesa do consumidor, como o Procon.</p>
       </Secao>
 
@@ -184,7 +187,7 @@ export default function Privacidade() {
       </Secao>
 
       <Secao id="terceiros" n="13" titulo="links de outros serviços">
-        <p>O site tem links e botões para o WhatsApp, o Instagram, o Facebook e o Google Maps. Ao abri-los, você passa a usar serviços de outras empresas, com regras e políticas de privacidade próprias, que recomendamos ler. Elas são controladoras dos dados que tratam para os seus próprios fins.</p>
+        <p>O site tem links e botões para {fb ? 'o WhatsApp, o Instagram, o Facebook e o Google Maps' : 'o WhatsApp, o Instagram e o Google Maps'}. Ao abri-los, você passa a usar serviços de outras empresas, com regras e políticas de privacidade próprias, que recomendamos ler. Elas são controladoras dos dados que tratam para os seus próprios fins.</p>
       </Secao>
 
       <Secao id="alteracoes" n="14" titulo="alterações desta política">
@@ -192,7 +195,7 @@ export default function Privacidade() {
         <p>Veja também os <L to="termos-de-uso">Termos de Uso</L> e a página de <L to="acessibilidade">acessibilidade</L>.</p>
       </Secao>
 
-      <Fechamento titulo="dúvidas sobre os seus dados?" texto="Fale com a gente pelo WhatsApp — respondemos em horário comercial." href={wa.msg('Olá! Quero falar sobre os meus dados pessoais (LGPD).')} />
+      <Fechamento titulo="dúvidas sobre os seus dados?" texto="Fale com a gente pelo WhatsApp — respondemos assim que possível." href={wa.msg('Olá! Quero falar sobre os meus dados pessoais (LGPD).')} />
     </PaginaLegal>
   );
 }

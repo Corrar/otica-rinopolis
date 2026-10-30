@@ -73,11 +73,11 @@ export function Artigo({ slug }) {
       </div></section>
       <section data-reveal className="px" style={{ paddingBottom: 'clamp(48px,7vw,88px)' }}>
         <div style={{ maxWidth: 820 }}>
-          <div className="ph" style={{ aspectRatio: '16/9', maxHeight: artigo.img ? undefined : 360, borderRadius: 20, marginBottom: 32 }}>{artigo.img ? <Img src={artigo.img} alt="" prioridade tamanhos="(max-width: 900px) 100vw, 820px" /> : <ArteMarca />}</div>
+          <div className="ph" style={{ width: '100%', aspectRatio: '16/9', maxHeight: artigo.img ? undefined : 360, borderRadius: 20, marginBottom: 32 }}>{artigo.img ? <Img src={artigo.img} alt="" prioridade tamanhos="(max-width: 900px) 100vw, 820px" /> : <ArteMarca />}</div>
           <div style={{ font: "400 clamp(16px,1.5vw,18px)/1.75 'DM Sans',sans-serif", color: 'var(--ink-2)', textWrap: 'pretty' }}><Paragrafos texto={artigo.conteudo === artigo.resumo ? '' : artigo.conteudo} espaco="1.75em" /></div>
           <p className="t-small" style={{ marginTop: 28 }}>Conteúdo informativo. Não substitui a consulta com o médico oftalmologista. A Ótica Digital Look não realiza exames de vista.</p>
           <div style={{ marginTop: 40, background: 'var(--sand)', borderRadius: 20, padding: 'clamp(22px,3vw,32px)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 16, flexWrap: 'wrap' }}>
-            <div className="min0"><div style={{ font: "500 20px 'Outfit',sans-serif", marginBottom: 4 }}>ficou com dúvida?</div><div style={{ font: "400 14px 'DM Sans',sans-serif", color: 'var(--muted)' }}>Fale com a gente — respondemos em horário comercial.</div></div>
+            <div className="min0"><div style={{ font: "500 20px 'Outfit',sans-serif", marginBottom: 4 }}>ficou com dúvida?</div><div style={{ font: "400 14px 'DM Sans',sans-serif", color: 'var(--muted)' }}>Fale com a gente pelo WhatsApp — respondemos assim que possível.</div></div>
             <BtnWa href={wa.link} variant="dark" sm />
           </div>
         </div>

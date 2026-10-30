@@ -298,7 +298,7 @@ function Aba({ id, irAba, sessao, setSessao }) {
         <Campo b={bind(['fotos', 'hero'])} label="Capa da home (cliente / loja)" tipo="img" />
         <Campo b={bind(['fotos', 'loja'])} label="Fachada ou interior (home)" tipo="img" />
         <Campo b={bind(['fotos', 'lentes'])} label="Capa de lentes de contato" tipo="img" />
-        <Campo b={bind(['fotos', 'equipe'])} label="Nossa história (página sobre: fachada, equipe ou fundadores)" tipo="img" />
+        <Campo b={bind(['fotos', 'equipe'])} label="Página sobre (fachada, equipe ou fundadores)" tipo="img" />
         <Campo b={bind(['fotos', 'cat_armacoes'])} label='Card "armações" (home)' tipo="img" />
         <Campo b={bind(['fotos', 'cat_sol'])} label='Card "óculos de sol" (home)' tipo="img" />
         <Campo b={bind(['fotos', 'cat_lentes'])} label='Card "lentes de contato" (home)' tipo="img" />
@@ -314,9 +314,9 @@ function Aba({ id, irAba, sessao, setSessao }) {
       campos={b => [<Campo key="n" b={b('nome')} label="Nome do modelo" />, <Campo key="m" b={b('marca')} label="Marca / linha (opcional)" />, <Campo key="c" b={b('cat')} label="Categoria" tipo="select" opcoes={CATEGORIAS.slice(1).map(([v, l]) => ({ v, l }))} />, <Campo key="p" b={b('preco')} label="Preço (opcional)" placeholder="R$ 299,00 à vista (só a armação)" ajuda="Informe o preço à vista da armação; lentes são orçadas à parte." />, <Campo key="d" b={b('destaque')} label="Selo de destaque" tipo="bool" on="com selo" off="sem selo" />, <Campo key="s" b={b('selo')} label="Texto do selo" placeholder="novo" />, <Campo key="i" b={b('img')} label="Foto" tipo="img" full />]} />;
     case 'lentes': return <>
       <BlocoInfo titulo="capa da página">
-        <Campo b={i('lentesTexto')} label="Texto da capa" tipo="area" rows={3} full={full} ajuda='Mantenha "somente com receita de médico oftalmologista". A ótica não indica nem escolhe lentes de grau.' />
+        <Campo b={i('lentesTexto')} label="Texto da capa" tipo="area" rows={3} full={full} ajuda='Mantenha "somente com receita de médico oftalmologista". Cite só os tipos e marcas que a loja vende. A ótica não indica nem escolhe lentes de grau.' />
       </BlocoInfo>
-      <BlocoLista chave="tiposLente" titulo="tipos de lente" tituloDe={it => it.nome} novo={() => ({ nome: 'novo tipo', texto: '', ideal: '' })} addLabel="adicionar tipo"
+      <BlocoLista chave="tiposLente" titulo="tipos de lente" desc="Só os tipos que a loja vende de verdade (ex.: diárias, mensais, tóricas, multifocais): o que é publicado vira oferta. Vazio, a seção não aparece." tituloDe={it => it.nome} novo={() => ({ nome: 'novo tipo', texto: '', ideal: '' })} addLabel="adicionar tipo"
         campos={b => [<Campo key="n" b={b('nome')} label="Nome" />, <Campo key="i" b={b('ideal')} label="Tipo de descarte / observação (ex.: descarte diário)" />, <Campo key="t" b={b('texto')} label="Descrição" tipo="area" rows={2} full />]} />
       <BlocoLista chave="passos" titulo="como funciona (lentes)" tituloDe={it => it.titulo} novo={() => ({ titulo: 'novo passo', texto: '' })} addLabel="adicionar passo"
         campos={b => [<Campo key="t" b={b('titulo')} label="Título" />, <Campo key="x" b={b('texto')} label="Texto" tipo="area" rows={2} full />]} />
@@ -326,7 +326,7 @@ function Aba({ id, irAba, sessao, setSessao }) {
     case 'sobre': return <>
       <BlocoInfo titulo="história">
         <Campo b={i('sobreTitulo')} label="Título da página" full={full} />
-        <Campo b={i('sobreTexto')} label="História completa (parágrafos separados por linha em branco)" tipo="area" rows={7} full={full} />
+        <Campo b={i('sobreTexto')} label="Texto da página sobre (parágrafos separados por linha em branco)" tipo="area" rows={7} full={full} ajuda='Só fatos reais. Com a linha do tempo preenchida, o título da seção passa a ser "nossa história".' />
       </BlocoInfo>
       <BlocoLista chave="marcos" titulo="linha do tempo" tituloDe={it => it.ano} novo={() => ({ ano: String(new Date().getFullYear()), texto: '' })} addLabel="adicionar marco"
         campos={b => [<Campo key="a" b={b('ano')} label="Ano" />, <Campo key="t" b={b('texto')} label="O que aconteceu" tipo="area" rows={2} full />]} />
@@ -371,6 +371,7 @@ function Visao({ irAba, sessao }) {
     [parseInt(info.anos, 10) > 0 || (cms.marcos || []).length > 0, 'História e ano de fundação', 'sobre'],
     [!!info.googleAvaliacoes, 'Link do Perfil da Empresa no Google', 'info'],
     [datasOk, datasOk ? 'Datas do blog válidas' : 'Revisar datas do blog (data de publicação, ex.: 30 out 2026)', 'posts'],
+    [(cms.tiposLente || []).length > 0, 'Tipos de lente de contato que a loja vende', 'lentes', true],
     [lista(info.convenios).length > 0, 'Convênios', 'info', true],
     [(cms.equipe || []).length > 0, 'Equipe', 'sobre', true],
   ].map(([ok, texto, tab, opcional = false]) => ({ ok, texto, tab, opcional })).sort((a, b) => (a.ok - b.ok) || (a.opcional - b.opcional));

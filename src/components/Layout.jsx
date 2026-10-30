@@ -42,7 +42,7 @@ export const Header = forwardRef(function Header({ ativa, menuOpen, setMenuOpen,
   const { wa } = useSite();
   return (
     <header className="header" ref={ref}>
-      <L to="inicio" className="header__logo" onNav={() => setMenuOpen(false)}><img src="/logo.png" alt="Ótica Digital Look – página inicial" width="72" height="72" /></L>
+      <L to="inicio" className="header__logo" onNav={() => setMenuOpen(false)}><img src="/logo.png" alt="Ótica Digital Look – página inicial" width="78" height="48" /></L>
       <nav aria-label="principal" className="nav">
         {PAGINAS.map(([id, label]) => <L key={id} to={id} aria-current={ativa === id ? 'page' : undefined}>{label}</L>)}
       </nav>
@@ -104,7 +104,7 @@ export const Footer = forwardRef(function Footer({ inert }, ref) {
     <footer className="footer" ref={ref} inert={inert}>
       <div className="footer__cols">
         <div className="min0">
-          <img src="/logo.png" alt="" width="88" height="88" loading="lazy" decoding="async" style={{ height: 88, width: 88, margin: '-16px 0 6px -12px', display: 'block' }} />
+          <img src="/logo.png" alt="" width="91" height="56" loading="lazy" decoding="async" style={{ height: 56, width: 'auto', margin: '0 0 18px', display: 'block' }} />
           <p style={{ font: "400 14px/1.55 'DM Sans',sans-serif", color: 'rgba(255,255,255,.6)', maxWidth: 280, margin: '0 0 16px' }}>Ótica no centro de {cidade}/{uf}. Não realizamos exames de vista: lentes de grau e de contato somente com receita de médico oftalmologista.</p>
           <div style={{ display: 'flex', gap: 10 }}>
             <NovaAba href={wa.link} aria-label="WhatsApp" className="soc soc--wa"><Ic n="wa" /></NovaAba>
@@ -115,7 +115,7 @@ export const Footer = forwardRef(function Footer({ inert }, ref) {
         </div>
         <nav aria-label="rodapé" className="footer__nav">
           <div className="footer__col"><h2 className="ttl">produtos</h2><L to="armacoes">armações</L><L to="armacoes">óculos de sol</L><L to="lentes">lentes de contato</L></div>
-          <div className="footer__col"><h2 className="ttl">a ótica</h2><L to="sobre">sobre</L><L to="convenios">convênios e eventos</L><L to="blog">blog</L><L to="contato">contato</L></div>
+          <div className="footer__col"><h2 className="ttl">a ótica</h2><L to="sobre">sobre</L><L to="convenios">convênios</L><L to="blog">blog</L><L to="contato">contato</L></div>
         </nav>
         <div className="footer__col min0">
           <h2 className="ttl">contato</h2>
@@ -132,7 +132,8 @@ export const Footer = forwardRef(function Footer({ inert }, ref) {
         <nav aria-label="documentos e acesso restrito" style={{ display: 'flex', gap: '0 16px', flexWrap: 'wrap', margin: '-14px 0' }}>
           <L to="politica-de-privacidade" style={linkBase}>política de privacidade</L>
           <L to="termos-de-uso" style={linkBase}>termos de uso</L>
-          <L to="acessibilidade" style={linkBase}>acessibilidade</L>
+          {/* Símbolo de acessibilidade em destaque (Lei Brasileira de Inclusão, art. 63, § 1º): ícone e texto mais claros. */}
+          <L to="acessibilidade" style={{ ...linkBase, color: 'rgba(255,255,255,.9)' }}><Ic n="acess" s={20} />acessibilidade</L>
           <L to="admin" style={linkBase}><Ic n="lock" s={12} />área do proprietário</L>
         </nav>
       </div>

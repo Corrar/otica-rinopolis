@@ -53,8 +53,8 @@ export function metaPagina(r, cms) {
   switch (r.page) {
     case 'inicio': return { ...base, titulo: info.siteTitulo || `${NOME} | Ótica em ${local}`, descricao: info.siteDescricao };
     case 'sobre': return { ...base, titulo: `Sobre a ${NOME} | Ótica no centro de ${local}`, descricao: corta(`Conheça a ${NOME}, na ${info.endereco}, ${info.bairroCidade}: atendimento próximo para escolher armação, lentes e óculos de sol${+info.anos ? `, com mais de ${info.anos} anos de história` : ''}.`), imagem: '/fotos/fachada.jpg' };
-    case 'armacoes': return { ...base, titulo: `Armações de grau e óculos de sol em ${local} | ${NOME}`, descricao: corta(`Armações de grau e óculos de sol no centro de ${cidade}. Monte seus óculos completos${parc ? ` em até ${parc}x sem juros` : ''}: veja a vitrine e chame no WhatsApp.`), imagem: '/fotos/vitrine-feminina.jpg' };
-    case 'lentes': return { ...base, titulo: `Lentes de contato em ${local} | ${NOME}`, descricao: corta(`Lentes de contato diárias, mensais, tóricas e multifocais em ${cidade}, somente com receita médica. Envie sua receita pelo WhatsApp e tire suas dúvidas com a nossa equipe.`) };
+    case 'armacoes': return { ...base, titulo: `Armações de grau e óculos de sol em ${local} | ${NOME}`, descricao: corta(`Armações de grau e óculos de sol no centro de ${cidade}. Monte seus óculos completos${parc ? ` em até ${parc}x sem juros` : ''}: veja a vitrine e chame no WhatsApp.`), imagem: '/fotos/galeria-feminina.jpg' };
+    case 'lentes': return { ...base, titulo: `Lentes de contato em ${local} | ${NOME}`, descricao: corta(`Lentes de contato em ${cidade}, somente com receita de médico oftalmologista. Envie sua receita pelo WhatsApp e consulte os tipos e as marcas disponíveis.`) };
     case 'convenios': return { ...base, titulo: `Convênios, promoções e pagamento | ${NOME} – ${local}`, descricao: corta(`${temConvenios ? 'Convênios aceitos, promoções' : 'Promoções'}${lista(info.pagamentos).length ? ', eventos e formas de pagamento' : ' e eventos'} da ${NOME} em ${cidade}.${parc ? ` Parcele seus óculos completos em até ${parc}x sem juros.` : ''}${temConvenios ? '' : ' Pergunte pelo WhatsApp se o seu convênio tem parceria com a ótica.'}`) };
     case 'blog': return { ...base, titulo: `Blog: dicas de lentes, armações e saúde ocular | ${NOME}`, descricao: corta(`Dicas da ${NOME}, ótica no centro de ${cidade}, sobre lentes, armações, lentes de contato e cuidados com os olhos.`) };
     case 'contato': return { ...base, titulo: `Contato, endereço e horário | ${NOME} – ${local}`, descricao: corta(`${info.endereco}, ${info.bairroCidade}. ${tel ? `Telefone ${tel.fmt}, WhatsApp ${wa.fmt}` : `WhatsApp ${wa.fmt}`}.${horario} Veja o mapa e fale com a gente.`) };
@@ -94,8 +94,8 @@ export function dadosOtica(cms, site) {
     '@type': 'Optician', '@id': site + '/#otica', name: NOME, url: site + '/',
     // Nome empresarial, CNPJ e e-mail: só quando o proprietário informou (e são válidos).
     legalName: emp.razao || undefined, taxID: emp.cnpj || undefined, email: emp.email || undefined,
-    description: info.siteDescricao || undefined, logo: site + '/logo.png',
-    image: [site + '/og-image.jpg', site + '/fotos/fachada.jpg', site + '/fotos/loja-balcao.jpg', site + '/fotos/vitrine-feminina.jpg'],
+    description: info.siteDescricao || undefined, logo: site + '/logo-192.png',
+    image: [site + '/og-image.jpg', site + '/fotos/fachada.jpg', site + '/fotos/loja-balcao.jpg', site + '/fotos/galeria-feminina.jpg'],
     // Telefone principal: o fixo (use o mesmo número no Perfil da Empresa no Google); o WhatsApp entra como contato.
     telephone: intl(tel ? tel.digitos : wa),
     contactPoint: intl(wa) ? [{ '@type': 'ContactPoint', contactType: 'customer service', telephone: intl(wa), availableLanguage: 'Portuguese', description: 'WhatsApp' }] : undefined,
@@ -105,7 +105,8 @@ export function dadosOtica(cms, site) {
     hasMap: 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(end),
     sameAs: [ig && `https://www.instagram.com/${ig}/`, info.facebook].filter(Boolean),
     openingHoursSpecification: horas.length ? horas : undefined,
-    knowsAbout: ['óculos de grau', 'óculos de sol', 'lentes de contato', 'lentes multifocais'],
+    // Só o que a loja confirmou (tipos específicos de lente de contato ficam de fora até a confirmação).
+    knowsAbout: ['óculos de grau', 'óculos de sol', 'armações de óculos', 'lentes de contato'],
   };
 }
 
@@ -162,7 +163,7 @@ export function jsonLd(r, cms, site) {
     blocos.push({
       '@type': 'BlogPosting', headline: tituloPost(p), description: m.descricao || undefined, image: p.img ? [absoluto(p.img, site)] : undefined,
       datePublished: d || undefined, dateModified: d || undefined, inLanguage: 'pt-BR', mainEntityOfPage: site + m.caminho,
-      author: { '@type': 'Organization', name: NOME, url: site + '/' }, publisher: { '@type': 'Organization', name: NOME, logo: { '@type': 'ImageObject', url: site + '/logo.png' } },
+      author: { '@type': 'Organization', name: NOME, url: site + '/' }, publisher: { '@type': 'Organization', name: NOME, logo: { '@type': 'ImageObject', url: site + '/logo-192.png' } },
     });
   }
   return blocos.map(b => ({ '@context': 'https://schema.org', ...b }));

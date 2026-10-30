@@ -8,18 +8,23 @@ Onde ainda não há foto real (capa e card de lentes de contato, artigos do blog
 
 | Arquivo | Onde aparece |
 |---|---|
-| `vitrine-feminina.jpg` | Capa da home (`fotos.hero`) e vitrine de armações ("Vitrine de armações") |
+| `capa-fachada.jpg` | Capa da home (`fotos.hero`) — recorte de `fachada.jpg` (900×720, a parte de cima: olho, letreiro e telefone, sem o cartaz da porta) |
 | `loja-balcao.jpg` | Foto da loja na home, seção "sobre" (`fotos.loja`) — balcão com o logo |
-| `fachada.jpg` | "Nossa história", página sobre (`fotos.equipe`) — fachada na R. Prof. Sud Menucci, 228 |
-| `galeria-feminina.jpg` | Card "armações" da home (`fotos.cat_armacoes`), vitrine ("Armações femininas"), galeria da página sobre e artigo sobre o formato do rosto |
+| `fachada.jpg` | Foto da página sobre (`fotos.equipe`) — fachada na R. Prof. Sud Menucci, 228 |
+| `galeria-feminina.jpg` | Card "armações" da home (`fotos.cat_armacoes`), vitrine ("Armações femininas"), galeria da página sobre e imagem de compartilhamento de /armacoes (`src/lib/seo.js`) |
 | `oculos-clip-on.jpg` | Card "óculos de sol" da home (`fotos.cat_sol`) e vitrine ("Óculos de sol e clip-on") |
 | `galeria-masculina.jpg` | Vitrine ("Armações masculinas"), galeria e artigo sobre antirreflexo |
-| `galeria-metal.jpg` | Vitrine ("Armações de metal") e galeria |
+| `galeria-metal.jpg` | Vitrine ("Armações de metal"), galeria e artigo sobre o formato do rosto |
 | `galeria-balcao.jpg` | Galeria ("nosso balcão de atendimento") |
+| `vitrine-feminina.jpg` | Fora do conteúdo padrão (era a capa e repetia a prateleira de `galeria-feminina.jpg`). **Não apagar**: um conteúdo salvo no painel pode ainda apontar para ela |
+
+Na home, cada foto aparece uma vez só (capa, cards e artigos do blog com fotos diferentes).
 
 Fora de `public/fotos/`:
 - `public/og-image.jpg` — fachada, 1200×630: imagem de compartilhamento (WhatsApp, Facebook, Google) e do JSON-LD.
-- `public/logo.png` — logo (cabeçalho, rodapé e JSON-LD).
+- `public/logo.png` — logo sem margem transparente (273×168, branco), recortado do original `project/assets/logo.png`: cabeçalho, rodapé e telas de carregamento.
+- `public/logo-192.png` — logo em fundo escuro, 192×192: ícone do iPhone (apple-touch-icon) e logo dos dados estruturados (JSON-LD), que o Google mostra sobre fundo claro.
+- `public/favicon.png` — só o olho do logo, em fundo escuro (64×64): ícone da aba do navegador.
 
 Sem foto (arte da marca): `fotos.lentes` (capa de /lentes), `fotos.cat_lentes` (card "lentes de contato") e os artigos "tempo de tela", "primeira vez com lentes de contato" e "sinais de que seu filho pode precisar de óculos".
 

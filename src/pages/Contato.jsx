@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react';
 import { Ic } from '../components/Icons.jsx';
 import { L, Status } from '../components/Layout.jsx';
-import { InfoContato, Mapa } from '../components/bits.jsx';
+import { AvisoReceita, InfoContato, Mapa } from '../components/bits.jsx';
 import { useSite } from '../state/content.jsx';
 import { fmtData } from '../lib/util.js';
 
@@ -36,7 +36,7 @@ export default function Contato() {
         <div className="min0 contato__intro">
           <div className="eyebrow" style={{ marginBottom: 20 }}>contato</div>
           <h1 style={{ font: "300 clamp(36px,5vw,60px)/1.05 'Outfit',sans-serif", letterSpacing: '-.02em', marginBottom: 18, textWrap: 'pretty' }}>vamos <span className="b">conversar.</span></h1>
-          <p style={{ font: "400 clamp(15px,1.5vw,17px)/1.6 'DM Sans',sans-serif", color: 'var(--text-2)', marginBottom: 24, maxWidth: 460 }}>Respondemos no WhatsApp em horário comercial. Se preferir, preencha o formulário e abrimos a conversa com sua mensagem pronta. Para lentes de grau ou de contato, tenha em mãos a receita do seu oftalmologista.</p>
+          <p style={{ font: "400 clamp(15px,1.5vw,17px)/1.6 'DM Sans',sans-serif", color: 'var(--text-2)', marginBottom: 24, maxWidth: 460 }}>Respondemos pelo WhatsApp assim que possível. Se preferir, preencha o formulário e abrimos a conversa com sua mensagem pronta. Para lentes de grau ou de contato, tenha em mãos a receita do seu oftalmologista.</p>
           {status ? <div style={{ marginBottom: 28 }}><Status st={status} style={{ gap: 8, font: "500 13px 'DM Sans',sans-serif", color: 'var(--ink)' }} /></div> : null}
           {fechamentos.length > 0 && (
             <div style={{ background: 'var(--sand)', borderRadius: 14, padding: '14px 16px', margin: '-12px 0 28px', font: "400 13px/1.6 'DM Sans',sans-serif", color: 'var(--text-2)' }}>
@@ -50,9 +50,11 @@ export default function Contato() {
           <label className="field">seu nome (obrigatório)<input ref={nomeRef} className="input" name="nome" value={form.nome} onChange={set('nome')} onInvalid={e => e.target.setCustomValidity(MSG_NOME)} placeholder="Maria Silva" required autoComplete="name" /></label>
           <label className="field">o que você procura<select className="input" name="assunto" value={form.assunto} onChange={set('assunto')}>{ASSUNTOS.map(a => <option key={a}>{a}</option>)}</select></label>
           <label className="field">mensagem (opcional)<textarea className="input" name="mensagem" value={form.msg} onChange={set('msg')} rows={5} placeholder="Conte o que precisa. Se tiver receita, pode enviar a foto depois no WhatsApp." /></label>
-          {/* Aviso de privacidade antes do botão (LGPD, art. 9º): o site não grava nada, só abre o WhatsApp. */}
-          <p id="aviso-whats" style={{ font: "400 13px/1.55 'DM Sans',sans-serif", color: 'var(--muted)', marginTop: 2 }}>Ao tocar no botão, o WhatsApp (serviço da Meta) abre com a mensagem pronta. Este site não grava o que você digitou; usamos seus dados só para responder e preparar o orçamento. Veja a <L to="politica-de-privacidade" className="u-link">Política de Privacidade</L>.</p>
-          <button type="submit" aria-describedby="aviso-whats" className="btn btn--dark" style={{ border: 0, minHeight: 52, padding: '16px 24px' }}><Ic n="wa" /><span>abrir conversa no WhatsApp</span></button>
+          {/* Avisos de privacidade antes do botão (LGPD, arts. 9º e 11): o site não grava nada, só abre o WhatsApp; a mensagem
+              convida a mandar a receita (dado de saúde), então o aviso da receita aparece sempre, em qualquer assunto. */}
+          <p id="aviso-whats" style={{ font: "400 14px/1.55 'DM Sans',sans-serif", color: 'var(--text-2)', marginTop: 2 }}>Ao tocar no botão, o seu navegador abre o WhatsApp (serviço da Meta) com a mensagem pronta: o texto vai no link do WhatsApp e só chega à loja se você tocar em enviar. Este site não grava o que você digitou; usamos seus dados só para responder e preparar o orçamento. Veja a <L to="politica-de-privacidade" className="u-link">Política de Privacidade</L>.</p>
+          <AvisoReceita id="aviso-receita-contato" style={{ marginTop: 0 }} />
+          <button type="submit" aria-describedby="aviso-whats aviso-receita-contato" className="btn btn--dark" style={{ border: 0, minHeight: 52, padding: '16px 24px' }}><Ic n="wa" /><span>abrir conversa no WhatsApp</span></button>
         </form>
         <div className="min0 contato__info"><h2 className="sr-only">endereço e horário</h2><InfoContato site={site} /></div>
         <div className="min0 contato__mapa"><Mapa src={mapaEmbed} link={mapaLink} style={{ aspectRatio: '16/9' }} /></div>

@@ -116,7 +116,8 @@ main { flex: 1; min-width: 0; }
 .promo-bar a { border-bottom: 1px solid var(--ink); }
 .header { background: var(--ink); color: #fff; display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 0 clamp(16px, 5vw, 64px); height: 72px; position: sticky; top: 0; z-index: 20; box-shadow: 0 1px 0 rgba(255,255,255,.08); }
 .header__logo { display: block; flex: none; min-width: 0; }
-.header__logo img { height: 72px; width: auto; max-width: 52vw; object-fit: contain; object-position: left center; display: block; margin-left: -12px; }
+/* logo.png sem margem transparente (273x168): 48px de altura, nítido até em tela 3x. */
+.header__logo img { height: 48px; width: auto; max-width: 52vw; display: block; }
 .nav { display: flex; gap: clamp(14px, 2.4vw, 30px); font: 500 14px var(--f-body); justify-content: center; }
 .nav a { color: rgba(255,255,255,.72); padding: 6px 0; border-bottom: 1px solid transparent; }
 .nav a:hover { color: #fff; opacity: 1; }
@@ -125,6 +126,8 @@ main { flex: 1; min-width: 0; }
 .header__wa:hover { background: var(--wa-escuro); color: #fff; opacity: 1; }
 .header__mob { display: flex; align-items: center; gap: 10px; flex: none; }
 .header__mob-wa { background: var(--wa-escuro); color: #fff; }
+/* Com o botão flutuante ligado, o cabeçalho do celular fica só com o menu (sem dois botões verdes iguais na tela). */
+.app--fab .header__mob-wa { display: none; }
 /* Menu do computador ou botão do menu: decidido pelo CSS, para o HTML gerado no build já servir em qualquer largura. */
 @media (max-width: 979px) { .header .nav, .header__wa { display: none; } }
 @media (min-width: 980px) { .header__mob { display: none; } }
@@ -148,10 +151,12 @@ main { flex: 1; min-width: 0; }
 /* Com o menu aberto, os botões flutuantes não ficam por cima dele. */
 .app--menu .fab, .app--menu .to-top { visibility: hidden; pointer-events: none; }
 
-/* Faixa rolante da home; o botão de pausar fica por cima do texto, com o fundo branco esfumado à esquerda. */
+/* Faixa rolante da home; o botão de pausar fica à esquerda (longe dos botões flutuantes da direita), por cima do texto,
+   com o fundo branco esfumado à direita; o ::before cobre a margem esquerda para o texto não aparecer entre a borda e o botão. */
 .faixa { position: relative; overflow: hidden; background: #fff; border-bottom: 1px solid rgba(0,0,0,.08); }
 .faixa__trilho { overflow: hidden; padding: 16px 0; white-space: nowrap; }
-.faixa__btn { position: absolute; right: var(--px); top: 50%; transform: translateY(-50%); display: inline-flex; align-items: center; gap: 7px; background: #fff; color: var(--ink); border: 1px solid rgba(0,0,0,.18); border-radius: 999px; padding: 6px 12px 6px 10px; font: 500 12px var(--f-body); white-space: nowrap; box-shadow: -28px 0 18px 6px #fff; }
+.faixa__btn { position: absolute; left: var(--px); top: 50%; transform: translateY(-50%); z-index: 2; display: inline-flex; align-items: center; gap: 7px; background: #fff; color: var(--ink); border: 1px solid rgba(0,0,0,.18); border-radius: 999px; padding: 6px 12px 6px 10px; font: 500 12px var(--f-body); white-space: nowrap; box-shadow: 28px 0 18px 6px #fff; }
+.faixa:has(.faixa__btn)::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: calc(var(--px) + 12px); background: #fff; z-index: 1; pointer-events: none; }
 .faixa__btn::after { content: ''; position: absolute; inset: -8px -4px; }
 .faixa__btn:hover { background: var(--ink); color: #fff; border-color: var(--ink); }
 
@@ -184,6 +189,8 @@ main { flex: 1; min-width: 0; }
 .steps > div { padding: 26px 0; border-bottom: 1px solid var(--line); }
 .info-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; font: 400 15px/1.55 var(--f-body); color: var(--text-2); }
 .info-grid .lbl { font: 500 13px var(--f-body); color: var(--ink); margin-bottom: 6px; }
+/* Celular estreito: o endereço ocupa a linha inteira (sem o "228" sozinho na linha de baixo). */
+@media (max-width: 479px) { .info-grid > :first-child { grid-column: 1 / -1; } }
 .u-link { display: inline-flex; align-items: center; gap: 6px; border-bottom: 1px solid rgba(0,0,0,.2); }
 /* width explícita: com aspect-ratio, o min-height não pode alargar o bloco além da coluna. */
 .map { border-radius: 20px; overflow: hidden; background: var(--ph); position: relative; width: 100%; min-height: 260px; }
@@ -212,11 +219,14 @@ main { flex: 1; min-width: 0; }
   .contato__mapa { grid-area: mapa; }
 }
 
-/* Aviso de privacidade sob os botões de enviar receita. */
-.aviso-receita { font: 400 12.5px/1.55 var(--f-body); color: var(--muted); max-width: 440px; margin-top: 14px; }
+/* Aviso de privacidade junto dos botões e do formulário que pedem a receita: em destaque (caixa, texto escuro). */
+.aviso-receita { display: flex; gap: 10px; align-items: flex-start; font: 400 14px/1.55 var(--f-body); color: var(--text-2); max-width: 480px; margin-top: 14px; padding: 12px 14px; border: 1px solid rgba(0,0,0,.16); border-radius: 12px; background: #fff; }
+.aviso-receita svg { margin-top: 3px; color: var(--ink); }
+.aviso-receita strong { font-weight: 500; color: var(--ink); }
 .aviso-receita a { color: var(--ink); border-bottom: 1px solid rgba(0,0,0,.35); }
-.aviso-receita--inv { color: rgba(255,255,255,.66); }
-.aviso-receita--inv a { color: #fff; border-bottom-color: rgba(255,255,255,.5); }
+.aviso-receita--inv { color: rgba(255,255,255,.85); background: rgba(255,255,255,.06); border-color: rgba(255,255,255,.24); }
+.aviso-receita--inv svg, .aviso-receita--inv strong { color: #fff; }
+.aviso-receita--inv a { color: #fff; border-bottom-color: rgba(255,255,255,.55); }
 
 .card-link { display: block; border-radius: 18px; overflow: hidden; background: var(--sand); color: var(--ink); border: 1px solid transparent; }
 .card-link:hover { border-color: rgba(0,0,0,.12); opacity: 1; box-shadow: 0 14px 36px rgba(0,0,0,.09); transform: translateY(-4px); }

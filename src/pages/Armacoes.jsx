@@ -9,17 +9,26 @@ import { animarGrade } from '../lib/anim-lazy.js';
 export const CATEGORIAS = [['todos', 'todos'], ['grau', 'grau'], ['sol', 'sol'], ['infantil', 'infantil'], ['esportivo', 'esportivo']];
 const rotuloCat = Object.fromEntries(CATEGORIAS);
 const rotuloAlt = { grau: 'óculos de grau', sol: 'óculos de sol', infantil: 'óculos infantis', esportivo: 'óculos esportivos' };
+// Filtro inicial pelo endereço (/armacoes?cat=sol, usado pelo card "óculos de sol" da home).
+const catDaUrl = () => (typeof location === 'undefined' ? 'todos' : new URLSearchParams(location.search).get('cat') || 'todos');
 
 export default function Armacoes() {
   const { cms, info, wa, animar } = useSite();
-  const [filtro, setFiltro] = useState('todos');
+  const [filtro, setFiltro] = useState(catDaUrl);
   const grade = useRef(null), primeira = useRef(true);
-  useEffect(() => { if (primeira.current) { primeira.current = false; return; } if (animar) animarGrade(grade.current); }, [filtro]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const todos = cms.produtos || [];
   // Filtros só das categorias que têm modelos cadastrados.
   const categorias = CATEGORIAS.filter(([id]) => id === 'todos' || todos.some(x => x.cat === id));
-  const produtos = filtro === 'todos' ? todos : todos.filter(x => x.cat === filtro);
+  // Categoria do endereço sem modelos (ou sem botões de filtro na tela) vale como "todos": nunca uma vitrine vazia sem saída.
+  const ativo = categorias.length > 2 && categorias.some(([id]) => id === filtro) ? filtro : 'todos';
+  const produtos = ativo === 'todos' ? todos : todos.filter(x => x.cat === ativo);
+  const filtrar = (id) => {
+    setFiltro(id);
+    // O endereço acompanha o filtro (recarregar ou compartilhar mantém a categoria), sem criar entrada no histórico.
+    try { history.replaceState(history.state, '', location.pathname + (id === 'todos' ? '' : '?cat=' + id)); } catch { /* navegador antigo */ }
+  };
+  useEffect(() => { if (primeira.current) { primeira.current = false; return; } if (animar) animarGrade(grade.current); }, [ativo]); // eslint-disable-line react-hooks/exhaustive-deps
   const marcas = lista(info.marcas);
   return (
     <div data-screen-label="Armações">
@@ -34,10 +43,10 @@ export default function Armacoes() {
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 14, flexWrap: 'wrap', marginBottom: 28 }}>
             {categorias.length > 2 ? (
               <div role="group" aria-label="Filtrar" style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-                {categorias.map(([id, label]) => <button key={id} className="filter" aria-pressed={filtro === id} onClick={() => setFiltro(id)}>{label}</button>)}
+                {categorias.map(([id, label]) => <button key={id} className="filter" aria-pressed={ativo === id} onClick={() => filtrar(id)}>{label}</button>)}
               </div>
             ) : <span />}
-            <div style={{ font: "400 13px 'DM Sans',sans-serif", color: 'var(--muted-2)' }} aria-live="polite">{produtos.length} {produtos.length === 1 ? 'modelo' : 'modelos'}</div>
+            <div style={{ font: "400 13px 'DM Sans',sans-serif", color: 'var(--muted-2)' }} aria-live="polite">{produtos.length} {produtos.length === 1 ? 'item' : 'itens'}</div>
           </div>
         )}
         {produtos.length > 0 ? <h2 className="sr-only">modelos disponíveis</h2> : null}
@@ -58,7 +67,7 @@ export default function Armacoes() {
             </li>
           ))}
         </ul>
-        {produtos.length === 0 && <div style={{ font: "400 15px 'DM Sans',sans-serif", color: 'var(--muted-2)', padding: '12px 0' }}>{filtro !== 'todos' ? 'Nenhum modelo nesta categoria no momento — chame no WhatsApp que mostramos o que chegou.' : <>Chame no <NovaAba href={wa.link} className="u-link">WhatsApp</NovaAba> para ver os modelos disponíveis na loja.</>}</div>}
+        {produtos.length === 0 && <div style={{ font: "400 15px 'DM Sans',sans-serif", color: 'var(--muted-2)', padding: '12px 0' }}>{ativo !== 'todos' ? 'Nenhum modelo nesta categoria no momento — chame no WhatsApp que mostramos o que chegou.' : <>Chame no <NovaAba href={wa.link} className="u-link">WhatsApp</NovaAba> para ver os modelos disponíveis na loja.</>}</div>}
       </section>
 
       {marcas.length > 0 && (

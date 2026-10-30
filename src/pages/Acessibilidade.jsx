@@ -17,16 +17,18 @@ const SECOES = [
 
 export default function Acessibilidade() {
   const site = useSite();
+  const fb = !!String(site.info.facebook || '').trim();
   return (
     <PaginaLegal rotulo="Acessibilidade" eyebrow="acessibilidade" a="um site para" b="todas as pessoas." data={REVISADA} rotuloData="Revisada em" secoes={SECOES}
       resumo="Queremos que qualquer pessoa consiga usar este site — inclusive quem usa leitor de tela, navega só pelo teclado, amplia o texto ou prefere menos movimento na tela.">
 
       <Secao id="compromisso" n="01" titulo="nosso compromisso">
-        <p>Buscamos seguir as <strong>Diretrizes de Acessibilidade para Conteúdo Web (WCAG) 2.1, nível AA</strong>, do W3C, como orienta a Lei Brasileira de Inclusão (Lei nº 13.146/2015, art. 63). Acessibilidade é um trabalho contínuo: revisamos o site quando ele muda e corrigimos o que for relatado.</p>
+        <p>Buscamos seguir as <strong>Diretrizes de Acessibilidade para Conteúdo Web (WCAG) 2.1, nível AA</strong>, do W3C, como determina a Lei Brasileira de Inclusão (Lei nº 13.146/2015, art. 63), que torna obrigatória a acessibilidade dos sites de empresas conforme as diretrizes adotadas internacionalmente. Acessibilidade é um trabalho contínuo: revisamos o site quando ele muda e corrigimos o que for relatado.</p>
       </Secao>
 
       <Secao id="recursos" n="02" titulo="recursos do site">
         <ul>
+          <li><strong>símbolo de acessibilidade</strong> no rodapé de todas as páginas, com link para esta declaração;</li>
           <li>link <strong>"pular para o conteúdo"</strong> no início de cada página, que aparece ao usar a tecla Tab;</li>
           <li>navegação completa pelo <strong>teclado</strong>, com destaque visível no item em foco;</li>
           <li>títulos organizados e textos alternativos nas fotos, para quem usa <strong>leitor de tela</strong>;</li>
@@ -41,7 +43,7 @@ export default function Acessibilidade() {
       <Secao id="limitacoes" n="03" titulo="limitações conhecidas">
         <ul>
           <li>O <strong>mapa</strong> é fornecido pelo Google Maps, um conteúdo de terceiros que não controlamos e que pode não ser totalmente acessível. Como alternativa, o endereço está escrito na página e os botões "como chegar" e "abrir no Google Maps" abrem a rota no aplicativo de mapas.</li>
-          <li>Os serviços que o site abre — WhatsApp, Instagram, Facebook e Google Maps — seguem a acessibilidade de cada plataforma.</li>
+          <li>Os serviços que o site abre — {fb ? 'WhatsApp, Instagram, Facebook e Google Maps' : 'WhatsApp, Instagram e Google Maps'} — seguem a acessibilidade de cada plataforma.</li>
         </ul>
       </Secao>
 

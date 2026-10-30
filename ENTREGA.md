@@ -31,10 +31,10 @@ O site tem estas páginas:
 | Página | Endereço | O que mostra |
 |---|---|---|
 | Início | `/` | capa, categorias, "como funciona", localização e dicas do blog |
-| Sobre | `/sobre` | história da loja, diferenciais e galeria de fotos |
+| Sobre | `/sobre` | apresentação da loja, diferenciais e galeria de fotos (com a linha do tempo preenchida, a seção vira "nossa história") |
 | Armações | `/armacoes` | vitrine com filtro (grau, sol…) e botão "consultar" pelo WhatsApp |
-| Lentes de contato | `/lentes` | tipos de lente, passo a passo e dúvidas frequentes |
-| Convênios e eventos | `/convenios` | promoções, eventos, convênios e formas de pagamento |
+| Lentes de contato | `/lentes` | passo a passo, dúvidas frequentes e, depois que você cadastrar, os tipos de lente que a loja vende |
+| Convênios | `/convenios` | convênios, formas de pagamento, promoções e eventos que você cadastrar; sem eles, o convite para consultar pelo WhatsApp, o Instagram e o pedido de orçamento pela receita |
 | Blog | `/blog` | artigos com dicas (5 prontos) |
 | Contato | `/contato` | endereço, telefones, mapa e formulário que abre o WhatsApp |
 | Política de Privacidade | `/politica-de-privacidade` | como a loja cuida dos dados dos clientes (LGPD) |
@@ -44,7 +44,7 @@ O site tem estas páginas:
 O que o site oferece:
 
 - **Você mesmo edita.** Pelo painel, do celular ou do computador, você muda textos, fotos, horário, promoções, eventos, armações, artigos do blog e muito mais, sem precisar de programador.
-- **Só informação verdadeira.** O site foi entregue apenas com dados confirmados: endereço, WhatsApp, telefone fixo, Instagram e 8 fotos reais da loja. O conteúdo de exemplo que veio do projeto de design foi retirado: horário, convênios, "10x sem juros", marcas, equipe, depoimentos, promoções e um evento com "aferição de pressão ocular", que ótica não pode anunciar. O que ainda não foi informado fica escondido: a seção some sozinha e volta quando você preencher.
+- **Só informação verdadeira.** O site foi entregue apenas com dados confirmados: endereço, WhatsApp, telefone fixo, Instagram e 8 fotos reais da loja. O conteúdo de exemplo que veio do projeto de design foi retirado: horário, convênios, "10x sem juros", marcas, equipe, depoimentos, promoções e um evento com "aferição de pressão ocular", que ótica não pode anunciar. O que ainda não foi informado fica escondido: a seção some sozinha e volta quando você preencher. (Na página de convênios, enquanto não houver convênios, formas de pagamento, promoções nem eventos, aparece no lugar um convite para consultar pelo WhatsApp e acompanhar o Instagram.)
 - **Sem foto, sem buraco.** Onde ainda não há foto real, aparece um desenho com o olho do logo, nas cores do site.
 - **Pronto para o Google.** Cada página já sai pronta para o Google ler, com título, descrição, mapa do site (sitemap) e os dados da loja num formato que o Google entende: endereço, telefones e, quando você informar, o horário.
 - **Privacidade.** O site não usa rastreadores nem anúncios. O mapa do Google só carrega se o visitante tocar em "mostrar mapa". O formulário de contato não grava nada: ele só abre o WhatsApp com a mensagem pronta. Há um aviso sobre o uso da foto da receita.
@@ -121,6 +121,8 @@ A aba **visão geral → pendências** do painel mostra boa parte desta lista e 
 - [ ] **Horário de funcionamento** (informações → horário de funcionamento). Enquanto estiver vazio, o site mostra "consulte o horário pelo WhatsApp". Com o horário preenchido, aparece "aberto agora" ou "fechado" automaticamente. Sábado vazio significa fechado aos sábados. Se a loja fecha para almoço, avise o responsável técnico: hoje o painel tem só abertura e fechamento.
 - [ ] **Feriados e fechamentos** (informações → feriados e fechamentos). Já há duas sugestões para conferir: Natal (25/12/2026) e Ano Novo (01/01/2027). Acrescente os feriados de Rinópolis e outros dias em que a loja fecha.
 - [ ] **Formas de pagamento e parcelas** (informações → listas). Só o que a loja pratica de verdade. Desconto à vista: informe o percentual. Crediário: escreva "sujeito a análise de crédito". Se o crediário consulta SPC ou Serasa, avise o responsável técnico, porque a Política de Privacidade precisa citar isso.
+- [ ] **Lentes de contato** (lentes de contato → texto da capa e tipos de lente). Confirme que a loja vende lentes de contato, sempre com receita de oftalmologista, e cadastre em "tipos de lente" só os tipos que vende de verdade (por exemplo: diárias, mensais, tóricas, multifocais). Enquanto a lista estiver vazia, a seção não aparece e o site não cita nenhum tipo específico, nem no Google. O que for publicado vira oferta: o cliente pode exigir o que estiver anunciado.
+- [ ] **Aviso da receita no WhatsApp** ([seção 8](#whatsapp-e-receitas)): configure a mensagem de saudação e a resposta rápida com o aviso sobre a foto da receita. A Política de Privacidade conta com esse aviso para quem manda a receita direto pelo WhatsApp.
 - [ ] **Datas dos artigos do blog** (blog → cada artigo → data de publicação). Hoje todas estão em 30 out 2026. Use a data real em que o site for publicado.
 - [ ] **Revisão das páginas legais por um advogado** ([seção 9](#9-páginas-legais-revisão-por-advogado-antes-de-divulgar)).
 - [ ] **Primeiro backup** ([seção 6](#6-backup-todo-mês)).
@@ -149,8 +151,7 @@ Use exatamente a mesma grafia no site, no Google, no Instagram e no Facebook: is
 - [ ] **Fotos que faltam** (fotos e galeria): capa de lentes de contato e card "lentes de contato"; no blog, os artigos sem imagem. Sem foto, aparece a arte da marca.
 - [ ] **Link do Perfil da Empresa no Google** (informações), depois de criar o perfil ([seção 7](#71-perfil-da-empresa-no-google-o-mais-importante)). Ativa o link "avaliações no Google" na página inicial.
 - [ ] **Medição digital:** a loja tem equipamento de medição digital (centragem e altura)? Qual? Se tiver, dá para citar na página inicial (selos ou destaques da capa), por exemplo "centragem medida digitalmente — não é exame de vista". Não use números que não possam ser comprovados, como "0,1 mm" ou "100%".
-- [ ] **Serviços e promessas:** prazo de entrega das lentes, laboratório parceiro, garantia além da legal, ajuste e limpeza grátis (inclusive de óculos comprados em outro lugar). Só publique o que a loja cumpre sempre. Garantia extra só com termo escrito entregue na compra (Código de Defesa do Consumidor, art. 50). Se a loja faz ajuste e limpeza grátis, uma sugestão de texto: "Ajustamos hastes e plaquetas e limpamos seus óculos sem custo, mesmo que não tenham sido comprados aqui. Peças de reposição são cobradas à parte."
-- [ ] **Lentes de contato:** confirme que a loja vende lentes de contato, sempre com receita de oftalmologista (a página `/lentes` já diz isso).
+- [ ] **Serviços e promessas:** prazo de entrega das lentes, laboratório parceiro, garantia além da legal, ajuste e limpeza grátis (inclusive de óculos comprados em outro lugar). Só publique o que a loja cumpre sempre. Garantia extra só com termo escrito entregue na compra (Código de Defesa do Consumidor, art. 50). Hoje o site não promete ajuste, prazo de entrega nem aviso de "óculos prontos"; se a loja faz, inclua em página inicial → como funciona. Se a loja faz ajuste e limpeza grátis, uma sugestão de texto: "Ajustamos hastes e plaquetas e limpamos seus óculos sem custo, mesmo que não tenham sido comprados aqui. Peças de reposição são cobradas à parte."
 
 ### Opcional
 
@@ -163,6 +164,7 @@ Use exatamente a mesma grafia no site, no Google, no Instagram e no Facebook: is
 
 - [ ] **Prazos de guarda:** por quanto tempo guardar receitas de vendas, conversas de orçamento e documentos fiscais. A Política de Privacidade usa como exemplo 90 dias (orçamento que não virou venda) e 5 anos (vendas e documentos fiscais). Se os prazos forem outros, avise para o texto ser ajustado.
 - [ ] **Registros de acesso ao site** (Marco Civil da Internet, art. 15): decidir se a loja precisa guardá-los ([seção 8](#organização)).
+- [ ] **Porte para a LGPD** (Resolução CD/ANPD nº 2/2022, arts. 2º a 4º): confirmar se a loja se enquadra como agente de tratamento de pequeno porte (por exemplo, microempresa ou empresa de pequeno porte, sem fazer parte de grupo econômico acima desse limite) e se o tratamento de dados não é de alto risco — a ótica trata receitas, que são dados de saúde, inclusive de crianças. Se tudo isso se confirmar, a Política de Privacidade pode dizer que a loja dispensa o encarregado de dados (DPO) e usar o prazo em dobro. Se não, é preciso indicar um encarregado e publicar o nome e o contato dele (LGPD, art. 41). Hoje a política não afirma o porte: só indica o canal de atendimento.
 
 ## 5. Publicar as alterações no Google
 
@@ -245,6 +247,7 @@ O site é só uma parte: a maioria dos dados dos clientes passa pelo WhatsApp e 
 - **Apague as fotos de receita de orçamentos que não viraram venda em até 90 dias**: é o prazo que a Política de Privacidade promete.
 - Receitas de vendas feitas e documentos fiscais: guarde pelo prazo definido com o contador (a política usa 5 anos como exemplo) e depois descarte com segurança (papel picado, arquivos apagados).
 - Receita de criança: trate com o pai, a mãe ou o responsável.
+- **Aviso da receita no WhatsApp (importante).** No site, todo botão que pede a receita e o formulário de contato mostram um aviso de que a receita é um dado de saúde. Quem fala com a loja direto pelo WhatsApp não vê esse aviso, então configure no WhatsApp Business (Ferramentas comerciais → Mensagem de saudação) este texto: *"Olá! Se for enviar a foto da receita: ela é um dado de saúde e será usada só para o seu orçamento e, se você comprar, para fazer as lentes. Receita de criança: envie como pai, mãe ou responsável. Política de privacidade: https://otica-rinopolis.vercel.app/politica-de-privacidade"*. A saudação só vai para contatos novos ou que não falam com a loja há 14 dias. Por isso, salve o mesmo texto como resposta rápida (Ferramentas comerciais → Respostas rápidas, atalho `/receita`) e envie antes de pedir a foto da receita a quem não recebeu a saudação. Com domínio próprio, troque o endereço da política no texto.
 
 ### Pessoas no site e nas redes
 
@@ -285,7 +288,8 @@ O site tem **Política de Privacidade**, **Termos de Uso** e **Acessibilidade**,
 - Os textos ficam no código do site e **não podem ser editados pelo painel**, para não serem apagados por engano. Para mudar, peça ao responsável técnico, que também atualiza a data de "última atualização".
 - **Antes de divulgar o site, peça a um advogado para revisar as três páginas.** Os textos foram preparados com cuidado, mas não substituem uma orientação jurídica feita para a realidade da loja. Pontos para o advogado olhar:
   - prazos de guarda (90 dias e 5 anos são exemplos) e se eles batem com o que o contador orienta;
-  - bases legais para a receita: consentimento ao enviar a foto para orçamento e obrigação legal depois da venda;
+  - bases legais para a receita: consentimento ao enviar a foto para orçamento e obrigação legal depois da venda, inclusive para quem envia a receita direto pelo WhatsApp, sem passar pelo site (aviso na mensagem de saudação, [seção 8](#whatsapp-e-receitas));
+  - porte para a LGPD e dispensa de encarregado (Resolução CD/ANPD nº 2/2022), conforme o item da [seção 4](#com-o-contador-ou-o-advogado);
   - lista de com quem os dados são compartilhados (laboratório, contador, meios de pagamento, convênios) e se é preciso dar nomes;
   - transferência internacional para a hospedagem (Vercel, nos Estados Unidos): a política se apoia nas garantias do contrato com o fornecedor (LGPD, art. 33, II). Conferir se o contrato da Vercel atende à Resolução CD/ANPD nº 19/2024 (cláusulas-padrão da ANPD) ou se é preciso outro mecanismo;
   - prazo de resposta aos pedidos dos clientes (15 dias);

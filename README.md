@@ -31,7 +31,7 @@ Roteiro na ordem que não expõe o painel nem publica conteúdo fictício (check
 1. `ADMIN_PASSWORD` e `SESSION_SECRET` definidos em Production **antes** do deploy (com o Blob conectado, quem souber a senha edita o site).
 2. `npm run build` local e conferir que o HTML gerado não tem restos do conteúdo de exemplo (o comando deve listar **0** arquivos em todas as linhas):
    ```bash
-   for t in 'Aferição' '00.000.000' 'Marca 1' 'Nome Sobrenome' 'Unimed' '10x sem juros' 'medição digital' 'Outubro:' '"@type":"Event"' 'pexels'; do
+   for t in 'Aferição' '00.000.000' 'Marca 1' 'Nome Sobrenome' 'Unimed' '10x sem juros' 'medição digital' 'Outubro:' '"@type":"Event"' 'pexels' 'tóricas' 'multifocais' 'pequeno porte' 'horário comercial'; do
      echo "$t: $(grep -l -- "$t" dist/*.html dist/blog/*.html | wc -l)"; done
    ```
 3. Merge na `main` → a Vercel publica sozinha (cada push na `main` gera um deploy de produção).
@@ -84,7 +84,7 @@ Não há "esqueci minha senha". Quem administra a hospedagem:
 - Nenhum recurso de terceiros ao abrir o site: fontes (Outfit e DM Sans, via `@fontsource`, só os pesos usados) e imagens são servidas pelo próprio site. O mapa do Google só carrega depois do clique.
 - Fotos de `public/fotos`: o build gera versões WebP em 480, 800 e 1200 px (`scripts/fotos-responsivas.js`, com `sharp`), e o site escolhe a do tamanho da tela (`srcset`), com o JPEG de reserva.
 - O GSAP (animações) é baixado à parte, depois da página; a entrada animada não esconde o conteúdo que já veio pronto do build.
-- Cache: `/assets` (arquivos com hash) por 1 ano; `/fotos` por 7 dias; `logo.png` e `og-image.jpg` por 1 dia. O `server.js` também comprime (brotli/gzip) e responde 304 com ETag.
+- Cache: `/assets` (arquivos com hash) por 1 ano; `/fotos` por 7 dias; `logo.png`, `logo-192.png`, `favicon.png` e `og-image.jpg` por 1 dia. O `server.js` também comprime (brotli/gzip) e responde 304 com ETag.
 
 ## Área do proprietário (`/admin`, ou "área do proprietário" no rodapé)
 - Senha inicial: valor de `ADMIN_PASSWORD`. No primeiro acesso o painel **só deixa trocar a senha** antes de qualquer edição; a API recusa edições com a senha inicial. A nova fica salva como hash scrypt e, a partir daí, `ADMIN_PASSWORD` deixa de funcionar — quem configurou o servidor não conhece mais a senha.
@@ -140,7 +140,7 @@ As páginas prontas e o sitemap só mudam ao rodar `npm run build` de novo: agen
 - `server/` — API (`router.js`), autenticação (`auth.js`: scrypt + cookie HttpOnly assinado, limite de tentativas, proteção CSRF por cabeçalho), armazenamento (`storage.js`: Vercel Blob ou arquivos) e fotos locais (`static.js`).
 - `api/` — funções serverless da Vercel (reutilizam `server/router.js`): `content`, `session`, `login`, `logout`, `password`, `upload`, `history`, `publicar`, `cron-publicar`, `limpar-fotos`. `server.js` — servidor Node standalone.
 - Segurança: cabeçalhos (CSP, HSTS, Permissions-Policy, `noindex` em `/admin` e `/api`) no `vercel.json`, aplicados também pelo `server.js`; envio de fotos confere o tipo real do arquivo (JPG, PNG, WebP, até 3 MB).
-- `public/fotos/` — fotos reais da loja (`FOTOS.md`); `public/og-image.jpg` (fachada, compartilhamento) e `public/logo.png`.
+- `public/fotos/` — fotos reais da loja (`FOTOS.md`); `public/og-image.jpg` (fachada, compartilhamento), `public/logo.png` (logo sem margem, cabeçalho e rodapé), `public/logo-192.png` (ícone quadrado: iPhone e dados estruturados) e `public/favicon.png` (o olho do logo, aba do navegador).
 - `project/`, `chats/` — pacote original do Claude Design, só como referência histórica: senhas, textos e dados de lá (conteúdo de exemplo) **não valem** para o site.
 
 ## Conteúdo
