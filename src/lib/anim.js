@@ -1,7 +1,7 @@
 // Animações GSAP + ScrollTrigger (mesma coreografia do protótipo):
-// - [data-hero]: entrada em cascata do texto, imagem com leve parallax, selos flutuantes
+// - [data-hero]: entrada em cascata do texto, imagem com leve parallax, entrada dos selos flutuantes (sem vaivém infinito)
 // - [data-reveal]: seções revelam ao rolar; filhos de [data-grid] entram em stagger
-// - [data-count]: contadores; [data-marquee-track]: faixa rolante
+// - [data-count]: contadores; [data-marquee-track]: faixa rolante (pausável: ver pausarFaixa)
 import { useLayoutEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -11,25 +11,38 @@ const CP = 'opacity,transform';
 
 export const reduzMovimento = () => typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+// Animação da faixa rolante, guardada pelo elemento, para o botão "pausar animação" e as pausas automáticas
+// (mouse, foco e faixa fora da tela) controlarem. data-pausada="true" no trilho: a animação já nasce parada.
+const faixas = new WeakMap();
+export const pausarFaixa = (trilho, pausar) => { const tw = trilho && faixas.get(trilho); if (tw) tw.paused(pausar); };
+
 function animarPagina(root, footer, transicao) {
   const main = root;
   if (transicao) gsap.fromTo(main, { opacity: 0 }, { opacity: 1, duration: .45, ease: 'power1.out', clearProps: 'opacity' });
 
   main.querySelectorAll('[data-hero]').forEach(hero => {
-    const multi = hero.children.length > 1;
-    const text = Array.from(hero.children[0]?.children || []);
-    const media = Array.from(hero.children).slice(1);
+    // Mídia (entra depois e tem parallax): os filhos marcados com [data-hero-media] ou, sem marca, do 2º filho em diante.
+    const filhos = Array.from(hero.children);
+    const marcadas = filhos.filter(el => el.hasAttribute('data-hero-media'));
+    const media = marcadas.length ? marcadas : filhos.slice(1);
+    const multi = media.length > 0;
+    const text = [...(filhos[0]?.children || []), ...filhos.slice(1).filter(el => !media.includes(el))];
     const floats = hero.querySelectorAll('[data-float]');
     const tl = gsap.timeline({ delay: transicao ? .1 : .25 });
     tl.fromTo(text, { y: 48, opacity: 0 }, { y: 0, opacity: 1, duration: 1, stagger: .12, ease: 'power3.out', clearProps: CP });
     if (multi) tl.fromTo(media, { y: 40, opacity: 0, scale: .96 }, { y: 0, opacity: 1, scale: 1, duration: 1.1, ease: 'power3.out', clearProps: 'opacity' }, '-=.75');
     if (floats.length) tl.fromTo(floats, { y: 20, opacity: 0, scale: .9 }, { y: 0, opacity: 1, scale: 1, duration: .7, stagger: .15, ease: 'back.out(1.6)', clearProps: 'opacity' }, '-=.5');
     if (multi) gsap.to(media, { y: -40, ease: 'none', scrollTrigger: { trigger: hero, start: 'top top', end: 'bottom top', scrub: true } });
-    if (floats.length) gsap.to(floats, { y: -10, duration: 2.4, ease: 'sine.inOut', yoyo: true, repeat: -1, stagger: .4, delay: 2 });
   });
 
   const track = main.querySelector('[data-marquee-track]');
-  if (track) { const half = track.scrollWidth / 2; if (half > 0) gsap.fromTo(track, { x: 0 }, { x: -half, duration: 28, ease: 'none', repeat: -1 }); }
+  if (track) {
+    const half = track.scrollWidth / 2;
+    if (half > 0) {
+      const tw = gsap.fromTo(track, { x: 0 }, { x: -half, duration: 28, ease: 'none', repeat: -1, paused: track.dataset.pausada === 'true' });
+      faixas.set(track, tw);
+    }
+  }
 
   main.querySelectorAll('[data-reveal] figure').forEach(fig => gsap.to(fig, { y: -12, ease: 'none', scrollTrigger: { trigger: fig, start: 'top bottom', end: 'bottom top', scrub: 1 } }));
 
@@ -45,6 +58,9 @@ function animarPagina(root, footer, transicao) {
     const fim = +el.dataset.count || 0, pre = el.dataset.prefix || '', suf = el.dataset.suffix || '', o = { v: 0 };
     gsap.to(o, { v: fim, duration: 1.8, ease: 'power2.out', onUpdate: () => { el.textContent = pre + Math.round(o.v) + suf; }, onComplete: () => { el.textContent = pre + fim + suf; }, scrollTrigger: { trigger: el, start: 'top 88%', once: true } });
   });
+
+  // Limpeza chamada pelo gsap.context ao desfazer as animações.
+  return () => { if (track) faixas.delete(track); };
 }
 
 // Liga as animações da página atual; refaz a cada troca de página (key).

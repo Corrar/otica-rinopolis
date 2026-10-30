@@ -129,7 +129,7 @@ function Painel({ wide, sessao, setSessao, sair }) {
     <section style={{ padding: 'clamp(20px,3vw,32px) var(--px-card) clamp(48px,6vw,80px)', display: 'grid', gridTemplateColumns: wide ? 'minmax(0,220px) minmax(0,1fr)' : 'minmax(0,1fr)', gap: 'clamp(16px,3vw,32px)', alignItems: 'start' }}>
       <aside style={{ display: 'flex', flexDirection: 'column', gap: 4, position: wide ? 'sticky' : 'static', top: 88, minWidth: 0 }}>
         <div className="eyebrow" style={{ fontSize: 11, padding: '8px 12px 10px' }}>painel</div>
-        <nav aria-label="Seções do painel" style={{ display: 'flex', flexDirection: wide ? 'column' : 'row', gap: 4, overflowX: 'auto', paddingBottom: 4 }}>
+        <nav aria-label="Seções do painel" style={{ display: 'flex', flexDirection: wide ? 'column' : 'row', gap: 4, overflowX: 'auto', paddingBottom: 4, scrollbarWidth: 'thin' }}>
           {ABAS.map(([id, label]) => <button key={id} className="adm-tab" aria-current={aba === id} onClick={() => irAba(id)}><span>{label}</span><span style={{ font: "400 12px 'DM Sans',sans-serif", opacity: .6 }}>{contagem[id] ?? ''}</span></button>)}
         </nav>
         <div style={{ height: 1, background: 'var(--line)', margin: '8px 0' }} />

@@ -1,7 +1,7 @@
 // Política de Privacidade (LGPD). Texto fixo no código: não é editável pelo painel, para não ser apagado por engano.
 // Os dados da empresa (razão social, CNPJ, e-mail, endereço e telefones) vêm das informações da loja.
 // Ao mudar o texto, atualize ATUALIZADA; as versões anteriores ficam no histórico do Git.
-import { L } from '../components/Layout.jsx';
+import { L, NovaAba } from '../components/Layout.jsx';
 import { Canais, Destaques, Empresa, Fechamento, nomeEmpresa, PaginaLegal, Secao, Sub, Tabela } from '../components/Legal.jsx';
 import { useSite } from '../state/content.jsx';
 
@@ -166,7 +166,7 @@ export default function Privacidade() {
         <p>Para exercer qualquer desses direitos, ou tirar dúvidas sobre esta política, fale com a gente:</p>
         <Canais site={site} msg="Olá! Quero falar sobre os meus dados pessoais (LGPD)." />
         <p>Para proteger os seus dados, podemos pedir que você confirme a sua identidade — por exemplo, escrevendo do mesmo número de WhatsApp usado na conversa ou mostrando um documento na loja. Respondemos em até 15 dias (LGPD, art. 19). A lei permite que agentes de pequeno porte usem prazo em dobro (Resolução CD/ANPD nº 2/2022), mas o nosso objetivo é responder bem antes.</p>
-        <p>Se achar que o seu pedido não foi atendido, você pode apresentar petição à Autoridade Nacional de Proteção de Dados (ANPD), pelo site <a href="https://www.gov.br/anpd" target="_blank" rel="noopener">gov.br/anpd</a> (art. 18, § 1º), e procurar os órgãos de defesa do consumidor, como o Procon.</p>
+        <p>Se achar que o seu pedido não foi atendido, você pode apresentar petição à Autoridade Nacional de Proteção de Dados (ANPD), pelo site <NovaAba href="https://www.gov.br/anpd">gov.br/anpd</NovaAba> (art. 18, § 1º), e procurar os órgãos de defesa do consumidor, como o Procon.</p>
       </Secao>
 
       <Secao id="seguranca" n="11" titulo="segurança e incidentes">

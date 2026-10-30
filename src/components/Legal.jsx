@@ -2,6 +2,7 @@
 // O texto fica no código (não é editável pelo painel); os dados da empresa vêm das informações da loja.
 import { Ic } from './Icons.jsx';
 import { BtnWa } from './bits.jsx';
+import { NovaAba } from './Layout.jsx';
 import { NOME } from '../lib/seo.js';
 
 // "30/10/2026" → "2026-10-30" (atributo datetime)
@@ -77,7 +78,7 @@ export function Empresa({ site }) {
     emp.razao && ['nome fantasia', NOME],
     emp.cnpj && ['CNPJ', emp.cnpj],
     ['endereço', endereco(info)],
-    ['WhatsApp', <a href={wa.link} target="_blank" rel="noopener">{wa.fmt}</a>],
+    ['WhatsApp', <NovaAba href={wa.link}>{wa.fmt}</NovaAba>],
     tel && ['telefone', <a href={tel.link}>{tel.fmt}</a>],
     emp.email && ['e-mail', <a href={'mailto:' + emp.email}>{emp.email}</a>],
   ].filter(Boolean);
@@ -92,7 +93,7 @@ export function Canais({ site, msg }) {
   const { info, wa, tel, emp } = site;
   return (
     <ul className="legal__canais" role="list">
-      <li><Ic n="wa" s={16} /><span>WhatsApp: <a href={msg ? wa.msg(msg) : wa.link} target="_blank" rel="noopener">{wa.fmt}</a></span></li>
+      <li><Ic n="wa" s={16} /><span>WhatsApp: <NovaAba href={msg ? wa.msg(msg) : wa.link}>{wa.fmt}</NovaAba></span></li>
       {tel ? <li><Ic n="tel" s={16} /><span>telefone: <a href={tel.link}>{tel.fmt}</a></span></li> : null}
       {emp.email ? <li><Ic n="mail" s={16} /><span>e-mail: <a href={'mailto:' + emp.email}>{emp.email}</a></span></li> : null}
       <li><Ic n="pin" s={16} /><span>na loja: {endereco(info)}</span></li>

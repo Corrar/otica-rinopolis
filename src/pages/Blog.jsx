@@ -1,6 +1,6 @@
 import { Ic } from '../components/Icons.jsx';
 import { L } from '../components/Layout.jsx';
-import { ArteMarca, BtnWa, Foto, Img } from '../components/bits.jsx';
+import { ArteMarca, BtnWa, Foto, Img, Paragrafos } from '../components/bits.jsx';
 import { useSite } from '../state/content.jsx';
 import { postsDe } from '../lib/util.js';
 
@@ -18,7 +18,7 @@ export function Blog() {
       {destaque && (
         <section data-reveal className="px" style={{ paddingBottom: 'clamp(32px,5vw,64px)' }}>
           <L to={'blog/' + destaque.slug} className="split" style={{ '--min': '360px', gap: 'clamp(24px,4vw,40px)', alignItems: 'center', color: 'var(--ink)' }}>
-            <Foto img={destaque.img} rotulo="" alt={destaque.titulo} ratio="16/10" />
+            <Foto img={destaque.img} rotulo="" alt="" ratio="16/10" />
             <div className="min0">
               <div style={{ font: "400 13px 'DM Sans',sans-serif", color: 'var(--muted-2)', marginBottom: 12 }}>{destaque.tag} · {destaque.data} · {destaque.leitura}</div>
               <h2 style={{ font: "300 clamp(26px,3.2vw,40px)/1.15 'Outfit',sans-serif", letterSpacing: '-.02em', marginBottom: 14, textWrap: 'pretty' }}>{destaque.titulo}</h2>
@@ -37,18 +37,20 @@ export function Blog() {
 
       {resto.length > 0 && (
         <section data-reveal className="px" style={{ paddingBottom: 'clamp(48px,7vw,88px)' }}>
-          <div style={{ borderTop: '1px solid var(--line)' }}>
+          <ul role="list" style={{ borderTop: '1px solid var(--line)' }}>
             {resto.map(p => (
-              <L key={p.slug} to={'blog/' + p.slug} className="post-row">
-                <div style={{ font: "400 13px/1.5 'DM Sans',sans-serif", color: 'var(--muted-2)', flex: '0 0 130px' }}>{p.tag}<br />{p.data}</div>
-                <div style={{ flex: '1 1 240px', minWidth: 0 }}>
-                  <div style={{ font: "400 clamp(18px,2vw,24px)/1.3 'Outfit',sans-serif", textWrap: 'pretty' }}>{p.titulo}</div>
-                  {p.resumo ? <div className="t-small" style={{ marginTop: 6, whiteSpace: 'pre-line' }}>{p.resumo}</div> : null}
-                </div>
-                <Ic n="arrow" s={22} />
-              </L>
+              <li key={p.slug}>
+                <L to={'blog/' + p.slug} className="post-row">
+                  <div style={{ font: "400 13px/1.5 'DM Sans',sans-serif", color: 'var(--muted-2)', flex: '0 0 130px' }}>{p.tag}<br />{p.data}</div>
+                  <div style={{ flex: '1 1 240px', minWidth: 0 }}>
+                    <h2 style={{ font: "400 clamp(18px,2vw,24px)/1.3 'Outfit',sans-serif", textWrap: 'pretty' }}>{p.titulo}</h2>
+                    {p.resumo ? <div className="t-small" style={{ marginTop: 6, whiteSpace: 'pre-line' }}>{p.resumo}</div> : null}
+                  </div>
+                  <Ic n="arrow" s={22} />
+                </L>
+              </li>
             ))}
-          </div>
+          </ul>
         </section>
       )}
     </div>
@@ -63,15 +65,16 @@ export function Artigo({ slug }) {
   return (
     <div data-screen-label="Artigo">
       <section data-hero className="px" style={{ paddingTop: 'clamp(32px,5vw,64px)' }}><div style={{ maxWidth: 820 }}>
-        <L to="blog" style={{ display: 'inline-flex', alignItems: 'center', gap: 6, font: "500 13px 'DM Sans',sans-serif", color: 'var(--muted)', marginBottom: 24 }}><Ic n="arrow" s={14} style={{ transform: 'rotate(180deg)' }} />voltar ao blog</L>
+        {/* padding vertical: área de toque de 44px; a margem negativa mantém a posição visual. */}
+        <L to="blog" style={{ display: 'inline-flex', alignItems: 'center', gap: 6, font: "500 13px 'DM Sans',sans-serif", color: 'var(--muted)', padding: '14px 0', margin: '-14px 0 10px' }}><Ic n="arrow" s={14} style={{ transform: 'rotate(180deg)' }} />voltar ao blog</L>
         <div style={{ font: "400 13px 'DM Sans',sans-serif", color: 'var(--muted-2)', marginBottom: 14 }}>{artigo.tag} · {artigo.data} · {artigo.leitura}</div>
         <h1 style={{ font: "300 clamp(32px,4.5vw,56px)/1.08 'Outfit',sans-serif", letterSpacing: '-.02em', marginBottom: 20, textWrap: 'pretty' }}>{artigo.titulo}</h1>
         {artigo.resumo ? <p style={{ font: "400 clamp(16px,1.6vw,19px)/1.6 'DM Sans',sans-serif", color: 'var(--text-2)', marginBottom: 28, whiteSpace: 'pre-line' }}>{artigo.resumo}</p> : null}
       </div></section>
       <section data-reveal className="px" style={{ paddingBottom: 'clamp(48px,7vw,88px)' }}>
         <div style={{ maxWidth: 820 }}>
-          <div className="ph" style={{ aspectRatio: '16/9', maxHeight: artigo.img ? undefined : 360, borderRadius: 20, marginBottom: 32 }}>{artigo.img ? <Img src={artigo.img} alt={artigo.titulo} /> : <ArteMarca />}</div>
-          <div style={{ font: "400 clamp(16px,1.5vw,18px)/1.75 'DM Sans',sans-serif", color: 'var(--ink-2)', whiteSpace: 'pre-line', textWrap: 'pretty' }}>{artigo.conteudo === artigo.resumo ? '' : artigo.conteudo}</div>
+          <div className="ph" style={{ aspectRatio: '16/9', maxHeight: artigo.img ? undefined : 360, borderRadius: 20, marginBottom: 32 }}>{artigo.img ? <Img src={artigo.img} alt="" /> : <ArteMarca />}</div>
+          <div style={{ font: "400 clamp(16px,1.5vw,18px)/1.75 'DM Sans',sans-serif", color: 'var(--ink-2)', textWrap: 'pretty' }}><Paragrafos texto={artigo.conteudo === artigo.resumo ? '' : artigo.conteudo} espaco="1.75em" /></div>
           <p className="t-small" style={{ marginTop: 28 }}>Conteúdo informativo. Não substitui a consulta com o médico oftalmologista. A Ótica Digital Look não realiza exames de vista.</p>
           <div style={{ marginTop: 40, background: 'var(--sand)', borderRadius: 20, padding: 'clamp(22px,3vw,32px)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 16, flexWrap: 'wrap' }}>
             <div className="min0"><div style={{ font: "500 20px 'Outfit',sans-serif", marginBottom: 4 }}>ficou com dúvida?</div><div style={{ font: "400 14px 'DM Sans',sans-serif", color: 'var(--muted)' }}>Fale com a gente — respondemos em horário comercial.</div></div>

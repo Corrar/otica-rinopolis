@@ -26,7 +26,7 @@ export default function Lentes() {
           <div data-grid className={`grid${gradeEquilibrada(tipos)}`} style={{ '--min': '220px', '--gap': '16px' }}>
             {tipos.map((t, i) => (
               <div key={i} className="card-sand">
-                <div style={{ font: "500 21px 'Outfit',sans-serif", marginBottom: 10 }}>{t.nome}</div>
+                <h3 style={{ font: "500 21px 'Outfit',sans-serif", marginBottom: 10 }}>{t.nome}</h3>
                 <div className="t-body" style={{ marginBottom: t.ideal ? 20 : 0 }}>{t.texto}</div>
                 {t.ideal ? <div style={{ font: "500 12px 'DM Sans',sans-serif", letterSpacing: '.08em', textTransform: 'uppercase', color: 'var(--muted-2)' }}>{t.ideal}</div> : null}
               </div>
@@ -42,7 +42,7 @@ export default function Lentes() {
             {numerar(passos).map(s => (
               <div key={s.n}>
                 <div style={{ font: "300 30px 'Outfit',sans-serif", color: 'var(--muted-2)', marginBottom: 14 }}>{s.n}</div>
-                <div className="t-card">{s.titulo}</div>
+                <h3 className="t-card">{s.titulo}</h3>
                 <div className="t-body">{s.texto}</div>
               </div>
             ))}
@@ -54,12 +54,15 @@ export default function Lentes() {
         <section data-reveal className="px split" style={{ '--min': '300px', paddingTop: 'clamp(40px,6vw,80px)', gap: 'clamp(24px,4vw,48px)', alignItems: 'start' }}>
           <h2 className="h-sub">dúvidas <span className="b">frequentes</span></h2>
           <div style={{ borderTop: '1px solid var(--line)' }}>
+            {/* Respostas sempre no HTML (o Google e o leitor de tela encontram todas); as fechadas ficam com hidden. */}
             {cms.faq.map((q, i) => (
               <div key={i} style={{ borderBottom: '1px solid var(--line)' }}>
-                <button className="faq-q" onClick={() => setAberta(aberta === i ? -1 : i)} aria-expanded={aberta === i} aria-controls={'faq-' + i}>
-                  <span>{q.p}</span><span className="faq-ic" style={{ transform: `rotate(${aberta === i ? 45 : 0}deg)` }} aria-hidden="true">+</span>
-                </button>
-                {aberta === i && <div id={'faq-' + i} className="t-body" style={{ lineHeight: 1.6, padding: '0 48px 20px 0' }}>{q.r}</div>}
+                <h3 style={{ margin: 0 }}>
+                  <button type="button" id={'faq-q-' + i} className="faq-q" onClick={() => setAberta(aberta === i ? -1 : i)} aria-expanded={aberta === i} aria-controls={'faq-' + i}>
+                    <span>{q.p}</span><span className="faq-ic" style={{ transform: `rotate(${aberta === i ? 45 : 0}deg)` }} aria-hidden="true">+</span>
+                  </button>
+                </h3>
+                <div id={'faq-' + i} role="region" aria-labelledby={'faq-q-' + i} hidden={aberta !== i} className="t-body" style={{ lineHeight: 1.6, padding: '0 48px 20px 0' }}>{q.r}</div>
               </div>
             ))}
           </div>

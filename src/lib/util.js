@@ -8,6 +8,10 @@ export const fmtData = (iso) => { const d = iso ? new Date(iso + 'T12:00:00') : 
 export const numerar = (arr) => (arr || []).map((x, i) => ({ ...x, n: num2(i + 1) }));
 // Classe de grade que fecha as linhas sem card sobrando (4 → 1/2/4 colunas, 3 → 1/3 colunas).
 export const gradeEquilibrada = (arr) => { const n = (arr || []).length; return !n ? '' : n % 4 === 0 ? ' grid--4' : n % 3 === 0 ? ' grid--3' : ''; };
+// Colunas da classe .grid--cols para n itens (computador, tablet e celular): a que divide n exatamente ou,
+// se nenhuma dividir, a que deixa a última linha mais cheia. No celular, 2 colunas só com quantidade par.
+const melhorColuna = (n, opcoes) => opcoes.find(c => n % c === 0) || opcoes.reduce((a, c) => ((n % c) / c > (n % a) / a ? c : a));
+export const colunas = (n) => ({ '--cd': melhorColuna(n, [4, 5, 3]), '--ct': melhorColuna(n, [3, 2]), '--cm': n % 2 ? 1 : 2 });
 export const slugify = (s) => String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 80) || 'artigo';
 
 const toMin = (s) => { const m = /^(\d{1,2}):(\d{2})$/.exec(String(s || '').trim()); return m ? +m[1] * 60 + +m[2] : null; };

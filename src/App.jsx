@@ -1,6 +1,6 @@
 import { lazy, Suspense, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { IconSprite, Ic } from './components/Icons.jsx';
-import { Footer, Header, MobileMenu, PromoBar, ScrollExtras, useLargura } from './components/Layout.jsx';
+import { Footer, Header, MobileMenu, NovaAba, PromoBar, ScrollExtras, useLargura } from './components/Layout.jsx';
 import { useContent, useSite } from './state/content.jsx';
 import { rota, useHashLegado, usePath } from './lib/router.js';
 import { useToast } from './lib/toast.js';
@@ -54,23 +54,33 @@ function Site() {
   const path = usePath();
   const r = rota(path);
   const { info, wa, animar } = useSite();
-  const w = useLargura();
-  const wide = w >= 980, desktop = w >= 640;
+  // Largura só para fechar o menu do celular ao alargar a janela (o resto da responsividade é por CSS).
+  const wide = useLargura() >= 980;
   const [menuOpen, setMenuOpen] = useState(false);
+  const [anuncio, setAnuncio] = useState('');
   const toast = useToast();
-  const mainRef = useRef(null), footerRef = useRef(null), headerRef = useRef(null), fabRef = useRef(null);
+  const mainRef = useRef(null), footerRef = useRef(null), headerRef = useRef(null), fabRef = useRef(null), burgerRef = useRef(null);
+  const rotaAnterior = useRef(path);
   const ativa = r.page === 'post' ? 'blog' : r.page;
   const admin = r.page === 'admin';
   const fab = info.botaoFlutuante !== false && !admin;
 
   useEffect(() => setMenuOpen(false), [path]);
   useEffect(() => { if (wide) setMenuOpen(false); }, [wide]);
+  // Troca de página: foco no início do conteúdo e o título da nova página anunciado ao leitor de tela
+  // (o efeito do Seo, componente filho, já atualizou document.title).
+  useEffect(() => {
+    if (rotaAnterior.current === path) return; // primeira renderização (inclusive a repetição do StrictMode)
+    rotaAnterior.current = path;
+    mainRef.current?.focus({ preventScroll: true });
+    setAnuncio(document.title);
+  }, [path]);
   useLayoutEffect(() => (animar ? animarEntradaHeader(headerRef.current, fabRef.current) : undefined), []); // eslint-disable-line react-hooks/exhaustive-deps
   useAnimacoesPagina(mainRef, footerRef, path, animar && !admin);
 
   let pagina;
   switch (r.page) {
-    case 'inicio': pagina = <Inicio desktop={desktop} />; break;
+    case 'inicio': pagina = <Inicio />; break;
     case 'sobre': pagina = <Sobre />; break;
     case 'armacoes': pagina = <Armacoes />; break;
     case 'lentes': pagina = <Lentes />; break;
@@ -85,20 +95,24 @@ function Site() {
     default: pagina = <NaoEncontrada />;
   }
 
+  // Com o menu do celular aberto, o que fica atrás dele é inerte (sem foco nem leitura).
   return (
-    <div className={`app${fab ? ' app--fab' : ''}${menuOpen ? ' app--menu' : ''}`}>
-      <a href="#conteudo" className="skip">pular para o conteúdo</a>
+    <div className={`app${fab ? ' app--fab' : ''}${menuOpen ? ' app--menu' : ''}${animar ? '' : ' app--estatico'}`}>
+      <a href="#conteudo" className="skip" inert={menuOpen}>pular para o conteúdo</a>
       <Seo r={r} />
-      <PromoBar />
-      <Header ref={headerRef} ativa={ativa} wide={wide} menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
-      {menuOpen && <MobileMenu ativa={ativa} fechar={() => setMenuOpen(false)} animar={animar} headerRef={headerRef} />}
-      <main id="conteudo" ref={mainRef} key={path}>{pagina}</main>
-      <Footer ref={footerRef} />
-      <ScrollExtras />
-      {toast && <div className="toast" role="status">{toast}</div>}
-      {fab && (
-        <a ref={fabRef} href={wa.link} target="_blank" rel="noopener" aria-label="Falar no WhatsApp" className="fab"><Ic n="wa" s={22} />{wide && <span>fale conosco</span>}</a>
-      )}
+      <PromoBar inert={menuOpen} />
+      <Header ref={headerRef} ativa={ativa} menuOpen={menuOpen} setMenuOpen={setMenuOpen} burgerRef={burgerRef} />
+      {menuOpen && <MobileMenu ativa={ativa} fechar={() => setMenuOpen(false)} animar={animar} headerRef={headerRef} burgerRef={burgerRef} />}
+      <main id="conteudo" ref={mainRef} key={path} tabIndex={-1} inert={menuOpen}>{pagina}</main>
+      <Footer ref={footerRef} inert={menuOpen} />
+      <aside aria-label="atalhos" inert={menuOpen}>
+        <ScrollExtras />
+        {fab && (
+          <NovaAba ref={fabRef} href={wa.link} aria-label="fale conosco pelo WhatsApp" className="fab"><Ic n="wa" s={22} /><span className="fab__txt">fale conosco</span></NovaAba>
+        )}
+      </aside>
+      <div className="sr-only" aria-live="polite" aria-atomic="true">{anuncio}</div>
+      <div className="toast" role="status">{toast}</div>
     </div>
   );
 }

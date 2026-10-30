@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import { Ic } from '../components/Icons.jsx';
 import { useSite } from '../state/content.jsx';
-import { lista } from '../lib/util.js';
+import { colunas, lista } from '../lib/util.js';
+import { NovaAba } from '../components/Layout.jsx';
 import { ArteMarca, Img } from '../components/bits.jsx';
 import { animarGrade } from '../lib/anim.js';
 
@@ -39,31 +40,33 @@ export default function Armacoes() {
             <div style={{ font: "400 13px 'DM Sans',sans-serif", color: 'var(--muted-2)' }} aria-live="polite">{produtos.length} {produtos.length === 1 ? 'modelo' : 'modelos'}</div>
           </div>
         )}
-        <div data-grid-produtos ref={grade} className="grid grid--fill grid--2m" style={{ '--min': '230px' }}>
+        {produtos.length > 0 ? <h2 className="sr-only">modelos disponíveis</h2> : null}
+        <ul data-grid-produtos ref={grade} role="list" className="grid grid--cols" style={colunas(produtos.length)}>
           {produtos.map((p, i) => (
-            <div key={p.nome + i} style={{ display: 'flex', flexDirection: 'column', minWidth: 0 }}>
+            <li key={p.nome + i} style={{ display: 'flex', flexDirection: 'column', minWidth: 0 }}>
               <div className="ph" style={{ aspectRatio: '4/3', borderRadius: 16, backgroundColor: '#f0efec', fontSize: 12, marginBottom: 12 }}>
                 {p.img ? <Img src={p.img} alt={`${p.nome}${p.marca ? ` (${p.marca})` : ''} — ${rotuloAlt[p.cat] || 'óculos'}`} /> : <ArteMarca />}
                 <span className="badge" style={{ left: 12, background: '#fff', color: 'var(--ink)' }}>{rotuloCat[p.cat] || p.cat}</span>
                 {p.destaque ? <span className="badge" style={{ right: 12, background: 'var(--ink)', color: '#fff' }}>{p.selo || 'destaque'}</span> : null}
               </div>
               {p.marca || p.preco ? <div style={{ display: 'flex', justifyContent: 'space-between', gap: '2px 10px', flexWrap: 'wrap', font: "400 12px 'DM Sans',sans-serif", color: 'var(--muted-2)', marginBottom: 4 }}><span>{p.marca}</span>{p.preco ? <span style={{ color: 'var(--ink)', fontWeight: 500 }}>{p.preco}</span> : null}</div> : null}
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
-                <div className="prod-nome">{p.nome}</div>
-                <a href={wa.msg(`Olá! Vi no site "${p.nome}"${p.marca ? ` (${p.marca})` : ''} e gostaria de mais informações.`)} target="_blank" rel="noopener" className="pill-sm"><Ic n="wa" s={14} /><span>consultar</span></a>
+              {/* Nome em cima e botão embaixo: os cards da mesma linha ficam com a mesma altura. */}
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 8 }}>
+                <h3 className="prod-nome">{p.nome}</h3>
+                <NovaAba href={wa.msg(`Olá! Vi no site "${p.nome}"${p.marca ? ` (${p.marca})` : ''} e gostaria de mais informações.`)} className="pill-sm"><Ic n="wa" s={14} /><span>consultar</span><span className="sr-only"> {p.nome} no WhatsApp</span></NovaAba>
               </div>
-            </div>
+            </li>
           ))}
-        </div>
-        {produtos.length === 0 && <div style={{ font: "400 15px 'DM Sans',sans-serif", color: 'var(--muted-2)', padding: '12px 0' }}>{filtro !== 'todos' ? 'Nenhum modelo nesta categoria no momento — chame no WhatsApp que mostramos o que chegou.' : <>Chame no <a href={wa.link} target="_blank" rel="noopener" className="u-link">WhatsApp</a> para ver os modelos disponíveis na loja.</>}</div>}
+        </ul>
+        {produtos.length === 0 && <div style={{ font: "400 15px 'DM Sans',sans-serif", color: 'var(--muted-2)', padding: '12px 0' }}>{filtro !== 'todos' ? 'Nenhum modelo nesta categoria no momento — chame no WhatsApp que mostramos o que chegou.' : <>Chame no <NovaAba href={wa.link} className="u-link">WhatsApp</NovaAba> para ver os modelos disponíveis na loja.</>}</div>}
       </section>
 
       {marcas.length > 0 && (
         <section data-reveal style={{ margin: '0 var(--px) clamp(48px,7vw,88px)', borderTop: '1px solid var(--line)', paddingTop: 36 }}>
-          <div className="eyebrow" style={{ marginBottom: 18 }}>marcas que trabalhamos</div>
-          <div data-grid style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(130px,1fr))', gap: 10 }}>
-            {marcas.map(m => <div key={m} className="chip-box">{m}</div>)}
-          </div>
+          <h2 className="eyebrow" style={{ marginBottom: 18 }}>marcas que trabalhamos</h2>
+          <ul data-grid role="list" className="chips chips--6">
+            {marcas.map(m => <li key={m} className="chip-box">{m}</li>)}
+          </ul>
         </section>
       )}
     </div>
