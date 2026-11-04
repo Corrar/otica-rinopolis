@@ -83,7 +83,6 @@ export const PADRAO = () => ({
     { nome: 'Armações de acetato', marca: '', cat: 'grau', img: IL + 'armacao-acetato.jpg', preco: '' },
     { nome: 'Armações redondas', marca: '', cat: 'grau', img: IL + 'armacao-redonda.jpg', preco: '' },
     { nome: 'Armações pretas clássicas', marca: '', cat: 'grau', img: IL + 'armacao-preta.jpg', preco: '' },
-    { nome: 'Armações retangulares de metal', marca: '', cat: 'grau', img: IL + 'armacao-metal-retangular.jpg', preco: '' },
     { nome: 'Óculos de sol aviador', marca: '', cat: 'sol', img: IL + 'sol-aviador.jpg', preco: '' },
     { nome: 'Óculos de sol gatinho', marca: '', cat: 'sol', img: IL + 'sol-gatinho.jpg', preco: '' },
     { nome: 'Óculos de sol quadrados', marca: '', cat: 'sol', img: IL + 'sol-quadrado.jpg', preco: '' },

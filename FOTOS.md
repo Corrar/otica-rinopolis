@@ -28,9 +28,28 @@ Fora de `public/fotos/`:
 - `public/logo-192.png` — logo em fundo escuro, 192×192: ícone do iPhone (apple-touch-icon) e logo dos dados estruturados (JSON-LD), que o Google mostra sobre fundo claro.
 - `public/favicon.png` — só o olho do logo, em fundo escuro (64×64): ícone da aba do navegador.
 
-<!-- ILUSTRATIVAS -->
-
 Ficaram de fora as fotos do balcão com o banner da CIA CAP e da mesa de atendimento com o computador (muita informação na imagem, inclusive a tela).
+
+## Fotos ilustrativas (`public/fotos/ilustrativas/`)
+
+Todas de licença livre, sem direitos autorais: **domínio público** ou **CC0** (uso comercial permitido, sem obrigação de crédito). Conferidas no Wikimedia Commons em 04/11/2026; as que vieram do Unsplash ou do Pexels foram baixadas da origem. Recortadas e reduzidas para até 1280 px.
+
+| Arquivo | Onde aparece | Licença | Autor | Origem |
+|---|---|---|---|---|
+| `lente-contato-aplicacao.jpg` | Card "lentes de contato" da home (`fotos.cat_lentes`) | CC0 | Moist.acuvuehk | [Commons](https://commons.wikimedia.org/wiki/File:Put_on_contact_lens.jpg) |
+| `lente-contato-olho.jpg` | Capa de /lentes (`fotos.lentes`) | Public domain | Cassiopeia sweet | [Commons](https://commons.wikimedia.org/wiki/File:Color_contact_lens_eye_brown.jpg) |
+| `lente-contato-olho-castanho.jpg` | Artigo "primeira vez com lentes de contato" | Public domain | Cassiopeia sweet | [Commons](https://commons.wikimedia.org/wiki/File:Color_contact_lens_eye_chocola.jpg) |
+| `oculos-tela.jpg` | Artigo "tempo de tela" (aparece também na home, em "dicas para seus olhos") | CC0 | Kevin Ku | [Commons](https://commons.wikimedia.org/wiki/File:Pexels-kevin-ku-577585.jpg) · [original](https://www.pexels.com/photo/data-codes-through-eyeglasses-577585/) |
+| `oculos-livro.jpg` | Artigo "sinais de que seu filho pode precisar de óculos" | CC0 | Caleb Woods caleb_woods | [Commons](https://commons.wikimedia.org/wiki/File:Caleb_Woods_2017-03-08_(Unsplash).jpg) · [original](https://unsplash.com/photos/iobrSsVqp28) |
+| `armacao-acetato.jpg` | Vitrine: "Armações de acetato" | CC0 | freestocks.org | [Commons](https://commons.wikimedia.org/wiki/File:Reading_glasses_(30992132360).jpg) · [original](https://www.flickr.com/photos/freestocks/30992132360/) |
+| `armacao-redonda.jpg` | Vitrine: "Armações redondas" | CC0 | Jesus Kiteque jesuskiteque | [Commons](https://commons.wikimedia.org/wiki/File:Essentials_(Unsplash).jpg) · [original](https://unsplash.com/photos/wn-KYaHwcis) |
+| `armacao-preta.jpg` | Vitrine: "Armações pretas clássicas" | CC0 | Mari Helin-Tuominen mari | [Commons](https://commons.wikimedia.org/wiki/File:Reading_glasses_(Unsplash).jpg) · [original](https://unsplash.com/photos/ilSnKT1IMxE) |
+| `sol-aviador.jpg` | Vitrine: "Óculos de sol aviador" | CC0 | David Lezcano _thedl | [Commons](https://commons.wikimedia.org/wiki/File:Reflective_sunglasses_(Unsplash).jpg) · [original](http://unsplash.com/photos/mNCFOaaLu5o) |
+| `sol-gatinho.jpg` | Vitrine: "Óculos de sol gatinho" (recortada sem o celular com logotipo que havia na foto) | CC0 | STIL stilclassics | [Commons](https://commons.wikimedia.org/wiki/File:STIL_2017-04-20_(Unsplash).jpg) · [original](https://unsplash.com/photos/D4jRahaUaIc) |
+| `sol-quadrado.jpg` | Vitrine: "Óculos de sol quadrados" | CC0 | Steve Halama steve3p_0 | [Commons](https://commons.wikimedia.org/wiki/File:Steve_Halama_2017-02-02_(Unsplash).jpg) · [original](https://unsplash.com/photos/axTJazt56mg) |
+| `sol-redondo-colorido.jpg` | Vitrine: "Óculos de sol redondos coloridos" | CC0 | Blubel blubel | [Commons](https://commons.wikimedia.org/wiki/File:Green_latte_cup_and_sunglasses_(Unsplash).jpg) · [original](https://unsplash.com/photos/hydxQhce_NI) |
+
+Descartada: foto de armação de metal retangular (Commons, domínio público) que mostrava a marca do fabricante na haste.
 
 ## Como trocar ou acrescentar fotos
 - **Pelo painel** (proprietário): `/admin` → fotos e galeria, armações, sobre e equipe, promoções, eventos e blog. O painel reduz a foto para até 1600 px e envia como JPEG para o Vercel Blob (PNG ou WebP com fundo transparente, como um logotipo, ganha fundo branco na conversão). A "visão geral" lista as fotos que ainda faltam. Passo a passo em `ENTREGA.md`, seção 3.
