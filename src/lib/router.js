@@ -1,6 +1,5 @@
 // Roteador mínimo baseado em history (URLs limpas: /sobre, /blog/<artigo>, /admin).
 import { useEffect, useSyncExternalStore } from 'react';
-import { PAGINAS_LEGAIS } from './seo.js';
 
 const ouvintes = new Set();
 const avisar = () => ouvintes.forEach(f => f());
@@ -18,11 +17,9 @@ let caminhoServidor = '/';
 export const definirCaminhoServidor = (p) => { caminhoServidor = p; };
 export const usePath = () => useSyncExternalStore(assinar, () => location.pathname, () => caminhoServidor);
 
-// Links antigos do protótipo usavam #pagina na raiz (ex.: site.com/#admin) — redireciona para a URL limpa.
-// Só na raiz: em outras páginas o # é uma seção da própria página (ex.: /termos-de-uso#contato).
+// Links antigos do protótipo usavam #pagina (ex.: #admin) — redireciona para a URL limpa.
 export function useHashLegado() {
   useEffect(() => {
-    if (location.pathname !== '/') return;
     const h = location.hash.replace('#', '');
     if (/^(inicio|sobre|armacoes|lentes|convenios|blog|contato|admin)$/.test(h)) navegar(h === 'inicio' ? '/' : '/' + h, { replace: true });
   }, []);
@@ -32,8 +29,8 @@ export function useHashLegado() {
 export function rota(path) {
   const [, a = '', b = ''] = path.replace(/\/+$/, '').split('/');
   if (a === '') return { page: 'inicio' };
-  if (a === 'blog' && b) return { page: 'post', slug: (() => { try { return decodeURIComponent(b); } catch { return b; } })() };
-  if (['sobre', 'armacoes', 'lentes', 'convenios', 'blog', 'contato', 'admin', ...PAGINAS_LEGAIS].includes(a)) return { page: a };
+  if (a === 'blog' && b) return { page: 'post', slug: decodeURIComponent(b) };
+  if (['sobre', 'armacoes', 'lentes', 'convenios', 'blog', 'contato', 'admin'].includes(a)) return { page: a };
   return { page: 'naoEncontrada' };
 }
 
