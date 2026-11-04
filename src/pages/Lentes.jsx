@@ -17,7 +17,7 @@ export default function Lentes() {
           <BtnWa href={wa.receita} descricao="aviso-receita-lentes">enviar minha receita</BtnWa>
           <AvisoReceita id="aviso-receita-lentes" inv />
         </div>
-        <Foto img={cms.fotos.lentes} rotulo="lente de contato / estojo" alt="Lente de contato e estojo" ratio="5/4" dark prioridade />
+        <Foto img={cms.fotos.lentes} rotulo="lente de contato / estojo" alt="Lente de contato" ratio="5/4" dark prioridade />
       </section>
 
       {tipos.length > 0 && (

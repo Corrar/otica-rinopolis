@@ -1,8 +1,10 @@
 # Fotos do conteúdo padrão
 
-Todas as fotos do conteúdo padrão são **reais, da loja** (`public/fotos/`), recortadas e otimizadas a partir das imagens enviadas nas conversas de 15/10/2026 e 29/10/2026. **Não há fotos de banco de imagens no site.**
+As fotos da loja (`public/fotos/`) são **reais**, recortadas e otimizadas a partir das imagens enviadas nas conversas de 15/10/2026 e 29/10/2026.
 
-Onde ainda não há foto real (capa e card de lentes de contato, artigos do blog sem imagem, e armações, equipe, promoções e eventos cadastrados sem foto), o site mostra a **arte da marca**: o olho do logo em traço fino, desenhado em SVG no próprio código (`ArteMarca`, em `src/components/bits.jsx`), em fundo areia ou escuro. A mesma arte aparece se uma foto não carregar. Nenhum texto provisório (como "foto: …") aparece no site público.
+Para completar o site, a pedido do proprietário (04/11/2026), os espaços que não tinham foto real usam **fotos de banco de imagens gratuito sem direitos autorais** (domínio público ou CC0, do Wikimedia Commons — várias são cópias de fotos do Unsplash e do Pexels publicadas como CC0). Ficam em `public/fotos/ilustrativas/` (lista e origem abaixo) e aparecem no site com o selo **"imagem ilustrativa"** (componente `Img`, em `src/components/bits.jsx`), para não passarem por fotos da loja ou do produto à venda. O painel reconhece essas fotos (`ehIlustrativa`) e lembra, como item opcional da visão geral, que podem ser trocadas por fotos reais.
+
+Onde ainda não há foto nenhuma (equipe, promoções e eventos cadastrados sem foto), o site mostra a **arte da marca**: o olho do logo em traço fino, desenhado em SVG no próprio código (`ArteMarca`, em `src/components/bits.jsx`), em fundo areia ou escuro. A mesma arte aparece se uma foto não carregar. Nenhum texto provisório (como "foto: …") aparece no site público.
 
 ## Fotos atuais (`public/fotos/`)
 
@@ -26,7 +28,7 @@ Fora de `public/fotos/`:
 - `public/logo-192.png` — logo em fundo escuro, 192×192: ícone do iPhone (apple-touch-icon) e logo dos dados estruturados (JSON-LD), que o Google mostra sobre fundo claro.
 - `public/favicon.png` — só o olho do logo, em fundo escuro (64×64): ícone da aba do navegador.
 
-Sem foto (arte da marca): `fotos.lentes` (capa de /lentes), `fotos.cat_lentes` (card "lentes de contato") e os artigos "tempo de tela", "primeira vez com lentes de contato" e "sinais de que seu filho pode precisar de óculos".
+<!-- ILUSTRATIVAS -->
 
 Ficaram de fora as fotos do balcão com o banner da CIA CAP e da mesa de atendimento com o computador (muita informação na imagem, inclusive a tela).
 
@@ -37,7 +39,7 @@ Ficaram de fora as fotos do balcão com o banner da CIA CAP e da mesa de atendim
 Regras para qualquer foto nova:
 - Foto enviada pelo painel é **pública na internet**: nunca usar receita, documento, tela com dados de cliente ou foto de criança sem autorização dos responsáveis.
 - Pessoas reconhecíveis (equipe, clientes) só com **autorização escrita de uso de imagem** (modelo no anexo de `ENTREGA.md`).
-- Nada de foto de banco de imagens apresentada como se fosse da loja, nem de tabela de exame de vista (a ótica não faz exames).
+- Nada de foto de banco de imagens apresentada como se fosse da loja, nem de tabela de exame de vista (a ótica não faz exames). Foto de banco de imagens só com licença livre (domínio público ou CC0), sem marca de fabricante visível nem criança identificável, em `public/fotos/ilustrativas/` (que põe o selo "imagem ilustrativa") e registrada na tabela acima.
 
 ## Removidas
 - `capa-armacao.jpg` (antiga capa) e `infantil-rosa.jpg` (antiga armação "Play color"): não eram fotos da loja, e sim de banco de imagens (a capa tinha logotipo de marca e tabela de exame de vista; a outra, rosto de criança identificável). Foram apagadas.

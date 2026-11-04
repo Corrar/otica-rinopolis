@@ -2,13 +2,16 @@
 // Só dados confirmados: o que o proprietário ainda não informou fica vazio e a seção some do site
 // (o painel lista essas pendências na "visão geral").
 
-// Fotos: todas reais, em public/fotos (lista em FOTOS.md). Sem foto, o site mostra a arte da marca (ArteMarca).
-// Fotos de exemplo de versões antigas (banco de imagens) ainda são reconhecidas para o painel avisar e trocar.
+// Fotos: as da loja ficam em public/fotos; as de banco de imagens gratuito (domínio público / CC0), em
+// public/fotos/ilustrativas, com o selo "imagem ilustrativa" no site (lista e origem em FOTOS.md).
+// Sem foto, o site mostra a arte da marca (ArteMarca).
+// Fotos de banco de imagens (as ilustrativas e as de versões antigas) são reconhecidas para o painel sugerir a troca por fotos reais.
 const FOTOS_EXEMPLO = ['https://images.pexels.com/', '/fotos/ilustrativas/', '/fotos/capa-armacao.jpg', '/fotos/infantil-rosa.jpg'];
+const IL = '/fotos/ilustrativas/';
 export const ehIlustrativa = (url) => { const u = String(url || ''); return !!u && FOTOS_EXEMPLO.some(p => u.startsWith(p)); };
 
 // Sobe quando o conteúdo padrão muda de um jeito que exige migrar o que já foi salvo (ver mesclar).
-const VERSAO_PADRAO = 3;
+const VERSAO_PADRAO = 4;
 const DATA_POSTS = '30 out 2026';
 
 export const PADRAO = () => ({
@@ -34,8 +37,8 @@ export const PADRAO = () => ({
   },
   meta: { atualizadoEm: '', versaoPadrao: VERSAO_PADRAO },
   fotos: {
-    hero: '/fotos/capa-fachada.jpg', loja: '/fotos/loja-balcao.jpg', lentes: '', equipe: '/fotos/fachada.jpg',
-    cat_armacoes: '/fotos/galeria-feminina.jpg', cat_sol: '/fotos/oculos-clip-on.jpg', cat_lentes: '',
+    hero: '/fotos/capa-fachada.jpg', loja: '/fotos/loja-balcao.jpg', lentes: IL + 'lente-contato-olho.jpg', equipe: '/fotos/fachada.jpg',
+    cat_armacoes: '/fotos/galeria-feminina.jpg', cat_sol: '/fotos/oculos-clip-on.jpg', cat_lentes: IL + 'lente-contato-aplicacao.jpg',
   },
   galeria: [
     { img: '/fotos/galeria-feminina.jpg', legenda: 'armações femininas' }, { img: '/fotos/galeria-masculina.jpg', legenda: 'armações masculinas' },
@@ -70,22 +73,31 @@ export const PADRAO = () => ({
   ],
   promocoes: [],
   eventos: [],
-  // Vitrine: fotos reais da loja, por tipo de armação (sem nomes ou marcas que a loja não confirmou).
+  // Vitrine: primeiro as fotos reais da loja; depois estilos com foto ilustrativa (banco de imagens), sem nomes ou
+  // marcas que a loja não confirmou. O botão "consultar" de cada item abre o WhatsApp para ver os modelos disponíveis.
   produtos: [
     { nome: 'Armações femininas', marca: '', cat: 'grau', img: '/fotos/galeria-feminina.jpg', preco: '' },
     { nome: 'Armações masculinas', marca: '', cat: 'grau', img: '/fotos/galeria-masculina.jpg', preco: '' },
     { nome: 'Armações de metal', marca: '', cat: 'grau', img: '/fotos/galeria-metal.jpg', preco: '' },
     { nome: 'Óculos de sol e clip-on', marca: '', cat: 'sol', img: '/fotos/oculos-clip-on.jpg', preco: '' },
+    { nome: 'Armações de acetato', marca: '', cat: 'grau', img: IL + 'armacao-acetato.jpg', preco: '' },
+    { nome: 'Armações redondas', marca: '', cat: 'grau', img: IL + 'armacao-redonda.jpg', preco: '' },
+    { nome: 'Armações pretas clássicas', marca: '', cat: 'grau', img: IL + 'armacao-preta.jpg', preco: '' },
+    { nome: 'Armações retangulares de metal', marca: '', cat: 'grau', img: IL + 'armacao-metal-retangular.jpg', preco: '' },
+    { nome: 'Óculos de sol aviador', marca: '', cat: 'sol', img: IL + 'sol-aviador.jpg', preco: '' },
+    { nome: 'Óculos de sol gatinho', marca: '', cat: 'sol', img: IL + 'sol-gatinho.jpg', preco: '' },
+    { nome: 'Óculos de sol quadrados', marca: '', cat: 'sol', img: IL + 'sol-quadrado.jpg', preco: '' },
+    { nome: 'Óculos de sol redondos coloridos', marca: '', cat: 'sol', img: IL + 'sol-redondo-colorido.jpg', preco: '' },
   ],
   equipe: [],
   depoimentos: [],
   // O tempo de leitura é calculado pelo tamanho do texto (postsDe, em lib/util.js).
   posts: [
     { tag: 'lentes de óculos', data: DATA_POSTS, titulo: 'Lente antirreflexo vale a pena? Entenda quando faz diferença.', resumo: 'O tratamento antirreflexo reduz brilhos de telas e faróis e deixa a lente quase invisível. Entenda como ele funciona e como cuidar das lentes.', img: '/fotos/galeria-masculina.jpg', conteudo: 'O antirreflexo (AR) é uma camada aplicada à lente que reduz bastante os reflexos da própria superfície. Na prática, você enxerga com mais contraste à noite, as pessoas veem seus olhos (e não o reflexo da janela) e as fotos saem sem aquele brilho branco.\n\nO antirreflexo costuma ser lembrado por quem dirige à noite ou passa muitas horas diante de telas; o oftalmologista pode orientar se ele é indicado para você.\n\nCuidados para durar mais: limpe as lentes com flanela de microfibra e um líquido próprio para lentes (ou água e sabão neutro). Evite papel, guardanapo e a barra da camiseta, que riscam, e não deixe os óculos no painel do carro ao sol — o calor forte pode danificar o tratamento.\n\nNa loja, tiramos suas dúvidas antes de você decidir.' },
-    { tag: 'saúde ocular', data: DATA_POSTS, titulo: 'Quanto tempo de tela por dia cansa seus olhos — e como aliviar.', resumo: 'Olhos ardendo, visão embaçada no fim do dia e dor de cabeça são sinais comuns de quem passa horas no celular e no computador. Veja hábitos simples que aliviam.', conteudo: 'Não existe um número exato de horas que "faz mal": o cansaço vem principalmente de manter o foco de perto por muito tempo sem pausa. Quando olhamos para uma tela, piscamos menos — e o olho resseca. O resultado é ardência, sensação de areia, visão embaçada no fim do dia e, às vezes, dor de cabeça.\n\nRegra 20-20-20: a cada 20 minutos, olhe para algo a cerca de 6 metros (20 pés) de distância por 20 segundos. Isso relaxa o músculo que faz o foco de perto.\n\nAjuste a tela: o monitor deve ficar a um braço de distância, com a parte de cima na altura dos olhos ou um pouco abaixo. Brilho da tela parecido com o do ambiente evita esforço extra.\n\nLembre-se de piscar e de se hidratar. Em ambientes com ar-condicionado, um colírio lubrificante indicado pelo oftalmologista ajuda.\n\nReceita em dia: grau desatualizado pode aumentar o cansaço. Sobre antirreflexo e filtros de luz azul, converse com o seu oftalmologista — no caso dos filtros de luz azul, os estudos ainda não mostram benefício claro contra o cansaço visual.\n\nSe os sintomas forem frequentes, procure o oftalmologista: pode ser hora de atualizar a receita.', img: '' },
+    { tag: 'saúde ocular', data: DATA_POSTS, titulo: 'Quanto tempo de tela por dia cansa seus olhos — e como aliviar.', resumo: 'Olhos ardendo, visão embaçada no fim do dia e dor de cabeça são sinais comuns de quem passa horas no celular e no computador. Veja hábitos simples que aliviam.', conteudo: 'Não existe um número exato de horas que "faz mal": o cansaço vem principalmente de manter o foco de perto por muito tempo sem pausa. Quando olhamos para uma tela, piscamos menos — e o olho resseca. O resultado é ardência, sensação de areia, visão embaçada no fim do dia e, às vezes, dor de cabeça.\n\nRegra 20-20-20: a cada 20 minutos, olhe para algo a cerca de 6 metros (20 pés) de distância por 20 segundos. Isso relaxa o músculo que faz o foco de perto.\n\nAjuste a tela: o monitor deve ficar a um braço de distância, com a parte de cima na altura dos olhos ou um pouco abaixo. Brilho da tela parecido com o do ambiente evita esforço extra.\n\nLembre-se de piscar e de se hidratar. Em ambientes com ar-condicionado, um colírio lubrificante indicado pelo oftalmologista ajuda.\n\nReceita em dia: grau desatualizado pode aumentar o cansaço. Sobre antirreflexo e filtros de luz azul, converse com o seu oftalmologista — no caso dos filtros de luz azul, os estudos ainda não mostram benefício claro contra o cansaço visual.\n\nSe os sintomas forem frequentes, procure o oftalmologista: pode ser hora de atualizar a receita.', img: IL + 'oculos-tela.jpg' },
     { tag: 'armações', data: DATA_POSTS, titulo: 'Como escolher a armação certa para o formato do seu rosto.', resumo: 'Rosto redondo, quadrado, oval ou triangular? Entenda a regra do contraste e outros cuidados — tamanho, ponte e peso — para escolher uma armação bonita e confortável.', conteudo: 'A regra mais simples é a do contraste: armações com linhas opostas às do rosto equilibram as proporções.\n\nRosto redondo: modelos retangulares ou quadrados, com cantos marcados, alongam o rosto. Evite armações muito redondas e pequenas.\n\nRosto quadrado (maxilar marcado): armações arredondadas, ovais ou gatinho suavizam os ângulos.\n\nRosto oval: praticamente tudo combina. Vale apostar em modelos maiores ou em cores diferentes.\n\nRosto triangular (testa estreita e queixo largo): armações com a parte de cima mais marcada, como o estilo gatinho ou o browline, equilibram.\n\nMais importante que o formato é o encaixe: a armação deve acompanhar a largura do rosto, os olhos precisam ficar centralizados nas lentes, a ponte não pode apertar nem escorregar no nariz e as hastes devem apoiar atrás da orelha sem pressionar. Para graus altos, armações menores deixam as lentes mais finas e leves.\n\nNa Ótica Digital Look, no centro de Rinópolis, você prova os modelos com calma.', img: '/fotos/galeria-metal.jpg' },
-    { tag: 'lentes de contato', data: DATA_POSTS, titulo: 'Primeira vez com lentes de contato: o que esperar nas duas primeiras semanas.', resumo: 'Sentir a lente nos primeiros dias é normal. Saiba como costuma ser a adaptação, por que seguir o tempo de uso definido pelo oftalmologista e quais sinais indicam que é hora de tirar a lente e procurar o médico.', conteudo: 'Antes de tudo: lente de contato exige receita própria, com curvatura e diâmetro indicados pelo oftalmologista. Com ela em mãos, a adaptação costuma ser rápida.\n\nPrimeiros dias: é normal perceber a lente no olho, principalmente ao piscar. Siga o tempo de uso inicial definido pelo seu oftalmologista e só aumente conforme a orientação dele.\n\nColocar e tirar: no começo leva alguns minutos — é questão de prática. Lave e seque bem as mãos, mantenha as unhas curtas e use sempre a solução indicada, nunca água da torneira.\n\nNa segunda semana a maioria das pessoas já esquece que está de lente. Respeite o prazo de troca (diária, quinzenal ou mensal) e não durma com a lente, a não ser que o modelo e o médico permitam.\n\nTire a lente e procure o oftalmologista se sentir dor, vermelhidão forte, sensibilidade à luz ou visão embaçada que não melhora.\n\nNa loja, tiramos suas dúvidas sobre o uso e os cuidados com as lentes.', img: '' },
-    { tag: 'crianças', data: DATA_POSTS, titulo: 'Sinais de que seu filho pode precisar de óculos.', resumo: 'Criança nem sempre percebe que enxerga mal. Aproximar demais o rosto do caderno, apertar os olhos e dor de cabeça frequente estão entre os sinais de alerta.', conteudo: 'Como a criança acha que todo mundo enxerga do mesmo jeito, ela raramente reclama. Por isso vale observar alguns sinais:\n\n• aproxima muito o rosto do caderno, do celular ou da TV;\n• aperta ou esfrega os olhos com frequência;\n• fecha um olho para ler ou inclina a cabeça;\n• reclama de dor de cabeça no fim do dia, principalmente depois da escola;\n• perde a linha durante a leitura ou tem dificuldade para copiar da lousa;\n• um olho parece desviar (para dentro ou para fora).\n\nO ideal é levar a criança ao oftalmologista antes da alfabetização e repetir o exame conforme a orientação médica, mesmo sem sintomas. Problemas como o olho preguiçoso (ambliopia) têm tratamento muito mais eficaz quando descobertos cedo.\n\nCom a receita em mãos, a escolha da armação faz diferença: modelos infantis flexíveis e resistentes, com encaixe firme no rosto para não escorregar durante as brincadeiras. Pergunte ao oftalmologista se lentes mais resistentes a impacto, como as de policarbonato, são indicadas para o seu filho.', img: '' },
+    { tag: 'lentes de contato', data: DATA_POSTS, titulo: 'Primeira vez com lentes de contato: o que esperar nas duas primeiras semanas.', resumo: 'Sentir a lente nos primeiros dias é normal. Saiba como costuma ser a adaptação, por que seguir o tempo de uso definido pelo oftalmologista e quais sinais indicam que é hora de tirar a lente e procurar o médico.', conteudo: 'Antes de tudo: lente de contato exige receita própria, com curvatura e diâmetro indicados pelo oftalmologista. Com ela em mãos, a adaptação costuma ser rápida.\n\nPrimeiros dias: é normal perceber a lente no olho, principalmente ao piscar. Siga o tempo de uso inicial definido pelo seu oftalmologista e só aumente conforme a orientação dele.\n\nColocar e tirar: no começo leva alguns minutos — é questão de prática. Lave e seque bem as mãos, mantenha as unhas curtas e use sempre a solução indicada, nunca água da torneira.\n\nNa segunda semana a maioria das pessoas já esquece que está de lente. Respeite o prazo de troca (diária, quinzenal ou mensal) e não durma com a lente, a não ser que o modelo e o médico permitam.\n\nTire a lente e procure o oftalmologista se sentir dor, vermelhidão forte, sensibilidade à luz ou visão embaçada que não melhora.\n\nNa loja, tiramos suas dúvidas sobre o uso e os cuidados com as lentes.', img: IL + 'lente-contato-olho-castanho.jpg' },
+    { tag: 'crianças', data: DATA_POSTS, titulo: 'Sinais de que seu filho pode precisar de óculos.', resumo: 'Criança nem sempre percebe que enxerga mal. Aproximar demais o rosto do caderno, apertar os olhos e dor de cabeça frequente estão entre os sinais de alerta.', conteudo: 'Como a criança acha que todo mundo enxerga do mesmo jeito, ela raramente reclama. Por isso vale observar alguns sinais:\n\n• aproxima muito o rosto do caderno, do celular ou da TV;\n• aperta ou esfrega os olhos com frequência;\n• fecha um olho para ler ou inclina a cabeça;\n• reclama de dor de cabeça no fim do dia, principalmente depois da escola;\n• perde a linha durante a leitura ou tem dificuldade para copiar da lousa;\n• um olho parece desviar (para dentro ou para fora).\n\nO ideal é levar a criança ao oftalmologista antes da alfabetização e repetir o exame conforme a orientação médica, mesmo sem sintomas. Problemas como o olho preguiçoso (ambliopia) têm tratamento muito mais eficaz quando descobertos cedo.\n\nCom a receita em mãos, a escolha da armação faz diferença: modelos infantis flexíveis e resistentes, com encaixe firme no rosto para não escorregar durante as brincadeiras. Pergunte ao oftalmologista se lentes mais resistentes a impacto, como as de policarbonato, são indicadas para o seu filho.', img: IL + 'oculos-livro.jpg' },
   ],
 });
 
@@ -117,11 +129,13 @@ const PADROES_ANTIGOS = {
 // Listas de exemplo das versões anteriores, guardadas pela impressão do JSON (igual = nunca editada).
 const LISTAS_ANTIGAS = {
   depoimentos: ['1itq47w'], eventos: ['qfyggg', '1t6gf3z'], promocoes: ['1o7xw88', 'sa5jrc'], marcos: ['en0x4g'], equipe: ['1nt3qrs', '1vuzqur'],
-  produtos: ['1qvxvmu', '1f52nx', 'm1va2x'], passos: ['ntqig4'], faq: ['q8sfgq'], etapas: ['u565z1', '199ksiw'], diferenciais: ['nx786t'], tiposLente: ['ued1gw', 'ns4gbv'],
-  posts: ['1kwljru', '1ki4jen', '1ykoxue', '1xmf0c4'],
+  produtos: ['1qvxvmu', '1f52nx', 'm1va2x', '2533i1'], passos: ['ntqig4'], faq: ['q8sfgq'], etapas: ['u565z1', '199ksiw'], diferenciais: ['nx786t'], tiposLente: ['ued1gw', 'ns4gbv'],
+  posts: ['1kwljru', '1ki4jen', '1ykoxue', '1xmf0c4', '1o3mpa2'],
 };
 // Fotos padrão de versões anteriores (a capa repetia a prateleira do card "armações"): sem troca pelo painel, vale a nova.
 const FOTOS_ANTIGAS = { hero: ['/fotos/vitrine-feminina.jpg'] };
+// Até a versão 3, estas fotos não tinham padrão (ficavam vazias): vazias num conteúdo antigo, vale a foto ilustrativa nova.
+const FOTOS_SEM_PADRAO_ANTES = ['lentes', 'cat_lentes'];
 const impressao = (v) => { const s = JSON.stringify(v); let h = 5381; for (let i = 0; i < s.length; i++) h = (h * 33 ^ s.charCodeAt(i)) >>> 0; return h.toString(36); };
 
 // Só valores simples (texto, número, sim/não): um backup ou versão com null, lista ou objeto no lugar de um texto
@@ -139,7 +153,10 @@ export function mesclar(s) {
     base.info = { ...base.info, ...info };
     base.meta = { ...base.meta, ...soSimples(s.meta), versaoPadrao: VERSAO_PADRAO };
     const fotos = Object.fromEntries(Object.entries(soSimples(s.fotos)).filter(([, v]) => typeof v === 'string'));
-    if (antigo) Object.keys(fotos).forEach(k => { if (ehIlustrativa(fotos[k]) || (FOTOS_ANTIGAS[k] || []).includes(fotos[k])) delete fotos[k]; });
+    const versao = +(ehObjeto(s.meta) && s.meta.versaoPadrao) || 0;
+    if (antigo) Object.keys(fotos).forEach(k => {
+      if ((versao < 3 && ehIlustrativa(fotos[k])) || (FOTOS_ANTIGAS[k] || []).includes(fotos[k]) || (!fotos[k] && FOTOS_SEM_PADRAO_ANTES.includes(k))) delete fotos[k];
+    });
     base.fotos = { ...base.fotos, ...fotos };
     // Listas: só aceita lista, e dela só os itens que são objetos (itens nulos ou soltos são descartados).
     LISTAS.forEach(k => {
@@ -147,6 +164,11 @@ export function mesclar(s) {
       if (antigo && (LISTAS_ANTIGAS[k] || []).includes(impressao(s[k]))) return;
       base[k] = s[k].filter(ehObjeto).map(soSimples);
     });
+    // Artigos padrão salvos sem imagem antes da versão 4 (mesmo título): ganham a foto ilustrativa nova.
+    if (antigo) {
+      const fotoPost = Object.fromEntries(PADRAO().posts.filter(p => p.img).map(p => [p.titulo, p.img]));
+      base.posts.forEach(p => { if (!p.img && fotoPost[p.titulo]) p.img = fotoPost[p.titulo]; });
+    }
   }
   return base;
 }
