@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { BtnWa, Foto } from '../components/bits.jsx';
+import { L } from '../components/Layout.jsx';
 import { useSite } from '../state/content.jsx';
 import { gradeEquilibrada, numerar } from '../lib/util.js';
 
@@ -14,6 +15,7 @@ export default function Lentes() {
           <h1 className="h-page" style={{ marginBottom: 18 }}>liberdade para ver <span className="b">sem armação.</span></h1>
           <p className="lead lead--inv" style={{ maxWidth: 520, marginBottom: 28 }}>Diárias, mensais, tóricas e multifocais das principais marcas. Ensinamos a colocar, tirar e cuidar — na primeira compra, sem pressa.</p>
           <BtnWa href={wa.receita}>enviar minha receita</BtnWa>
+          <p className="aviso-lgpd aviso-lgpd--inv" style={{ marginTop: 12, maxWidth: 420 }}>A receita é um dado de saúde: ao enviá-la, você autoriza o uso só para o seu orçamento e, se comprar, para fazer as suas lentes. Receita de criança: envie como pai, mãe ou responsável. <L to="politica-de-privacidade">Política de Privacidade</L>.</p>
         </div>
         <Foto img={cms.fotos.lentes} rotulo="lente de contato / estojo" alt="Lente de contato e estojo" ratio="5/4" dark prioridade />
       </section>

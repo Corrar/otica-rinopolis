@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Ic } from '../components/Icons.jsx';
-import { Status } from '../components/Layout.jsx';
+import { L, Status } from '../components/Layout.jsx';
 import { InfoContato, Mapa } from '../components/bits.jsx';
 import { useSite } from '../state/content.jsx';
 import { fmtData } from '../lib/util.js';
@@ -43,6 +43,7 @@ export default function Contato() {
           <label className="field">mensagem<textarea className="input" value={form.msg} onChange={set('msg')} rows={5} placeholder="Conte o que precisa. Se tiver receita, pode enviar a foto depois no WhatsApp." /></label>
           <button type="submit" className="btn btn--dark" style={{ marginTop: 6, border: 0, minHeight: 52, padding: '16px 24px' }}><Ic n="wa" /><span>abrir conversa no WhatsApp</span></button>
           <div style={{ font: "400 12px/1.5 'DM Sans',sans-serif", color: 'var(--muted-2)', textAlign: 'center' }}>Você será redirecionado para o WhatsApp com a mensagem preenchida.</div>
+          <div className="aviso-lgpd" style={{ textAlign: 'center' }}>O site não grava os dados do formulário: eles vão só na mensagem do WhatsApp, se você enviar. Veja a <L to="politica-de-privacidade">Política de Privacidade</L>.</div>
         </form>
       </section>
     </div>

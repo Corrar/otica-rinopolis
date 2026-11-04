@@ -1,5 +1,6 @@
 import { Ic } from '../components/Icons.jsx';
 import { BtnWa, Evento, Img } from '../components/bits.jsx';
+import { L } from '../components/Layout.jsx';
 import { useSite } from '../state/content.jsx';
 import { eventosFuturos, lista, promosAtivas } from '../lib/util.js';
 
@@ -59,6 +60,7 @@ export default function Convenios() {
           <div style={{ font: "500 20px 'Outfit',sans-serif", marginBottom: 10 }}>precisa de orçamento?</div>
           <div className="t-body" style={{ marginBottom: 20 }}>Envie a foto da sua receita e a gente responde com opções de lente e valores no mesmo dia.</div>
           <BtnWa href={wa.receita} variant="dark" sm>enviar receita no WhatsApp</BtnWa>
+          <p className="aviso-lgpd" style={{ marginTop: 12, maxWidth: 420 }}>A receita é um dado de saúde: ao enviá-la, você autoriza o uso só para o seu orçamento e, se comprar, para fazer as suas lentes. Receita de criança: envie como pai, mãe ou responsável. <L to="politica-de-privacidade">Política de Privacidade</L>.</p>
         </div>
       </section>
     </div>

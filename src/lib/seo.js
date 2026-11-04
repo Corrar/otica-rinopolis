@@ -3,7 +3,7 @@
 import { fmtH, lista, MESES, num2, postsDe, eventosFuturos, telefone, whatsapp } from './util.js';
 
 export const NOME = 'Ótica Digital Look';
-export const PAGINAS_INDEXADAS = ['inicio', 'sobre', 'armacoes', 'lentes', 'convenios', 'blog', 'contato'];
+export const PAGINAS_INDEXADAS = ['inicio', 'sobre', 'armacoes', 'lentes', 'convenios', 'blog', 'contato', 'politica-de-privacidade', 'termos-de-uso'];
 export const caminhoDe = (page, slug) => (page === 'inicio' ? '/' : page === 'post' ? '/blog/' + slug : '/' + page);
 
 // "Centro, Rinópolis – SP" → { bairro, cidade, uf }
@@ -42,6 +42,8 @@ export function metaPagina(r, cms) {
     case 'convenios': return { ...base, titulo: `Convênios, promoções e pagamento | ${NOME} – ${local}`, descricao: corta(`Convênios aceitos, promoções do mês e eventos da ${NOME} em ${cidade}. Parcele seu óculos completo em até ${parc}x sem juros no cartão.`) };
     case 'blog': return { ...base, titulo: `Blog: dicas de lentes, armações e saúde ocular | ${NOME}`, descricao: corta(`Dicas da ${NOME}, ótica no centro de ${cidade}, sobre lentes, armações, lentes de contato e cuidados com os olhos.`) };
     case 'contato': return { ...base, titulo: `Contato, endereço e horário | ${NOME} – ${local}`, descricao: corta(`${info.endereco}, ${info.bairroCidade}. ${tel ? `Telefone ${tel.fmt}, WhatsApp ${wa.fmt}` : `WhatsApp ${wa.fmt}`}. Horário: ${horario}. Veja o mapa e fale com a gente.`) };
+    case 'politica-de-privacidade': return { ...base, titulo: `Política de Privacidade (LGPD) | ${NOME}`, descricao: corta(`Como a ${NOME}, ótica em ${local}, trata os dados pessoais de quem visita o site e fala com a loja, conforme a LGPD: finalidades, bases legais, prazos, cookies e seus direitos.`) };
+    case 'termos-de-uso': return { ...base, titulo: `Termos de Uso | ${NOME}`, descricao: corta(`Regras de uso do site da ${NOME}, ótica em ${local}: receitas, promoções, garantias do Código de Defesa do Consumidor e privacidade.`) };
     case 'post': {
       const p = postsDe(cms).find(x => x.slug === r.slug);
       if (!p) return { ...base, titulo: `Página não encontrada | ${NOME}`, descricao: '', noindex: true };

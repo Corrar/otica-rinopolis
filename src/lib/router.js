@@ -20,6 +20,7 @@ export const usePath = () => useSyncExternalStore(assinar, () => location.pathna
 // Links antigos do protótipo usavam #pagina (ex.: #admin) — redireciona para a URL limpa.
 export function useHashLegado() {
   useEffect(() => {
+    if (location.pathname !== '/') return; // só na raiz: /termos-de-uso#contato é uma seção da página
     const h = location.hash.replace('#', '');
     if (/^(inicio|sobre|armacoes|lentes|convenios|blog|contato|admin)$/.test(h)) navegar(h === 'inicio' ? '/' : '/' + h, { replace: true });
   }, []);
@@ -30,7 +31,7 @@ export function rota(path) {
   const [, a = '', b = ''] = path.replace(/\/+$/, '').split('/');
   if (a === '') return { page: 'inicio' };
   if (a === 'blog' && b) return { page: 'post', slug: (() => { try { return decodeURIComponent(b); } catch { return b; } })() };
-  if (['sobre', 'armacoes', 'lentes', 'convenios', 'blog', 'contato', 'admin'].includes(a)) return { page: a };
+  if (['sobre', 'armacoes', 'lentes', 'convenios', 'blog', 'contato', 'admin', 'politica-de-privacidade', 'termos-de-uso'].includes(a)) return { page: a };
   return { page: 'naoEncontrada' };
 }
 
