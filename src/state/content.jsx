@@ -45,21 +45,24 @@ export function ContentProvider({ inicial, children }) {
     salvando.current = true; sujo.current = false;
     setSalvar({ status: 'salvando', erro: '' });
     const conteudo = atual.current;
+    let parar = false;
     try {
       const r = await api.salvar(conteudo, versao.current, force);
       versao.current = r.version; gravarCache(conteudo, r.version);
       setSalvar({ status: sujo.current ? 'pendente' : 'salvo', erro: '' });
     } catch (e) {
       sujo.current = true;
+      // Recusa do servidor (4xx: dado inválido, conflito, sessão): não insiste sozinho; espera nova edição ou "tentar de novo".
+      parar = e.status >= 400 && e.status < 500;
       setSalvar({ status: e.status === 409 ? 'conflito' : e.status === 401 ? 'sessao' : 'erro', erro: e.message });
     } finally {
       salvando.current = false;
-      if (sujo.current && !['conflito', 'sessao'].includes(salvarRef.current)) agendar();
+      if (sujo.current && !parar && !['conflito', 'sessao'].includes(salvarRef.current)) agendar();
     }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const salvarRef = useRef('ocioso'); salvarRef.current = salvar.status;
-  const agendar = useCallback((ms = 700) => { clearTimeout(timer.current); timer.current = setTimeout(() => enviar(false), ms); }, [enviar]);
+  const agendar = useCallback((ms = 2500) => { clearTimeout(timer.current); timer.current = setTimeout(() => enviar(false), ms); }, [enviar]);
 
   // Aplica uma alteração: fn recebe um rascunho (cópia) e pode mutá-lo.
   // Edições seguidas no mesmo campo viram um único passo de "desfazer".

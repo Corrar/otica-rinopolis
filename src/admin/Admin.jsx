@@ -2,13 +2,14 @@ import { useCallback, useEffect, useState } from 'react';
 import { Ic } from '../components/Icons.jsx';
 import { L, Status } from '../components/Layout.jsx';
 import { BlocoInfo, BlocoLista, Campo, useBind } from './campos.jsx';
-import { Configuracoes } from './Configuracoes.jsx';
+import { Configuracoes, FormSenha } from './Configuracoes.jsx';
 import { CATEGORIAS } from '../pages/Armacoes.jsx';
 import { useContent, useSite } from '../state/content.jsx';
 import { api } from '../lib/api.js';
 import { aviso } from '../lib/toast.js';
 import { eventosFuturos, fmtData, lista, num2, promosAtivas } from '../lib/util.js';
 import { ehIlustrativa } from '../content/defaults.js';
+import { facebookValido } from '../lib/validar.js';
 
 const ABAS = [
   ['visao', 'visão geral', 'Resumo do site e o que ainda falta preencher.', 'inicio'],
@@ -27,9 +28,11 @@ const ABAS = [
 
 export default function Admin({ wide }) {
   const [sessao, setSessao] = useState(null); // null = verificando
-  const { salvar, tentarDeNovo } = useContent();
+  const { salvar, tentarDeNovo, recarregar } = useContent();
 
   useEffect(() => { api.sessao().then(setSessao).catch(() => setSessao({ logado: false, erro: true })); }, []);
+  // Ao entrar, busca a versão atual sem cache do CDN (evita editar sobre uma versão antiga e cair em conflito).
+  useEffect(() => { if (sessao?.logado && salvar.status === 'ocioso') recarregar().catch(() => {}); }, [sessao?.logado]); // eslint-disable-line react-hooks/exhaustive-deps
   useEffect(() => { if (salvar.status === 'sessao') setSessao(s => ({ ...s, logado: false, expirou: true })); }, [salvar.status]);
 
   const entrou = (s) => { setSessao(s); if (salvar.status === 'sessao') tentarDeNovo(); };
@@ -37,6 +40,7 @@ export default function Admin({ wide }) {
   return (
     <div data-screen-label="Admin" data-admin className="adm">
       {sessao === null ? <div className="loading"><span className="spinner" /></div>
+        : sessao.logado && sessao.senhaInicial ? <TrocaInicial setSessao={setSessao} />
         : sessao.logado ? <Painel wide={wide} sessao={sessao} setSessao={setSessao} sair={() => setSessao({ logado: false })} />
         : <Login onOk={entrou} expirou={sessao.expirou} />}
     </div>
@@ -47,7 +51,7 @@ function Login({ onOk, expirou }) {
   const [senha, setSenha] = useState(''), [lembrar, setLembrar] = useState(false), [erro, setErro] = useState(''), [enviando, setEnviando] = useState(false);
   const entrar = async (e) => {
     e.preventDefault(); setEnviando(true); setErro('');
-    try { const s0 = await api.entrar(senha, lembrar); const s = await api.sessao().catch(() => s0); aviso('Bem-vindo! Alterações são salvas automaticamente.'); onOk(s); }
+    try { const s0 = await api.entrar(senha, lembrar); const s = await api.sessao().catch(() => s0); if (!s.senhaInicial) aviso('Bem-vindo! Alterações são salvas automaticamente.'); onOk(s); }
     catch (x) { setErro(x.message); } finally { setEnviando(false); }
   };
   return (
@@ -65,6 +69,24 @@ function Login({ onOk, expirou }) {
         </button>
         <button type="submit" disabled={enviando} className="adm-btn adm-btn--dark" style={{ padding: '15px 24px', fontSize: 15, minHeight: 50 }}>{enviando ? 'entrando…' : 'entrar'}</button>
       </form>
+    </section>
+  );
+}
+
+// Primeiro acesso: só a troca da senha inicial; o painel abre depois.
+function TrocaInicial({ setSessao }) {
+  const sair = async () => { try { await api.sair(); } catch { /* ignora */ } setSessao({ logado: false }); };
+  return (
+    <section style={{ padding: 'clamp(48px,8vw,120px) var(--px)', display: 'flex', justifyContent: 'center' }}>
+      <div style={{ background: '#fff', borderRadius: 24, padding: 'clamp(28px,4vw,44px)', width: '100%', maxWidth: 460, display: 'flex', flexDirection: 'column', gap: 16, boxShadow: '0 10px 40px rgba(0,0,0,.06)' }}>
+        <div className="circle-44" style={{ width: 48, height: 48, background: 'var(--ink)', color: '#fff' }}><Ic n="lock" s={20} /></div>
+        <div>
+          <h1 style={{ font: "300 30px/1.1 'Outfit',sans-serif", letterSpacing: '-.02em', marginBottom: 6 }}>crie a sua <span className="b">senha</span></h1>
+          <div style={{ font: "400 14px/1.5 'DM Sans',sans-serif", color: 'var(--muted)' }}>Antes de editar o site, troque a senha inicial por uma que só você saiba. Use pelo menos 10 caracteres — uma frase curta, fácil de lembrar, funciona bem.</div>
+        </div>
+        <FormSenha inicial rotuloBotao="salvar e continuar" onOk={() => { setSessao(s => ({ ...s, senhaInicial: false })); aviso('Senha criada. Alterações no painel são salvas automaticamente.'); }} />
+        <button type="button" onClick={sair} style={{ border: 0, background: 'none', padding: 0, font: "500 13px 'DM Sans',sans-serif", color: 'var(--muted)', width: 'max-content' }}>sair</button>
+      </div>
     </section>
   );
 }
@@ -124,11 +146,6 @@ function Painel({ wide, sessao, setSessao, sair }) {
             O armazenamento ainda não foi configurado: as alterações <strong>não serão salvas</strong>. Na Vercel, crie um Blob Store, conecte a este projeto e faça um novo deploy.
           </div>
         )}
-        {sessao.senhaInicial && aba !== 'config' && (
-          <button onClick={() => irAba('config')} style={{ textAlign: 'left', border: 0, background: '#fff4e5', color: '#7a4b00', borderRadius: 14, padding: '12px 16px', font: "400 13px/1.5 'DM Sans',sans-serif" }}>
-            Você ainda usa a senha inicial. <strong>Troque agora em configurações →</strong>
-          </button>
-        )}
         <Aba id={aba} irAba={irAba} sessao={sessao} setSessao={setSessao} />
       </div>
     </section>
@@ -146,7 +163,7 @@ function Aba({ id, irAba, sessao, setSessao }) {
         <Campo b={i('whatsapp')} label="WhatsApp (só números, com DDD)" placeholder="18997637896" tipo="tel" />
         <Campo b={i('telefone')} label="Telefone fixo (só números, com DDD; vazio para não mostrar)" placeholder="1835831566" tipo="tel" />
         <Campo b={i('instagram')} label="Instagram (sem @)" />
-        <Campo b={i('facebook')} label="Facebook (link completo, opcional)" placeholder="https://facebook.com/..." />
+        <Campo b={i('facebook')} label="Facebook (link completo, opcional)" placeholder="https://www.facebook.com/..." erro={facebookValido(i('facebook').value) ? '' : 'Link inválido: use o endereço completo da página, começando com https://www.facebook.com/ (enquanto isso, as alterações não são salvas).'} />
         <Campo b={i('endereco')} label="Endereço" />
         <Campo b={i('bairroCidade')} label="Bairro, cidade – UF" />
         <Campo b={i('cep')} label="CEP" />
@@ -237,14 +254,14 @@ function Aba({ id, irAba, sessao, setSessao }) {
         campos={b => [<Campo key="a" b={b('ano')} label="Ano" />, <Campo key="t" b={b('texto')} label="O que aconteceu" tipo="area" rows={2} full />]} />
       <BlocoLista chave="diferenciais" titulo="por que a digital look" tituloDe={it => it.titulo} novo={() => ({ titulo: 'novo diferencial', texto: '' })} addLabel="adicionar diferencial"
         campos={b => [<Campo key="t" b={b('titulo')} label="Título" />, <Campo key="x" b={b('texto')} label="Texto" tipo="area" rows={2} full />]} />
-      <BlocoLista chave="equipe" titulo="equipe" tituloDe={it => it.nome} novo={() => ({ nome: 'Nome', cargo: 'Cargo', img: '' })} addLabel="adicionar pessoa"
+      <BlocoLista chave="equipe" pessoal titulo="equipe" tituloDe={it => it.nome} novo={() => ({ nome: 'Nome', cargo: 'Cargo', img: '' })} addLabel="adicionar pessoa"
         campos={b => [<Campo key="n" b={b('nome')} label="Nome" />, <Campo key="c" b={b('cargo')} label="Cargo" />, <Campo key="i" b={b('img')} label="Foto" tipo="img" full />]} />
     </>;
-    case 'depoimentos': return <BlocoLista chave="depoimentos" tituloDe={it => it.nome} novo={() => ({ nome: 'Cliente', item: '', texto: '' })} addLabel="adicionar depoimento"
+    case 'depoimentos': return <BlocoLista chave="depoimentos" pessoal tituloDe={it => it.nome} novo={() => ({ nome: 'Cliente', item: '', texto: '' })} addLabel="adicionar depoimento"
       campos={b => [<Campo key="n" b={b('nome')} label="Nome do cliente" />, <Campo key="i" b={b('item')} label="O que comprou" />, <Campo key="t" b={b('texto')} label="Depoimento" tipo="area" full />]} />;
     case 'posts': return <BlocoLista chave="posts" tituloDe={it => it.titulo} novo={() => ({ tag: 'dicas', data: fmtData(new Date().toISOString().slice(0, 10)), leitura: '3 min', titulo: 'Novo artigo', resumo: '', conteudo: '', img: '' })} addLabel="adicionar artigo"
       campos={b => [<Campo key="t" b={b('titulo')} label="Título" full />, <Campo key="g" b={b('tag')} label="Categoria" />, <Campo key="d" b={b('data')} label="Data (texto)" placeholder="08 out 2026" />, <Campo key="l" b={b('leitura')} label="Tempo de leitura" placeholder="4 min" />, <Campo key="r" b={b('resumo')} label="Resumo (aparece na lista)" tipo="area" rows={2} full />, <Campo key="c" b={b('conteudo')} label="Texto completo do artigo" tipo="area" rows={10} full />, <Campo key="i" b={b('img')} label="Imagem" tipo="img" full />]} />;
-    case 'config': return <Configuracoes sessao={sessao} setSessao={setSessao} />;
+    case 'config': return <Configuracoes setSessao={setSessao} />;
     default: return null;
   }
 }
@@ -264,7 +281,6 @@ function Visao({ irAba, sessao }) {
     [cms.produtos.some(x => x.img), 'Adicionar fotos das armações', 'produtos'],
     [futuros > 0, futuros > 0 ? 'Há eventos futuros publicados' : 'Nenhum evento futuro cadastrado', 'eventos'],
     [promos > 0, promos > 0 ? 'Há promoções ativas' : 'Nenhuma promoção ativa', 'promocoes'],
-    [!sessao.senhaInicial, 'Trocar a senha inicial', 'config'],
   ].map(([ok, texto, tab]) => ({ ok, texto, tab })).sort((a, b) => a.ok - b.ok);
   const stats = [['promoções ativas', promos, 'promocoes'], ['eventos futuros', futuros, 'eventos'], ['armações', cms.produtos.length, 'produtos'], ['artigos', cms.posts.length, 'posts'], ['fotos enviadas', fotosTotal, 'fotos']];
   const atalhos = [['nova promoção', 'promocoes'], ['novo evento', 'eventos'], ['nova armação', 'produtos'], ['novo artigo', 'posts'], ['trocar foto da capa', 'fotos'], ['alterar horário', 'info']];

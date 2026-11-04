@@ -29,7 +29,7 @@ export function useHashLegado() {
 export function rota(path) {
   const [, a = '', b = ''] = path.replace(/\/+$/, '').split('/');
   if (a === '') return { page: 'inicio' };
-  if (a === 'blog' && b) return { page: 'post', slug: decodeURIComponent(b) };
+  if (a === 'blog' && b) return { page: 'post', slug: (() => { try { return decodeURIComponent(b); } catch { return b; } })() };
   if (['sobre', 'armacoes', 'lentes', 'convenios', 'blog', 'contato', 'admin'].includes(a)) return { page: a };
   return { page: 'naoEncontrada' };
 }
