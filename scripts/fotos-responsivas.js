@@ -1,6 +1,6 @@
 // Plugin do Vite: imagens responsivas para as fotos do site (public/fotos).
 // - No build, gera versões WebP de cada foto em 480, 800 e 1200 px de largura (sem ampliar: a maior é a largura
-//   original), salvas ao lado da original como /fotos/<nome>-<largura>.webp.
+//   original), salvas ao lado da original como /fotos/<nome>-<largura>.webp (também numa subpasta, como /fotos/ilustrativas).
 // - O módulo "virtual:fotos" diz ao site quais larguras existem ({ '/fotos/fachada.jpg': [480, 800, 960] });
 //   o componente Img (src/components/bits.jsx) monta o srcset com elas e mantém o JPEG como reserva.
 // - No desenvolvimento (npm run dev), as versões são geradas na hora em que o navegador pede.
@@ -26,7 +26,13 @@ async function lerFotos() {
   const sharp = await carregarSharp();
   if (!sharp) return {};
   let nomes = [];
-  try { nomes = (await fs.readdir(PASTA)).filter(n => EXTENSOES.test(n)); } catch { return {}; }
+  // Fotos da pasta e de uma subpasta (ex.: public/fotos/ilustrativas), com o caminho relativo a public/fotos.
+  try {
+    for (const e of await fs.readdir(PASTA, { withFileTypes: true })) {
+      if (e.isFile() && EXTENSOES.test(e.name)) nomes.push(e.name);
+      else if (e.isDirectory()) nomes.push(...(await fs.readdir(path.join(PASTA, e.name))).filter(n => EXTENSOES.test(n)).map(n => e.name + '/' + n));
+    }
+  } catch { return {}; }
   const fotos = {};
   for (const nome of nomes.sort()) {
     const { width } = await sharp(path.join(PASTA, nome)).metadata();
@@ -38,6 +44,7 @@ async function lerFotos() {
   return fotos;
 }
 
+const arquivoDe = (src) => path.join(PASTA, src.replace(/^\/fotos\//, ''));
 const variante = (src, w) => src.replace(EXTENSOES, '') + '-' + w + '.webp';
 const gerar = async (arquivo, w) => (await carregarSharp())(arquivo).resize({ width: w, withoutEnlargement: true }).webp({ quality: QUALIDADE, effort: 5 }).toBuffer();
 
@@ -57,7 +64,7 @@ export default function fotosResponsivas() {
       if (ssr) return;
       const lista = await mapa();
       for (const [src, larguras] of Object.entries(lista)) {
-        const arquivo = path.join(PASTA, path.basename(src));
+        const arquivo = arquivoDe(src);
         for (const w of larguras) this.emitFile({ type: 'asset', fileName: variante(src, w).slice(1), source: await gerar(arquivo, w) });
       }
       const total = Object.values(lista).reduce((n, l) => n + l.length, 0);
@@ -66,14 +73,14 @@ export default function fotosResponsivas() {
     configureServer(server) {
       const cache = new Map();
       server.middlewares.use(async (req, res, next) => {
-        const m = /^\/fotos\/([^/?]+)-(\d+)\.webp(?:\?|$)/.exec(req.url || '');
+        const m = /^\/fotos\/((?:[^/?]+\/)?[^/?]+)-(\d+)\.webp(?:\?|$)/.exec(req.url || '');
         if (!m) return next();
         try {
           const lista = await mapa();
           const src = Object.keys(lista).find(s => variante(s, +m[2]) === `/fotos/${m[1]}-${m[2]}.webp` && lista[s].includes(+m[2]));
           if (!src) return next();
           const chave = src + '@' + m[2];
-          if (!cache.has(chave)) cache.set(chave, await gerar(path.join(PASTA, path.basename(src)), +m[2]));
+          if (!cache.has(chave)) cache.set(chave, await gerar(arquivoDe(src), +m[2]));
           res.setHeader('Content-Type', 'image/webp');
           res.end(cache.get(chave));
         } catch (e) { next(e); }

@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import fotosWebp from 'virtual:fotos';
 import { Ic } from './Icons.jsx';
 import { L, NovaAba } from './Layout.jsx';
+import { ehIlustrativa } from '../content/defaults.js';
 
 // Arte da marca: o olho do logo em traço fino (amêndoa, íris com a "fatia" e os quadradinhos), com anéis de lente ao fundo.
 // Aparece no lugar da foto enquanto o proprietário não envia uma imagem (ou se ela não carregar). tom: 'areia' | 'escuro'.
@@ -37,14 +38,15 @@ export function Img({ src, alt, prioridade = false, tom, tamanhos = TAM_PADRAO }
   if (falhou && falhou === src) return <ArteMarca tom={tom} />;
   const img = <img className="ph__img" src={src} alt={alt || ''} loading={prioridade ? 'eager' : 'lazy'} fetchPriority={prioridade ? 'high' : undefined} decoding={prioridade ? undefined : 'async'} onError={() => setFalhou(src)} />;
   const larguras = fotosWebp[src];
-  if (!larguras || !larguras.length) return img;
   const base = src.replace(/\.[a-z]+$/i, '');
-  return (
+  const foto = !larguras || !larguras.length ? img : (
     <picture>
       <source type="image/webp" srcSet={larguras.map(w => `${base}-${w}.webp ${w}w`).join(', ')} sizes={tamanhos} />
       {img}
     </picture>
   );
+  // Foto de banco de imagens (public/fotos/ilustrativas): avisa que não é da loja nem do produto à venda.
+  return ehIlustrativa(src) ? <>{foto}<span className="selo-ilustrativa">imagem ilustrativa</span></> : foto;
 }
 
 // Bloco de foto; sem imagem, mostra a arte da marca (o texto "foto: ..." fica só nas prévias do painel).
