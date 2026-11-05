@@ -14,7 +14,7 @@ async function req(method, url, body) {
 
 export const api = {
   conteudo: (fresh) => req('GET', '/api/content' + (fresh ? '?fresh=' + Date.now() : '')),
-  salvar: (content, baseVersion, force, resumo) => req('PUT', '/api/content', { content, baseVersion, force, resumo }),
+  salvar: (content, baseVersion, force) => req('PUT', '/api/content', { content, baseVersion, force }),
   sessao: () => req('GET', '/api/session'),
   entrar: (senha, lembrar) => req('POST', '/api/login', { senha, lembrar }),
   sair: (todos) => req('POST', '/api/logout', todos ? { todos: true } : {}),
@@ -23,5 +23,4 @@ export const api = {
   historico: () => req('GET', '/api/history'),
   restaurarVersao: (id) => req('POST', '/api/history', { id }),
   limparFotos: (historico) => req('POST', '/api/limpar-fotos', { historico: !!historico }),
-  publicar: () => req('POST', '/api/publicar', {}),
 };

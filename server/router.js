@@ -1,11 +1,8 @@
 // API do site. Usada pelas funções da Vercel (api/*.js), pelo servidor Node (server.js)
 // e pelo servidor de desenvolvimento do Vite. Só depende de req/res do Node.
-import { createHash, timingSafeEqual } from 'node:crypto';
 import { getStorage } from './storage.js';
-import { COOKIE, COOKIE_HTTPS, atrasoGeral, bloqueado, conferirSenha, criarToken, encerrarSessoes, limparFalhas, registrarFalha, sessao, trocarSenha } from './auth.js';
+import { COOKIE, COOKIE_HTTPS, DIAS_LEMBRAR, bloqueado, conferirSenha, criarToken, encerrarSessoes, limparFalhas, registrarFalha, senhaProibida, sessao, trocarSenha } from './auth.js';
 import { problemaNoConteudo } from '../src/lib/validar.js';
-import { normalizarSenha, problemaNaSenha } from '../src/lib/senha.js';
-import { resumoValido } from '../src/lib/versoes.js';
 
 const MAX_CONTEUDO = 2 * 1024 * 1024; // JSON do conteúdo (as fotos ficam fora, como URL)
 const MAX_FOTO = 3 * 1024 * 1024; // em base64 fica abaixo dos 4,5 MB aceitos pelas funções da Vercel
@@ -71,16 +68,12 @@ const tokenDe = (req) => cookies(req)[nomeCookie(req)];
 function cookieSessao(req, valor, maxAge) {
   return `${nomeCookie(req)}=${valor}; Path=/; HttpOnly; SameSite=Strict; Max-Age=${maxAge}${seguro(req) ? '; Secure' : ''}`;
 }
-// lembrar: "manter conectado" (14 dias); senão 12 horas.
-const entrarComCookie = (req, res, r, lembrar) => { const { token, segundos } = criarToken(r, !!lembrar); res.setHeader('Set-Cookie', cookieSessao(req, token, segundos)); };
+const entrarComCookie = (req, res, r, dias) => res.setHeader('Set-Cookie', cookieSessao(req, criarToken(r, dias), Math.round(dias * 86400)));
 
 function fmtEspera(s) { return s > 90 ? `${Math.ceil(s / 60)} min` : `${s}s`; }
-// Recusa o IP bloqueado e já conta esta tentativa (sem await entre as duas coisas: requisições simultâneas do mesmo
-// IP não passam todas pela verificação). A senha certa desconta (limparFalhas).
-function contarTentativa(quem, opcoes) {
+function conferirBloqueio(quem) {
   const espera = bloqueado(quem);
   if (espera) throw new HttpErro(429, `Muitas tentativas. Tente de novo em ${fmtEspera(espera)}.`);
-  registrarFalha(quem, opcoes);
 }
 
 // Cabeçalho próprio: formulários de outros sites não conseguem enviá-lo (proteção CSRF).
@@ -109,27 +102,6 @@ function tipoDaImagem(buf) {
   if (buf.length > 12 && buf.toString('latin1', 0, 4) === 'RIFF' && buf.toString('latin1', 8, 12) === 'WEBP') return 'image/webp';
   return null;
 }
-
-// Publicar no Google: dispara um novo deploy pelo Deploy Hook da Vercel (DEPLOY_HOOK_URL), que refaz as páginas
-// prontas, o sitemap e os dados estruturados com o conteúdo salvo. Sem a variável, nada é disparado.
-const INTERVALO_PUBLICAR_MS = 60e3;
-let ultimaPublicacao = 0;
-const publicarConfigurado = () => /^https:\/\//.test(process.env.DEPLOY_HOOK_URL || '');
-
-async function dispararPublicacao() {
-  if (!publicarConfigurado()) throw new HttpErro(503, 'Publicação automática não configurada: defina DEPLOY_HOOK_URL.');
-  const espera = Math.ceil((ultimaPublicacao + INTERVALO_PUBLICAR_MS - Date.now()) / 1000);
-  if (espera > 0) throw new HttpErro(429, `Uma publicação acabou de ser iniciada. Aguarde ${espera}s para pedir outra.`);
-  let r;
-  try { r = await fetch(process.env.DEPLOY_HOOK_URL, { method: 'POST', signal: AbortSignal.timeout(15e3) }); }
-  catch { throw new HttpErro(502, 'Não foi possível iniciar a publicação. Tente de novo em alguns minutos.'); }
-  if (!r.ok) throw new HttpErro(502, `A hospedagem recusou a publicação (erro ${r.status}). Tente de novo em alguns minutos.`);
-  ultimaPublicacao = Date.now();
-  return { ok: true, iniciadaEm: new Date(ultimaPublicacao).toISOString() };
-}
-
-// Compara em tempo constante (o tempo da resposta não revela quantos caracteres conferem).
-const iguais = (a, b) => timingSafeEqual(createHash('sha256').update(String(a)).digest(), createHash('sha256').update(String(b)).digest());
 
 // Conteúdo atual em memória por 30 s (menos leituras no Blob); atualizado ao salvar ou restaurar.
 let cacheConteudo = null;
@@ -160,7 +132,7 @@ const rotas = {
 
   'PUT /api/content': async (req, res) => {
     await exigirLogin(req);
-    const { content, baseVersion, force, resumo } = await lerCorpo(req, MAX_CONTEUDO);
+    const { content, baseVersion, force } = await lerCorpo(req, MAX_CONTEUDO);
     if (!content || typeof content !== 'object' || Array.isArray(content)) throw new HttpErro(400, 'Conteúdo inválido.');
     if (temDataUrl(content)) throw new HttpErro(400, 'Envie as fotos pelo botão de foto (não embutidas no conteúdo).');
     const problema = problemaNoConteudo(content);
@@ -168,33 +140,25 @@ const rotas = {
     const lista = await getStorage().listVersions();
     const atual = lista[0];
     if (!force && atual && baseVersion !== atual.id) return json(res, 409, { error: 'O conteúdo foi alterado em outro aparelho.', version: atual.id });
-    const v = await getStorage().writeVersion(content, lista, resumoValido(resumo));
+    const v = await getStorage().writeVersion(content, lista);
     guardarConteudo({ content, version: v.id, updatedAt: v.at });
     json(res, 200, { version: v.id, updatedAt: v.at });
   },
 
   'GET /api/session': async (req, res) => {
     const r = await sessao(tokenDe(req));
-    // publicar: o painel só mostra o botão "publicar alterações no Google" com o Deploy Hook configurado;
-    // publicarDiario: a republicação diária (cron) também está ligada.
-    json(res, 200, r ? {
-      logado: true, senhaInicial: r.inicial, armazenamento: getStorage().kind,
-      publicar: publicarConfigurado(), publicarDiario: publicarConfigurado() && !!process.env.CRON_SECRET,
-    } : { logado: false });
+    json(res, 200, r ? { logado: true, senhaInicial: r.inicial, armazenamento: getStorage().kind } : { logado: false });
   },
 
   'POST /api/login': async (req, res) => {
     exigirCabecalho(req);
     const quem = ip(req);
-    contarTentativa(quem);
+    conferirBloqueio(quem);
     const { senha, lembrar } = await lerCorpo(req, 10_000);
-    // Muitas falhas recentes de vários IPs (ataque distribuído): espera um pouco antes de conferir, sem recusar ninguém.
-    const atraso = atrasoGeral();
-    if (atraso) await new Promise(r => setTimeout(r, atraso));
     const { ok, registro } = await conferirSenha(senha);
-    if (!ok) throw new HttpErro(401, 'Senha incorreta. Tente novamente.');
+    if (!ok) { registrarFalha(quem); throw new HttpErro(401, 'Senha incorreta. Tente novamente.'); }
     limparFalhas(quem);
-    entrarComCookie(req, res, registro, lembrar === true);
+    entrarComCookie(req, res, registro, lembrar ? DIAS_LEMBRAR : 0.5);
     json(res, 200, { logado: true, senhaInicial: registro.inicial });
   },
 
@@ -210,20 +174,18 @@ const rotas = {
   },
 
   'POST /api/password': async (req, res) => {
-    const sessaoAtual = await exigirLogin(req, { permitirInicial: true });
+    await exigirLogin(req, { permitirInicial: true });
     const quem = ip(req);
-    contarTentativa(quem, { geral: false }); // quem já está logado não entra na contagem de ataque distribuído
+    conferirBloqueio(quem);
     const { atual, nova } = await lerCorpo(req, 10_000);
-    if (typeof nova !== 'string' || typeof atual !== 'string') throw new HttpErro(400, 'Requisição inválida.');
-    if (!(await conferirSenha(atual, { fresco: true })).ok) throw new HttpErro(400, 'Senha atual incorreta.');
+    if (!(await conferirSenha(atual)).ok) { registrarFalha(quem); throw new HttpErro(400, 'Senha atual incorreta.'); }
     limparFalhas(quem);
-    // A senha é salva com a mesma normalização do login (espaços nas pontas não contam; ver src/lib/senha.js).
-    const info = (await getStorage().lerAtual().catch(() => null))?.content?.info || {};
-    const problema = problemaNaSenha(nova, { evitar: [process.env.ADMIN_PASSWORD || '', atual], telefones: [String(info.whatsapp || ''), String(info.telefone || '')] });
-    if (problema) throw new HttpErro(400, problema);
-    const r = await trocarSenha(normalizarSenha(nova));
-    // Mantém a duração da sessão escolhida no login ("manter conectado" continua valendo 14 dias).
-    entrarComCookie(req, res, r, sessaoAtual.lembrar);
+    const n = typeof nova === 'string' ? nova.trim() : '';
+    if (n.length < 10) throw new HttpErro(400, 'Use ao menos 10 caracteres.');
+    if (n.length > 200) throw new HttpErro(400, 'Use no máximo 200 caracteres.');
+    if (n === String(atual || '').trim() || senhaProibida(n)) throw new HttpErro(400, 'Escolha uma senha nova, diferente da inicial e sem o nome da loja.');
+    const r = await trocarSenha(n);
+    entrarComCookie(req, res, r, 0.5);
     json(res, 200, { ok: true });
   },
 
@@ -243,7 +205,7 @@ const rotas = {
   'GET /api/history': async (req, res) => {
     await exigirLogin(req, { permitirInicial: true });
     const vs = await getStorage().listVersions();
-    json(res, 200, { versions: vs.map(({ id, at, size, resumo }) => ({ id, at, size, resumo: resumo || [] })) });
+    json(res, 200, { versions: vs.map(({ id, at, size }) => ({ id, at, size })) });
   },
 
   'POST /api/history': async (req, res) => {
@@ -253,26 +215,9 @@ const rotas = {
     const v = lista.find(x => x.id === id);
     if (!v) throw new HttpErro(404, 'Versão não encontrada.');
     const content = await getStorage().readVersion(v);
-    const nova = await getStorage().writeVersion(content, lista, 'restaurada');
+    const nova = await getStorage().writeVersion(content, lista);
     guardarConteudo({ content, version: nova.id, updatedAt: nova.at });
     json(res, 200, { content, version: nova.id, updatedAt: nova.at });
-  },
-
-  // Botão "publicar alterações no Google" do painel (não é chamado a cada salvamento automático).
-  'POST /api/publicar': async (req, res) => {
-    await exigirLogin(req);
-    json(res, 200, await dispararPublicacao());
-  },
-
-  // Republicação diária (crons do vercel.json): eventos e promoções vencidos saem das páginas prontas e do sitemap
-  // mesmo sem ninguém mexer no painel. A Vercel envia "Authorization: Bearer <CRON_SECRET>"; sem CRON_SECRET
-  // definido, ninguém passa. Sem DEPLOY_HOOK_URL, não dispara nada.
-  'GET /api/cron-publicar': async (req, res) => {
-    const segredo = process.env.CRON_SECRET || '';
-    if (!segredo || !iguais(req.headers.authorization || '', 'Bearer ' + segredo)) throw new HttpErro(401, 'Não autorizado.');
-    // O proprietário acabou de publicar pelo painel: não precisa de outra.
-    const r = await dispararPublicacao().catch(e => { if (e.status === 429) return { ok: true, ignorada: 'publicação recente' }; throw e; });
-    json(res, 200, r);
   },
 
   // Apaga de vez as fotos enviadas que não aparecem no conteúdo atual nem nas versões guardadas.
@@ -309,9 +254,7 @@ export async function handleApi(req, res) {
     await rota(req, res, url);
   } catch (e) {
     const status = e.status || 500;
-    // Mensagens escritas para o painel (HttpErro e "Configuração pendente") vão como estão; erro inesperado, genérico.
-    const conhecido = e instanceof HttpErro || status === 503;
-    if (status >= 500) console.error('[api]', conhecido ? e.message : e);
-    if (!res.headersSent) json(res, status, { error: status >= 500 && !conhecido ? 'Erro no servidor. Tente novamente.' : e.message });
+    if (status >= 500) console.error('[api]', status === 503 ? e.message : e);
+    if (!res.headersSent) json(res, status, { error: status >= 500 && status !== 503 ? 'Erro no servidor. Tente novamente.' : e.message });
   }
 }

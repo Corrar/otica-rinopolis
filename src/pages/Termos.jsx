@@ -1,11 +1,12 @@
 // Termos de Uso. Texto fixo no código: não é editável pelo painel, para não ser apagado por engano.
-// Os dados do fornecedor (razão social, CNPJ, e-mail, endereço e telefones) vêm das informações da loja.
+// Os dados do fornecedor (CNPJ, endereço e telefones) vêm das informações da loja.
 // Nada aqui pode excluir ou reduzir direitos do consumidor (CDC, arts. 25 e 51, I). Ao mudar o texto, atualize ATUALIZADA.
 import { L } from '../components/Layout.jsx';
-import { Canais, Empresa, nomeEmpresa, PaginaLegal, Secao } from '../components/Legal.jsx';
+import { Canais, Empresa, PaginaLegal, Secao } from '../components/Legal.jsx';
+import { NOME } from '../lib/seo.js';
 import { useSite } from '../state/content.jsx';
 
-export const ATUALIZADA = '30/10/2026';
+export const ATUALIZADA = '04/11/2026';
 
 const SECOES = [
   ['fornecedor', 'quem somos'],
@@ -27,25 +28,24 @@ const SECOES = [
 
 export default function Termos() {
   const site = useSite();
-  const nome = nomeEmpresa(site.emp);
   const fb = !!String(site.info.facebook || '').trim();
   return (
     <PaginaLegal rotulo="Termos de Uso" eyebrow="termos de uso" a="termos" b="de uso." data={ATUALIZADA} secoes={SECOES}
-      resumo="As regras para usar o site da Ótica Digital Look. Ao navegar por ele, você concorda com estes termos — que não reduzem nenhum dos seus direitos como consumidor.">
+      resumo={`As regras para usar o site da ${NOME}. Ao navegar por ele, você concorda com estes termos — que não reduzem nenhum dos seus direitos como consumidor.`}>
 
       <Secao id="fornecedor" n="01" titulo="quem somos">
-        <p>Este site é da {nome}, ótica no centro de Rinópolis/SP:</p>
+        <p>Este site é da {NOME}, ótica no centro de Rinópolis/SP:</p>
         <Empresa site={site} />
       </Secao>
 
       <Secao id="site" n="02" titulo="o que é este site">
-        <p>O site é <strong>informativo</strong>: apresenta a loja, os produtos, os serviços e dicas sobre cuidados com os olhos. <strong>Não há venda nem pagamento pelo site.</strong> Orçamentos e compras são feitos na loja ou pelo WhatsApp.</p>
-        <p>Preço, disponibilidade, condições de pagamento e prazo de entrega valem conforme o orçamento que você receber da loja. Quando o site informar um preço, ele vale para o produto e nas condições indicadas junto a ele.</p>
+        <p>O site é <strong>informativo</strong>: apresenta a loja, os produtos, os serviços, os convênios, as promoções, os eventos e dicas sobre cuidados com os olhos. <strong>Não há venda nem pagamento pelo site.</strong> Orçamentos e compras são feitos na loja ou pelo WhatsApp.</p>
+        <p>Preço, disponibilidade, condições de pagamento e prazo de entrega valem conforme o orçamento que você receber da loja. Quando o site informar um preço ou uma condição de pagamento, ela vale para o produto e nas condições indicadas junto a ela.</p>
       </Secao>
 
       <Secao id="receita" n="03" titulo="exames de vista e receitas">
-        <p>A Ótica Digital Look <strong>não realiza exames de vista nem consultas</strong>. Lentes de grau e lentes de contato são vendidas <strong>somente com receita de médico oftalmologista</strong>, como determina a legislação (Decretos nº 20.931/1932 e nº 24.492/1934).</p>
-        <p>O grau e o tipo de lente são definidos pelo seu médico. Na loja, ajudamos você a escolher a armação e mostramos as opções de lentes que correspondem ao que foi prescrito.</p>
+        <p>Lentes de grau e lentes de contato são vendidas <strong>somente com receita de médico oftalmologista</strong>, como determina a legislação (Decretos nº 20.931/1932 e nº 24.492/1934). O grau e o tipo de lente são definidos pelo seu médico.</p>
+        <p>A medição digital feita na loja serve para centralizar as lentes na armação (medidas como a distância entre as pupilas e a altura de montagem) e <strong>não substitui o exame de vista</strong>. Ações de orientação em eventos da loja também não substituem a consulta com o oftalmologista.</p>
       </Secao>
 
       <Secao id="informativo" n="04" titulo="conteúdo informativo">
@@ -53,11 +53,11 @@ export default function Termos() {
       </Secao>
 
       <Secao id="imagens" n="05" titulo="imagens">
-        <p>As fotos mostram a loja e exemplos de produtos. Cores e detalhes podem variar conforme a tela do seu aparelho, e a disponibilidade de cada modelo deve ser confirmada na loja. As ilustrações com o símbolo da marca, usadas quando não há foto, são apenas decorativas.</p>
+        <p>As fotos mostram a loja e exemplos de produtos; algumas são <strong>imagens ilustrativas</strong> de banco de imagens. Cores e detalhes podem variar conforme a tela do seu aparelho, e a disponibilidade de cada modelo deve ser confirmada na loja.</p>
       </Secao>
 
       <Secao id="promocoes" n="06" titulo="promoções e ofertas">
-        <p>Cada promoção vale nas condições e no período informados nela. Uma promoção publicada sem data de término vale enquanto estiver no site. Se houver dúvida sobre uma condição, vale a interpretação mais favorável a você (CDC, art. 47).</p>
+        <p>Cada promoção, parcelamento ou condição especial vale nas condições e no período informados nela. Uma promoção publicada sem data de término vale enquanto estiver no site. Se houver dúvida sobre uma condição, vale a interpretação mais favorável a você (CDC, art. 47).</p>
       </Secao>
 
       <Secao id="garantias" n="07" titulo="garantias e direito de arrependimento">
@@ -70,7 +70,7 @@ export default function Termos() {
       </Secao>
 
       <Secao id="propriedade" n="08" titulo="propriedade intelectual">
-        <p>O nome Ótica Digital Look, o logotipo, os textos e as fotos da loja publicados no site pertencem à ótica ou são usados com autorização. Não é permitido copiá-los para uso comercial sem autorização. Marcas de fabricantes citadas pertencem aos seus titulares. Você pode compartilhar à vontade os links das páginas do site.</p>
+        <p>O nome {NOME}, o logotipo, os textos e as fotos da loja publicados no site pertencem à ótica ou são usados com autorização ou licença. Não é permitido copiá-los para uso comercial sem autorização. Marcas de fabricantes e de convênios citadas pertencem aos seus titulares. Você pode compartilhar à vontade os links das páginas do site.</p>
       </Secao>
 
       <Secao id="uso" n="09" titulo="uso do site">
@@ -78,7 +78,7 @@ export default function Termos() {
       </Secao>
 
       <Secao id="terceiros" n="10" titulo="serviços de terceiros">
-        <p>O site tem links e botões que abrem {fb ? 'o WhatsApp, o Instagram, o Facebook e o Google Maps' : 'o WhatsApp, o Instagram e o Google Maps'}. Esses serviços são de outras empresas e têm termos e políticas próprios. O mapa só é carregado depois que você toca em "mostrar mapa".</p>
+        <p>O site tem links e botões que abrem {fb ? 'o WhatsApp, o Instagram, o Facebook e o Google Maps' : 'o WhatsApp, o Instagram e o Google Maps'}, e mostra o mapa do Google, fontes do Google e fotos do Pexels. Esses serviços são de outras empresas e têm termos e políticas próprios.</p>
       </Secao>
 
       <Secao id="responsabilidade" n="11" titulo="responsabilidade">
@@ -86,7 +86,7 @@ export default function Termos() {
       </Secao>
 
       <Secao id="privacidade" n="12" titulo="privacidade">
-        <p>O tratamento dos seus dados pessoais é explicado na <L to="politica-de-privacidade">Política de Privacidade</L>.</p>
+        <p>O tratamento dos seus dados pessoais é explicado na <L to="politica-de-privacidade">Política de Privacidade</L>, conforme a Lei Geral de Proteção de Dados (Lei nº 13.709/2018).</p>
       </Secao>
 
       <Secao id="alteracoes" n="13" titulo="alterações">
