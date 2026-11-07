@@ -12,7 +12,7 @@ const DIST = path.resolve('dist');
 const SSR = path.resolve('dist-ssr/entry-server.js');
 const SITE = (process.env.SITE_URL
   || (process.env.VERCEL_PROJECT_PRODUCTION_URL && 'https://' + process.env.VERCEL_PROJECT_PRODUCTION_URL)
-  || 'https://otica-rinopolis.vercel.app').replace(/\/+$/, '');
+  || 'https://oticadigitallook.com').replace(/\/+$/, '');
 
 const esc = (s) => String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 const jsonScript = (o) => `<script type="application/ld+json">${JSON.stringify(o).replace(/</g, '\\u003c')}</script>`;
