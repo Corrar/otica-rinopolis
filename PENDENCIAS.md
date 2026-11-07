@@ -1,6 +1,6 @@
 # Pendências técnicas — checklist de entrega
 
-Atualizado em 30/10/2026 · site: https://otica-rinopolis.vercel.app
+Atualizado em 30/10/2026 · site: https://oticadigitallook.com
 Guia do proprietário (dados a preencher, Google, backup, privacidade, hospedagem): **`ENTREGA.md`**. Detalhes técnicos: `README.md`.
 
 ## 1. Antes do merge na `main`
@@ -41,7 +41,10 @@ Guia do proprietário (dados a preencher, Google, backup, privacidade, hospedage
 - [ ] Catálogo trinta.shop confirmado: link "ver catálogo" (não há campo no painel).
 - [ ] Atende Santópolis do Aguapeí: incluir em `areaServed` (`src/lib/seo.js`, `dadosOtica`).
 - [ ] Horário com pausa para almoço, horário diferente por dia útil ou abertura aos domingos: o painel só tem abertura e fechamento de seg–sex e de sábado, e o domingo é sempre "fechado" (`src/lib/util.js`, `statusLoja`; `seo.js`, `horarioOtica`).
-- [ ] Domínio próprio: Settings → Domains, novo deploy (o endereço oficial vem de `SITE_URL` ou do domínio de produção), redirect 308 do `otica-rinopolis.vercel.app`, nova propriedade no Search Console.
+- [x] Domínio próprio `oticadigitallook.com` no projeto (Settings → Domains), `www` com redirect 308 para o apex, `SITE_URL=https://oticadigitallook.com` em Production e Preview.
+- [ ] Registros na Cloudflare (DNS only, nuvem cinza): `A @ 216.198.79.1`, `A @ 64.29.17.1`, `CNAME www 255b4224edfdd297.vercel-dns-017.com`. Conferir em Settings → Domains que os dois ficam "Valid Configuration".
+- [ ] Depois do DNS válido: novo deploy de produção (canônico, sitemap e JSON-LD passam a usar o domínio) e redirect 308 do `otica-rinopolis.vercel.app` para `oticadigitallook.com` (Settings → Domains → Edit).
+- [ ] Nova propriedade no Search Console (tipo "domínio", verificação por TXT na Cloudflare) e reenviar `sitemap.xml`.
 
 ## 5. Conteúdo (pelo painel, pelo proprietário)
 Lista completa e comentada em `ENTREGA.md`, seção 4; o painel mostra as mesmas pendências em "visão geral". Essenciais antes de divulgar: revisar os textos gerais escritos na entrega (capa, "como funciona", diferenciais, lentes, blog); razão social, CNPJ e e-mail; horário e feriados; formas de pagamento; tipos de lente de contato que a loja vende (a lista padrão está vazia); aviso da receita na saudação do WhatsApp Business (a Política de Privacidade cita esse aviso); datas do blog; link do Perfil da Empresa no Google; confirmar Facebook e catálogo.

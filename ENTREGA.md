@@ -2,8 +2,8 @@
 
 Para o proprietário da Ótica Digital Look · atualizado em 30/10/2026
 
-- **Site:** https://otica-rinopolis.vercel.app
-- **Painel de edição:** https://otica-rinopolis.vercel.app/admin (ou o link "área do proprietário", com um cadeado, no fim de qualquer página)
+- **Site:** https://oticadigitallook.com
+- **Painel de edição:** https://oticadigitallook.com/admin (ou o link "área do proprietário", com um cadeado, no fim de qualquer página)
 
 Este guia explica, sem termos técnicos, o que o site tem, como entrar no painel, o que ainda falta preencher e os cuidados do dia a dia. Guarde-o junto com os documentos da loja. Os detalhes técnicos, para quem cuida da hospedagem, estão no `README.md` e no `PENDENCIAS.md`.
 
@@ -20,7 +20,7 @@ Este guia explica, sem termos técnicos, o que o site tem, como entrar no painel
 8. [Privacidade no dia a dia (LGPD na prática)](#8-privacidade-no-dia-a-dia-lgpd-na-prática)
 9. [Páginas legais: revisão por advogado antes de divulgar](#9-páginas-legais-revisão-por-advogado-antes-de-divulgar)
 10. [Hospedagem: contas, plano e custos](#10-hospedagem-contas-plano-e-custos)
-11. [Domínio próprio (opcional)](#11-domínio-próprio-opcional)
+11. [Domínio próprio (opcional)](#11-domínio-próprio)
 12. [Quando chamar o responsável técnico](#12-quando-chamar-o-responsável-técnico)
 - [Anexo: modelo de autorização de uso de imagem e depoimento](#anexo-modelo-de-autorização-de-uso-de-imagem-e-depoimento)
 
@@ -59,7 +59,7 @@ O que o site oferece:
 
 Passo a passo:
 
-1. Abra https://otica-rinopolis.vercel.app/admin.
+1. Abra https://oticadigitallook.com/admin.
 2. Digite a senha inicial e toque em **entrar**.
 3. Aparece a tela **"crie a sua senha"**. Ela é obrigatória: o painel não deixa editar nada antes.
    - Em "senha inicial", digite de novo a senha que você usou para entrar.
@@ -224,7 +224,7 @@ Como publicar:
    - endereço: R. Prof. Sud Menucci, 228 – Centro, Rinópolis – SP, 17740-000;
    - categoria principal: Ótica;
    - telefone principal: (18) 3583-1566 (o mesmo que o site informa ao Google) e o WhatsApp (18) 99763-7896 como contato adicional;
-   - site: https://otica-rinopolis.vercel.app;
+   - site: https://oticadigitallook.com;
    - horário e fotos da fachada, do balcão e das vitrines.
 4. Faça a verificação que o Google pedir (vídeo, ligação, carta ou outra forma).
 5. Com o perfil verificado, toque em **compartilhar**, copie o link e cole no painel em **informações → Perfil da Empresa no Google**. Depois publique ([seção 5](#5-publicar-as-alterações-no-google)).
@@ -235,8 +235,8 @@ Cuidado para não confundir com a Ótica Visão Rinópolis, no nº 185 da mesma 
 ### 7.2 Google Search Console (acompanhar o site na busca)
 
 1. Acesse **search.google.com/search-console** com a mesma conta Google.
-2. Toque em "adicionar propriedade", escolha **"prefixo do URL"** e digite `https://otica-rinopolis.vercel.app`.
-3. Verificação: escolha **"arquivo HTML"**. O Google fornece um arquivo (`google….html`). Envie-o ao responsável técnico, que o coloca no site e publica; depois toque em "verificar". Com domínio próprio, a verificação pode ser feita pelo domínio ([seção 11](#11-domínio-próprio-opcional)).
+2. Toque em "adicionar propriedade", escolha **"prefixo do URL"** e digite `https://oticadigitallook.com`.
+3. Verificação: escolha **"arquivo HTML"**. O Google fornece um arquivo (`google….html`). Envie-o ao responsável técnico, que o coloca no site e publica; depois toque em "verificar". Como o domínio é próprio, a verificação também pode ser feita pelo domínio ([seção 11](#11-domínio-próprio)), com a propriedade do tipo "domínio".
 4. No menu **Sitemaps**, digite `sitemap.xml` e toque em **enviar**.
 5. Em **Inspeção de URL**, cole o endereço da página inicial e toque em **solicitar indexação**.
 6. Uma vez por mês, veja "Desempenho" (como as pessoas encontram o site) e se há avisos de erro.
@@ -255,7 +255,7 @@ O site é só uma parte: a maioria dos dados dos clientes passa pelo WhatsApp e 
 - **Apague as fotos de receita de orçamentos que não viraram venda em até 90 dias**: é o prazo que a Política de Privacidade promete.
 - Receitas de vendas feitas e documentos fiscais: guarde pelo prazo definido com o contador (a política usa 5 anos como exemplo) e depois descarte com segurança (papel picado, arquivos apagados).
 - Receita de criança: trate com o pai, a mãe ou o responsável.
-- **Aviso da receita no WhatsApp (importante).** No site, todo botão que pede a receita e o formulário de contato mostram um aviso de que a receita é um dado de saúde. Quem fala com a loja direto pelo WhatsApp não vê esse aviso, então configure no WhatsApp Business (Ferramentas comerciais → Mensagem de saudação) este texto: *"Olá! Se for enviar a foto da receita: ela é um dado de saúde e será usada só para o seu orçamento e, se você comprar, para fazer as lentes. Receita de criança: envie como pai, mãe ou responsável. Política de privacidade: https://otica-rinopolis.vercel.app/politica-de-privacidade"*. A saudação só vai para contatos novos ou que não falam com a loja há 14 dias. Por isso, salve o mesmo texto como resposta rápida (Ferramentas comerciais → Respostas rápidas, atalho `/receita`) e envie antes de pedir a foto da receita a quem não recebeu a saudação. Com domínio próprio, troque o endereço da política no texto.
+- **Aviso da receita no WhatsApp (importante).** No site, todo botão que pede a receita e o formulário de contato mostram um aviso de que a receita é um dado de saúde. Quem fala com a loja direto pelo WhatsApp não vê esse aviso, então configure no WhatsApp Business (Ferramentas comerciais → Mensagem de saudação) este texto: *"Olá! Se for enviar a foto da receita: ela é um dado de saúde e será usada só para o seu orçamento e, se você comprar, para fazer as lentes. Receita de criança: envie como pai, mãe ou responsável. Política de privacidade: https://oticadigitallook.com/politica-de-privacidade"*. A saudação só vai para contatos novos ou que não falam com a loja há 14 dias. Por isso, salve o mesmo texto como resposta rápida (Ferramentas comerciais → Respostas rápidas, atalho `/receita`) e envie antes de pedir a foto da receita a quem não recebeu a saudação.
 
 ### Pessoas no site e nas redes
 
@@ -327,16 +327,16 @@ Hoje as duas contas são do desenvolvedor: a equipe `corrars-projects` na Vercel
 5. **Alerta de gastos.** Na Vercel (Billing), ligue um alerta de uso para não ter surpresas.
 6. **Versões antigas do site.** A cada publicação, a Vercel guarda uma cópia do site daquele momento, num endereço próprio. A proteção dessas cópias já foi ligada (opção "Standard Protection"): só quem é da equipe, com login, consegue abri-las; o endereço oficial do site continua aberto a todos. Depois que a versão nova estiver no ar, o responsável técnico vai apagar as 8 cópias antigas que ainda têm o conteúdo de exemplo. **Nunca use "Instant Rollback" (voltar para uma versão antiga) na Vercel** sem falar com ele: isso pode pôr de volta no ar textos antigos ou dados de pessoas que pediram para sair do site.
 
-**Custos previstos:** o plano da hospedagem (Pro) e, se você quiser, o domínio próprio ([seção 11](#11-domínio-próprio-opcional)). O site não usa outros serviços pagos.
+**Custos previstos:** o plano da hospedagem (Pro) e a renovação anual do domínio próprio ([seção 11](#11-domínio-próprio)). O site não usa outros serviços pagos.
 
-## 11. Domínio próprio (opcional)
+## 11. Domínio próprio
 
-Hoje o endereço é `otica-rinopolis.vercel.app`: é gratuito e funciona normalmente. Um domínio próprio, como `oticadigitallook.com.br` (verificar se está disponível), passa mais confiança e é mais fácil de divulgar.
+O endereço oficial do site é **`oticadigitallook.com`**. O DNS do domínio é gerenciado na Cloudflare e aponta para a Vercel; `www.oticadigitallook.com` leva automaticamente para `oticadigitallook.com`. O endereço antigo, `otica-rinopolis.vercel.app`, também leva para o novo.
 
-- O registro é feito em **registro.br**, com CNPJ ou CPF, e custa cerca de R$ 40 por ano (confira o valor). Deixe a renovação automática ligada para não perder o endereço.
-- Depois, o responsável técnico liga o domínio na Vercel, publica o site de novo (o endereço que o site informa ao Google muda junto), redireciona o endereço antigo para o novo e atualiza o Search Console e o sitemap.
-- Você troca o link no Perfil da Empresa no Google, no Instagram e no Facebook.
-- Com o domínio, dá para ter um e-mail como `contato@oticadigitallook.com.br`, bom para o canal de privacidade.
+- Deixe a renovação automática do domínio ligada para não perder o endereço.
+- Troque o link no Perfil da Empresa no Google, no Instagram, no Facebook e na saudação do WhatsApp Business.
+- Não apague nem altere os registros de DNS na Cloudflare sem falar com o responsável técnico: o site sai do ar.
+- Com o domínio, dá para ter um e-mail como `contato@oticadigitallook.com`, bom para o canal de privacidade.
 
 ## 12. Quando chamar o responsável técnico
 
